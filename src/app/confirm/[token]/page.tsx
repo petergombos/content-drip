@@ -27,7 +27,15 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
     await service.confirmSubscription(tokenHash);
 
     redirect("/?confirmed=true");
-  } catch (error) {
+  } catch (error: any) {
+    // `redirect()` throws a NEXT_REDIRECT error; don't swallow it.
+    if (error?.digest && String(error.digest).includes("NEXT_REDIRECT")) {
+      throw error;
+    }
+    if (error?.message && String(error.message).includes("NEXT_REDIRECT")) {
+      throw error;
+    }
+
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="text-center">
