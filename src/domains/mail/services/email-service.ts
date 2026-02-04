@@ -33,7 +33,8 @@ export class EmailService {
   private baseUrl: string;
 
   constructor(private mailAdapter: MailAdapter, baseUrl?: string) {
-    this.baseUrl = resolveBaseUrl(baseUrl);
+    // Default to APP_BASE_URL when callers don't pass a baseUrl explicitly.
+    this.baseUrl = resolveBaseUrl(baseUrl ?? process.env.APP_BASE_URL);
   }
 
   /**
