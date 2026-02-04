@@ -17,8 +17,14 @@ function resolveBaseUrl(explicit?: string): string {
   }
   if (explicit) return explicit.replace(/\/$/, "");
 
+  const prodUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (prodUrl) return `https://${prodUrl}`;
+
   const vercelUrl = process.env.VERCEL_URL;
   if (vercelUrl) return `https://${vercelUrl}`;
+
+  const branchUrl = process.env.VERCEL_BRANCH_URL;
+  if (branchUrl) return `https://${branchUrl}`;
 
   return "http://localhost:3000";
 }
