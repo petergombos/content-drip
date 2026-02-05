@@ -1,3 +1,4 @@
+import React from "react";
 import { getPackByKey } from "@/content-packs/registry";
 import { EmailService } from "@/domains/mail/services/email-service";
 import { parseMarkdown } from "@/lib/markdown/renderer";
@@ -334,15 +335,18 @@ export class SubscriptionService {
     email: string,
     manageUrl: string
   ): Promise<void> {
+    const { ManageLinkEmail } = await import("@/emails/manage-link");
+    const { renderEmail } = await import("@/emails/render");
+
+    const rendered = await renderEmail(
+      React.createElement(ManageLinkEmail, { manageUrl })
+    );
+
     await this.emailService.sendEmail({
       to: email,
       subject: "Manage your subscription",
-      html: `
-        <h1>Manage your subscription</h1>
-        <p>Click the link below to manage your subscription preferences:</p>
-        <p><a href="${manageUrl}">${manageUrl}</a></p>
-        <p>This link will expire in 24 hours.</p>
-      `,
+      html: rendered.html,
+      text: rendered.text,
       tag: "manage-link",
     });
   }
