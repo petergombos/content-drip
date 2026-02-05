@@ -18,7 +18,7 @@ const getSubscriptionService = () => {
     fromEmail: process.env.MAIL_FROM!,
     messageStream: process.env.POSTMARK_MESSAGE_STREAM,
   });
-  const emailService = new EmailService(mailAdapter, process.env.APP_BASE_URL);
+  const emailService = new EmailService(mailAdapter);
   return new SubscriptionService(repo, emailService);
 };
 
