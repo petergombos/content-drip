@@ -26,7 +26,7 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
       fromEmail: process.env.MAIL_FROM!,
       messageStream: process.env.POSTMARK_MESSAGE_STREAM,
     });
-    const emailService = new EmailService(mailAdapter, process.env.APP_BASE_URL);
+    const emailService = new EmailService(mailAdapter);
     const service = new SubscriptionService(repo, emailService);
 
     const tokenHash = createHash("sha256").update(token).digest("hex");

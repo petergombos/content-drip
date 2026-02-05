@@ -17,8 +17,14 @@ function resolveBaseUrl(explicit?: string): string {
   }
   if (explicit) return explicit.replace(/\/$/, "");
 
-  const prodUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
-  if (prodUrl) return `https://${prodUrl}`;
+  const vercelEnv = process.env.VERCEL_ENV; // production|preview|development
+
+  // In production, prefer the stable production domain.
+  // In preview/development, prefer the deployment URL so tokens link back to the same env/DB.
+  if (vercelEnv === "production") {
+    const prodUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    if (prodUrl) return `https://${prodUrl}`;
+  }
 
   const vercelUrl = process.env.VERCEL_URL;
   if (vercelUrl) return `https://${vercelUrl}`;
@@ -33,8 +39,9 @@ export class EmailService {
   private baseUrl: string;
 
   constructor(private mailAdapter: MailAdapter, baseUrl?: string) {
-    // Default to APP_BASE_URL when callers don't pass a baseUrl explicitly.
-    this.baseUrl = resolveBaseUrl(baseUrl ?? process.env.APP_BASE_URL);
+    // Prefer explicit baseUrl (if provided), otherwise derive from Vercel env.
+    // Avoid defaulting to APP_BASE_URL because it can accidentally be set to the prod domain in preview.
+    this.baseUrl = resolveBaseUrl(baseUrl);
   }
 
   /**
