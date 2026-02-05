@@ -18,8 +18,19 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  if (authHeader !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const url = new URL(request.url);
+  const secretQuery = url.searchParams.get("secret");
+  const isAuthorized = authHeader === `Bearer ${cronSecret}`;
+
+  // Convenience for preview testing: allow `?secret=...` to trigger cron from a browser.
+  // In production, require the Authorization header.
+  const vercelEnv = process.env.VERCEL_ENV;
+  const isPreview = vercelEnv && vercelEnv !== "production";
+
+  if (!isAuthorized) {
+    if (!(isPreview && secretQuery === cronSecret)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   try {
