@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { EmailService } from "@/domains/mail/services/email-service";
-import { PostmarkAdapter } from "@/domains/mail/adapters/postmark/postmark-adapter";
+import { createMailAdapter } from "@/domains/mail/create-adapter";
 import { createHash } from "crypto";
 import { ManagePreferencesForm } from "@/components/manage-preferences-form";
 import { Card } from "@/components/ui/card";
@@ -16,11 +16,7 @@ interface ManageTokenPageProps {
 async function getSubscriptionFromToken(token: string) {
   const tokenHash = createHash("sha256").update(token).digest("hex");
   const emailService = new EmailService(
-    new PostmarkAdapter({
-      serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-      fromEmail: process.env.MAIL_FROM!,
-      messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-    }),
+    createMailAdapter(),
     process.env.APP_BASE_URL || "http://localhost:3000"
   );
 
@@ -83,11 +79,7 @@ export default async function ManageTokenPage({
             action={async () => {
               "use server";
               const emailService = new EmailService(
-                new PostmarkAdapter({
-                  serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-                  fromEmail: process.env.MAIL_FROM!,
-                  messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-                }),
+                createMailAdapter(),
                 process.env.APP_BASE_URL || "http://localhost:3000"
               );
               const stopToken = emailService.createSignedToken(

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createHash } from "crypto";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { SubscriptionService } from "@/domains/subscriptions/services/subscription-service";
-import { PostmarkAdapter } from "@/domains/mail/adapters/postmark/postmark-adapter";
+import { createMailAdapter } from "@/domains/mail/create-adapter";
 import { EmailService } from "@/domains/mail/services/email-service";
 import { PageShell } from "@/components/page-shell";
 import { Card } from "@/components/ui/card";
@@ -21,11 +21,7 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
 
   try {
     const repo = new SubscriptionRepo();
-    const mailAdapter = new PostmarkAdapter({
-      serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-      fromEmail: process.env.MAIL_FROM!,
-      messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-    });
+    const mailAdapter = createMailAdapter();
     const emailService = new EmailService(mailAdapter);
     const service = new SubscriptionService(repo, emailService);
 

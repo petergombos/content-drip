@@ -32,6 +32,10 @@ function resolveBaseUrl(explicit?: string): string {
   const branchUrl = process.env.VERCEL_BRANCH_URL;
   if (branchUrl) return `https://${branchUrl}`;
 
+  // Fall back to APP_BASE_URL or localhost default
+  const appBaseUrl = process.env.APP_BASE_URL;
+  if (appBaseUrl) return appBaseUrl.replace(/\/$/, "");
+
   return "http://localhost:3000";
 }
 

@@ -6,6 +6,12 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/*": ["./src/content-packs/**/*"],
   },
+
+  // When running E2E tests, use a separate build directory to avoid conflicts
+  // with the main dev server.
+  ...(process.env.E2E_TEST === "true" && {
+    distDir: ".next-test",
+  }),
 };
 
 export default nextConfig;

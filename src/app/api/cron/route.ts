@@ -1,4 +1,4 @@
-import { PostmarkAdapter } from "@/domains/mail/adapters/postmark/postmark-adapter";
+import { createMailAdapter } from "@/domains/mail/create-adapter";
 import { EmailService } from "@/domains/mail/services/email-service";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { SchedulerService } from "@/domains/subscriptions/services/scheduler-service";
@@ -38,11 +38,7 @@ export async function GET(request: NextRequest) {
   try {
     // Initialize services
     const repo = new SubscriptionRepo();
-    const mailAdapter = new PostmarkAdapter({
-      serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-      fromEmail: process.env.MAIL_FROM!,
-      messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-    });
+    const mailAdapter = createMailAdapter();
     const emailService = new EmailService(mailAdapter);
     const scheduler = new SchedulerService(repo, emailService);
 

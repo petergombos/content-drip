@@ -6,18 +6,14 @@ import { createHash } from "crypto";
 import { SubscriptionService } from "@/domains/subscriptions/services/subscription-service";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { EmailService } from "@/domains/mail/services/email-service";
-import { PostmarkAdapter } from "@/domains/mail/adapters/postmark/postmark-adapter";
+import { createMailAdapter } from "@/domains/mail/create-adapter";
 // Ensure packs are registered
 import "@/content-packs";
 
 // Initialize services (singleton pattern)
 const getSubscriptionService = () => {
   const repo = new SubscriptionRepo();
-  const mailAdapter = new PostmarkAdapter({
-    serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-    fromEmail: process.env.MAIL_FROM!,
-    messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-  });
+  const mailAdapter = createMailAdapter();
   const emailService = new EmailService(mailAdapter);
   return new SubscriptionService(repo, emailService);
 };
