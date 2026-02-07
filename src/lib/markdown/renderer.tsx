@@ -3,7 +3,7 @@ import * as production from "react/jsx-runtime";
 import rehypeReact from "rehype-react";
 import rehypeStringify from "rehype-stringify";
 import { remark } from "remark";
-import remarkRehype from 'remark-rehype';
+import remarkRehype from "remark-rehype";
 
 export interface MarkdownFrontmatter {
   subject?: string;
@@ -28,8 +28,8 @@ export function parseMarkdown(markdown: string): ParsedMarkdown {
   // Using unified pipeline: remark -> rehype -> stringify
   const html = String(
     remark()
-      .use(remarkRehype)
-      .use(rehypeStringify)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeStringify, { allowDangerousHtml: true })
       .processSync(parsed.content)
   );
 
@@ -57,34 +57,49 @@ export function renderMarkdownToReact(markdown: string): React.ReactElement {
   // Use unified pipeline with rehype-react
   // rehype-react v8+ requires using the production JSX runtime
   const result = remark()
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeReact, {
       ...production,
       components: {
         h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-          <h1 className="text-3xl font-bold mt-8 mb-4" {...props} />
+          <h1
+            className="mb-4 mt-8 font-serif text-3xl font-bold tracking-tight"
+            {...props}
+          />
         ),
         h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-          <h2 className="text-2xl font-semibold mt-6 mb-3" {...props} />
+          <h2
+            className="mb-3 mt-8 font-serif text-2xl font-semibold tracking-tight"
+            {...props}
+          />
         ),
         h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-          <h3 className="text-xl font-semibold mt-4 mb-2" {...props} />
+          <h3
+            className="mb-2 mt-6 text-xl font-semibold tracking-tight"
+            {...props}
+          />
         ),
         p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-          <p className="mb-4 leading-relaxed" {...props} />
+          <p className="mb-4 leading-relaxed text-foreground/80" {...props} />
         ),
         ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-          <ul className="list-disc list-inside mb-4 space-y-2" {...props} />
+          <ul
+            className="mb-5 list-disc space-y-1.5 pl-6 text-foreground/80"
+            {...props}
+          />
         ),
         ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-          <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />
+          <ol
+            className="mb-5 list-decimal space-y-1.5 pl-6 text-foreground/80"
+            {...props}
+          />
         ),
         li: (props: React.HTMLAttributes<HTMLLIElement>) => (
-          <li className="ml-4" {...props} />
+          <li className="leading-relaxed" {...props} />
         ),
         a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
           <a
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="font-medium text-primary underline underline-offset-4 decoration-primary/40 hover:decoration-primary/80 transition-colors"
             {...props}
           />
         ),
@@ -92,21 +107,43 @@ export function renderMarkdownToReact(markdown: string): React.ReactElement {
           props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>
         ) => (
           <blockquote
-            className="border-l-4 border-gray-300 pl-4 italic my-4"
+            className="my-6 border-l-3 border-primary/30 pl-4 italic text-muted-foreground"
             {...props}
           />
         ),
         code: (props: React.HTMLAttributes<HTMLElement>) => (
           <code
-            className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono"
+            className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm"
             {...props}
           />
         ),
         pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
           <pre
-            className="bg-gray-100 p-4 rounded overflow-x-auto my-4"
+            className="my-4 overflow-x-auto rounded-lg bg-muted p-4"
             {...props}
           />
+        ),
+        img: (
+          props: React.ImgHTMLAttributes<HTMLImageElement> & {
+            node?: unknown;
+          }
+        ) => {
+          const { node: _node, ...rest } = props;
+          // eslint-disable-next-line @next/next/no-img-element
+          return (
+            <img
+              className="my-5 h-auto w-full rounded-lg"
+              loading="lazy"
+              alt={rest.alt ?? ""}
+              {...rest}
+            />
+          );
+        },
+        hr: (props: React.HTMLAttributes<HTMLHRElement>) => (
+          <hr className="my-8 border-border" {...props} />
+        ),
+        strong: (props: React.HTMLAttributes<HTMLElement>) => (
+          <strong className="font-semibold text-foreground" {...props} />
         ),
       },
     })

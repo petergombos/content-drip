@@ -4,7 +4,6 @@ import { join } from "path";
 import { notFound } from "next/navigation";
 import { renderMarkdownToReact } from "@/lib/markdown/renderer";
 import { PageShell } from "@/components/page-shell";
-import { Card } from "@/components/ui/card";
 
 interface CompanionPageProps {
   params: Promise<{ packKey: string; slug: string }>;
@@ -38,15 +37,10 @@ export default async function CompanionPage({ params }: CompanionPageProps) {
   const content = renderMarkdownToReact(markdown);
 
   return (
-    <PageShell
-      title={pack.name}
-      subtitle={pack.description ?? "A companion page for this email."}
-    >
-      <Card className="p-6 md:p-10">
-        <article className="prose prose-neutral max-w-none dark:prose-invert">
-          {content}
-        </article>
-      </Card>
+    <PageShell title={pack.name} subtitle={pack.description}>
+      <article className="rounded-lg border bg-card p-6 md:p-10">
+        <div className="mx-auto max-w-none">{content}</div>
+      </article>
     </PageShell>
   );
 }

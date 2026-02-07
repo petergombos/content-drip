@@ -11,6 +11,7 @@ import { subscribeAction } from "@/domains/subscriptions/actions/subscription-ac
 import { useEffect, useMemo, useState } from "react";
 import { getAllPacks } from "@/content-packs/registry";
 import "@/content-packs"; // Register all packs
+import { Mail } from "lucide-react";
 
 const subscribeSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -82,10 +83,14 @@ export function SubscribeForm() {
 
   if (success) {
     return (
-      <div className="rounded-lg border p-6 text-center">
-        <h2 className="text-xl font-semibold mb-2">Check your email!</h2>
-        <p className="text-muted-foreground">
-          We&apos;ve sent you a confirmation email. Click the link to activate your subscription.
+      <div className="py-2 text-center">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+          <Mail className="h-5 w-5 text-primary" />
+        </div>
+        <h2 className="text-lg font-semibold">Check your inbox!</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          We&apos;ve sent a confirmation email. Click the link to start your
+          journey.
         </p>
       </div>
     );
@@ -94,7 +99,7 @@ export function SubscribeForm() {
   if (!defaultPackKey) {
     return (
       <div className="rounded-lg border p-6 text-center">
-        <h2 className="text-xl font-semibold mb-2">No content pack found</h2>
+        <h2 className="mb-2 text-xl font-semibold">No content pack found</h2>
         <p className="text-muted-foreground">
           Add a pack in <code>src/content-packs</code> and register it.
         </p>
@@ -108,7 +113,7 @@ export function SubscribeForm() {
       <input type="hidden" {...register("timezone")} />
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">Email address</Label>
         <Input
           id="email"
           type="email"
@@ -122,13 +127,14 @@ export function SubscribeForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="sendTime">Delivery time</Label>
+        <Label htmlFor="sendTime">Preferred delivery time</Label>
         <SendTimeSelector
           value={sendTime}
           onValueChange={(value) => setValue("sendTime", value)}
         />
-        <p className="text-sm text-muted-foreground">
-          Timezone: <span className="font-mono">{timezone || "Detecting…"}</span>
+        <p className="text-xs text-muted-foreground">
+          Timezone:{" "}
+          <span className="font-mono">{timezone || "Detecting…"}</span>
         </p>
         {errors.timezone && (
           <p className="text-sm text-destructive">{errors.timezone.message}</p>
@@ -141,8 +147,13 @@ export function SubscribeForm() {
         </div>
       )}
 
-      <Button type="submit" disabled={isSubmitting || !timezone} className="w-full">
-        {isSubmitting ? "Subscribing..." : "Subscribe"}
+      <Button
+        type="submit"
+        disabled={isSubmitting || !timezone}
+        className="w-full"
+        size="lg"
+      >
+        {isSubmitting ? "Subscribing…" : "Start My Free Course"}
       </Button>
     </form>
   );

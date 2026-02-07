@@ -7,29 +7,40 @@ export function ManageLinkEmail(props: { manageUrl: string }) {
       title="Manage your subscription"
       preview="Your management link (expires in 24 hours)."
     >
-      <Text style={{ margin: "0 0 14px", fontSize: 14, lineHeight: "22px" }}>
-        Use the button below to update your delivery schedule or unsubscribe.
+      <Text style={{ margin: "0 0 16px", fontSize: 16, lineHeight: "26px", color: "#44403c" }}>
+        Use the button below to update your delivery schedule, pause
+        deliveries, or unsubscribe.
       </Text>
 
-      <Section style={{ margin: "18px 0" }}>
+      <Section style={{ margin: "24px 0" }}>
         <Button
           href={props.manageUrl}
           style={{
-            background: "#111827",
-            color: "#ffffff",
-            padding: "10px 14px",
-            borderRadius: 10,
+            background: "#78350f",
+            color: "#fffbeb",
+            padding: "12px 24px",
+            borderRadius: 6,
             fontSize: 14,
+            fontWeight: 600,
             textDecoration: "none",
             display: "inline-block",
+            fontFamily: "system-ui, -apple-system, sans-serif",
           }}
         >
           Open preferences
         </Button>
       </Section>
 
-      <Text style={{ margin: 0, fontSize: 12, lineHeight: "18px", color: "#6b7280" }}>
-        This link expires in 24 hours.
+      <Text
+        style={{
+          margin: 0,
+          fontSize: 13,
+          lineHeight: "20px",
+          color: "#a8a29e",
+        }}
+      >
+        This link expires in 24 hours. If you didn&apos;t request this, you can
+        safely ignore this email.
       </Text>
     </EmailShell>
   );
