@@ -17,13 +17,13 @@ export async function GET(request: NextRequest) {
       if (result?.serverError) {
         return NextResponse.json({ error: result.serverError }, { status: 400 });
       }
-      return NextResponse.redirect(new URL("/?paused=true", request.url));
+      return NextResponse.redirect(new URL("/example?paused=true", request.url));
     } else if (action === "stop") {
       const result = await stopFromEmailAction({ subscriptionId: id, token });
       if (result?.serverError) {
         return NextResponse.json({ error: result.serverError }, { status: 400 });
       }
-      return NextResponse.redirect(new URL("/?unsubscribed=true", request.url));
+      return NextResponse.redirect(new URL("/example?unsubscribed=true", request.url));
     } else {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }

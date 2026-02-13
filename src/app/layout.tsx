@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { DM_Sans, Fraunces } from "next/font/google";
+import { DM_Sans, Fraunces, JetBrains_Mono } from "next/font/google";
 
 const fontSans = DM_Sans({
   subsets: ["latin"],
@@ -11,6 +11,11 @@ const fontSerif = Fraunces({
   subsets: ["latin"],
   variable: "--font-serif",
   axes: ["SOFT", "WONK", "opsz"],
+});
+
+const fontMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
 });
 
 export const metadata: Metadata = {
@@ -27,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fontSans.variable} ${fontSerif.variable}`}>
+    <html lang="en" className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable}`}>
       <body className="antialiased font-sans">{children}</body>
     </html>
   );

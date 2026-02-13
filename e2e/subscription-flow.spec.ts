@@ -49,7 +49,7 @@ test.describe("Happy Path: Subscribe and receive emails", () => {
     // -----------------------------------------------------------------------
     // Step 1: Visit landing page
     // -----------------------------------------------------------------------
-    await page.goto("/");
+    await page.goto("/example");
     await expect(page.getByTestId("subscribe-form").first()).toBeVisible();
 
     // -----------------------------------------------------------------------
@@ -343,8 +343,8 @@ test.describe("Pause subscription", () => {
     // Step 1: Click pause link
     // -----------------------------------------------------------------------
     await page.goto(pauseUrl!);
-    // The API should redirect to /?paused=true
-    await page.waitForURL(/paused=true/, { timeout: 10_000 });
+    // The API should redirect to /example?paused=true
+    await page.waitForURL(/\/example\?paused=true/, { timeout: 10_000 });
 
     // -----------------------------------------------------------------------
     // Step 2: Verify no emails are sent while paused
@@ -442,7 +442,7 @@ test.describe("Unsubscribe", () => {
     // Step 1: Click unsubscribe link
     // -----------------------------------------------------------------------
     await page.goto(stopUrl!);
-    await page.waitForURL(/unsubscribed=true/, { timeout: 10_000 });
+    await page.waitForURL(/\/example\?unsubscribed=true/, { timeout: 10_000 });
 
     // -----------------------------------------------------------------------
     // Step 2: Verify no emails are sent after unsubscribing
@@ -488,7 +488,7 @@ test.describe("Unsubscribe", () => {
     // Step 2: Click unsubscribe button
     // -----------------------------------------------------------------------
     await page.getByTestId("manage-unsubscribe-button").click();
-    await page.waitForURL(/unsubscribed=true/, { timeout: 10_000 });
+    await page.waitForURL(/\/example\?unsubscribed=true/, { timeout: 10_000 });
 
     // -----------------------------------------------------------------------
     // Step 3: Verify no more emails

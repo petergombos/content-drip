@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     if (result?.serverError) {
       return NextResponse.json({ error: result.serverError }, { status: 400 });
     }
-    return NextResponse.redirect(new URL("/?unsubscribed=true", request.url));
+    return NextResponse.redirect(new URL("/example?unsubscribed=true", request.url));
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "An error occurred" },

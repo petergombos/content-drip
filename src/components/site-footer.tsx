@@ -38,6 +38,22 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link
+                  href="/docs"
+                  className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
+                >
+                  Documentation
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/example"
+                  className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
+                >
+                  Example
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/manage"
                   className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
                 >

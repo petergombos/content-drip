@@ -186,7 +186,7 @@ export default async function ManageTokenPage({
               subscriptionId: subscription.id,
               token: stopToken,
             });
-            redirect("/?unsubscribed=true");
+            redirect("/example?unsubscribed=true");
           }}
         >
           <Button

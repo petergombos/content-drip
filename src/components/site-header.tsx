@@ -19,6 +19,18 @@ export function SiteHeader() {
 
         <nav className="flex items-center gap-6">
           <Link
+            href="/docs"
+            className="text-[13px] font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
+          >
+            Docs
+          </Link>
+          <Link
+            href="/example"
+            className="text-[13px] font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
+          >
+            Example
+          </Link>
+          <Link
             href="/manage"
             className="text-[13px] font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
           >
