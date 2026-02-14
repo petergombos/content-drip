@@ -100,6 +100,29 @@ export class EmailService {
   }
 
   /**
+   * Verify a database token without consuming it.
+   * Used for pages that may re-render (e.g. manage page).
+   */
+  async verifyToken(
+    tokenHash: string,
+    tokenType: TokenType
+  ): Promise<{ subscriptionId: string } | null> {
+    const tokenRecord = await db.query.tokens.findFirst({
+      where: and(
+        eq(tokens.tokenHash, tokenHash),
+        eq(tokens.tokenType, tokenType),
+        gt(tokens.expiresAt, new Date())
+      ),
+    });
+
+    if (!tokenRecord) {
+      return null;
+    }
+
+    return { subscriptionId: tokenRecord.subscriptionId };
+  }
+
+  /**
    * Verify and consume a database token
    */
   async verifyAndConsumeToken(

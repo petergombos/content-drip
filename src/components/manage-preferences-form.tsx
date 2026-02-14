@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { IntervalSelector } from "@/components/interval-selector";
@@ -33,6 +34,7 @@ export function ManagePreferencesForm({
   subscription,
   onUpdate,
 }: ManagePreferencesFormProps) {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -100,13 +102,12 @@ export function ManagePreferencesForm({
             ? result.serverError
             : "An error occurred"
         );
-      } else if (result?.data) {
-        setSuccess(true);
-        onUpdate?.();
+        setIsSubmitting(false);
+      } else {
+        router.refresh();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -126,13 +127,12 @@ export function ManagePreferencesForm({
             ? result.serverError
             : "An error occurred"
         );
-      } else if (result?.data) {
-        setSuccess(true);
-        onUpdate?.();
+        setIsSubmitting(false);
+      } else {
+        router.refresh();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -235,6 +235,47 @@ export function ManagePreferencesForm({
               data-testid="manage-resume-button"
             >
               Resume
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {subscription.status === "STOPPED" && (
+        <div
+          className="rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-4"
+          data-testid="manage-stopped-banner"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/10">
+              <svg
+                className="h-4 w-4 text-destructive"
+                viewBox="0 0 24 24"
+                fill="none"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground">
+                You're unsubscribed
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Resubscribe to continue receiving lessons where you left off.
+              </p>
+            </div>
+            <Button
+              onClick={handleResume}
+              disabled={isSubmitting}
+              size="sm"
+              data-testid="manage-resubscribe-button"
+            >
+              Resubscribe
             </Button>
           </div>
         </div>

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stopFromEmailAction } from "@/domains/subscriptions/actions/subscription-actions";
+import { EmailService } from "@/domains/mail/services/email-service";
+import { createMailAdapter } from "@/domains/mail/create-adapter";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -15,7 +17,16 @@ export async function GET(request: NextRequest) {
     if (result?.serverError) {
       return NextResponse.json({ error: result.serverError }, { status: 400 });
     }
-    return NextResponse.redirect(new URL("/example?unsubscribed=true", request.url));
+
+    // Create a manage token so the user lands on an authenticated manage page
+    const emailService = new EmailService(
+      createMailAdapter(),
+      process.env.APP_BASE_URL || "http://localhost:3000"
+    );
+    const { token: manageToken } = await emailService.createToken(id, "MANAGE");
+    return NextResponse.redirect(
+      new URL(`/manage/${manageToken}?action=unsubscribed`, request.url)
+    );
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "An error occurred" },

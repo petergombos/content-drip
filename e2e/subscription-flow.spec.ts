@@ -36,6 +36,32 @@ async function expectConfirmSuccess(page: Page) {
   });
 }
 
+/**
+ * Helper: subscribe, confirm, and return welcome email + subscription ID.
+ */
+async function setupConfirmedSubscription(
+  page: Page,
+  request: Parameters<typeof subscribeViaApi>[0],
+  emailPrefix: string
+) {
+  const email = `${emailPrefix}-${Date.now()}@e2e.test`;
+  const subscriptionId = await subscribeViaApi(request, { email });
+
+  const confirmEmail = await waitForEmail(request, {
+    to: email,
+    subject: "Confirm",
+  });
+  await page.goto(extractConfirmUrl(confirmEmail.html)!);
+  await expectConfirmSuccess(page);
+
+  const welcomeEmail = await waitForEmail(request, {
+    to: email,
+    subject: "Welcome",
+  });
+
+  return { email, subscriptionId, welcomeEmail };
+}
+
 // ===========================================================================
 // TEST 1: Happy Path - Subscribe via UI, confirm, receive all emails
 // ===========================================================================
@@ -119,15 +145,6 @@ test.describe("Happy Path: Subscribe and receive emails", () => {
     expect(manageUrl).toContain("/manage/");
     expect(stopUrl).toBeTruthy();
     expect(stopUrl).toContain("/api/stop");
-
-    // -----------------------------------------------------------------------
-    // Step 10: Trigger cron to send day-1 email
-    // -----------------------------------------------------------------------
-    // Get the subscriptionId from the subscribe API response
-    // (we need it for fast-forward; extract from the confirm URL token -> lookup)
-    // Instead, let's use the emails to find the subscription.
-    // Actually, we subscribed via UI so we don't have the ID directly.
-    // Let's subscribe via API for the cron tests.
   });
 
   test("full drip delivery via API subscribe + cron", async ({
@@ -163,7 +180,9 @@ test.describe("Happy Path: Subscribe and receive emails", () => {
       to: email,
       subject: "Welcome",
     });
+    expect(welcomeEmail).toBeTruthy();
     expect(welcomeEmail.subject).toContain("Welcome");
+    expect(welcomeEmail.tag).toBe(`welcome-${PACK_KEY}`);
 
     // -----------------------------------------------------------------------
     // Step 4: Fast-forward and trigger cron for day-1
@@ -313,41 +332,42 @@ test.describe("Email links point to correct URLs", () => {
 });
 
 // ===========================================================================
-// TEST 3: Pause Feature
+// TEST 3: Pause via email link
 // ===========================================================================
-test.describe("Pause subscription", () => {
-  test("pause via email link stops delivery, resume via manage page restarts it", async ({
+test.describe("Pause subscription via email link", () => {
+  test("pause redirects to manage page with notification and stops delivery", async ({
     page,
     request,
   }) => {
-    const email = `pause-${Date.now()}@e2e.test`;
+    const { email, subscriptionId, welcomeEmail } =
+      await setupConfirmedSubscription(page, request, "pause-email");
 
-    // Setup: subscribe and confirm
-    const subscriptionId = await subscribeViaApi(request, { email });
-    const confirmEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Confirm",
-    });
-    await page.goto(extractConfirmUrl(confirmEmail.html)!);
-    await expectConfirmSuccess(page);
-
-    // Get welcome email for pause link
-    const welcomeEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Welcome",
-    });
     const pauseUrl = extractPauseUrl(welcomeEmail.html);
     expect(pauseUrl).toBeTruthy();
 
     // -----------------------------------------------------------------------
-    // Step 1: Click pause link
+    // Step 1: Click pause link — should redirect to manage page
     // -----------------------------------------------------------------------
     await page.goto(pauseUrl!);
-    // The API should redirect to /example?paused=true
-    await page.waitForURL(/\/example\?paused=true/, { timeout: 10_000 });
+    await page.waitForURL(/\/manage\/[a-f0-9]+\?action=paused/, {
+      timeout: 10_000,
+    });
 
     // -----------------------------------------------------------------------
-    // Step 2: Verify no emails are sent while paused
+    // Step 2: Manage page should show pause notification
+    // -----------------------------------------------------------------------
+    await expect(page.getByTestId("action-notification-paused")).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByTestId("action-notification-undo")).toBeVisible();
+
+    // Status badge should show "Paused"
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /paused/i
+    );
+
+    // -----------------------------------------------------------------------
+    // Step 3: Verify no emails are sent while paused
     // -----------------------------------------------------------------------
     const emailCountBefore = (await getEmails(request, { to: email })).length;
 
@@ -355,57 +375,49 @@ test.describe("Pause subscription", () => {
     await triggerCron(request);
 
     const emailCountAfter = (await getEmails(request, { to: email })).length;
-    // No new emails should have been sent (paused)
     expect(emailCountAfter).toBe(emailCountBefore);
+  });
 
-    // -----------------------------------------------------------------------
-    // Step 3: Request manage link to resume
-    // -----------------------------------------------------------------------
-    await page.goto("/manage");
-    await expect(page.getByTestId("manage-request-form")).toBeVisible();
+  test("resume via notification after pause restores active state", async ({
+    page,
+    request,
+  }) => {
+    const { email, subscriptionId, welcomeEmail } =
+      await setupConfirmedSubscription(page, request, "pause-resume");
 
-    await page.getByTestId("manage-request-email-input").fill(email);
-    await page.getByTestId("manage-request-submit").click();
+    const pauseUrl = extractPauseUrl(welcomeEmail.html);
 
-    await expect(page.getByTestId("manage-request-success")).toBeVisible({
+    // Pause via email link
+    await page.goto(pauseUrl!);
+    await page.waitForURL(/\/manage\/[a-f0-9]+\?action=paused/, {
       timeout: 10_000,
     });
-
-    // Get the manage link email
-    const manageLinkEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Manage your subscription",
-    });
-    const manageUrl = extractManageUrl(manageLinkEmail.html);
-    expect(manageUrl).toBeTruthy();
-
-    // -----------------------------------------------------------------------
-    // Step 4: Visit manage page and resume
-    // -----------------------------------------------------------------------
-    await page.goto(manageUrl!);
-    await expect(page.getByTestId("manage-overview-card")).toBeVisible({
-      timeout: 10_000,
-    });
-
-    // Should show "paused" status
-    await expect(page.getByTestId("manage-paused-banner")).toBeVisible();
-
-    // Click resume button
-    await page.getByTestId("manage-resume-button").click();
-
-    // Should show success
-    await expect(page.getByTestId("manage-preferences-success")).toBeVisible({
+    await expect(page.getByTestId("action-notification-paused")).toBeVisible({
       timeout: 10_000,
     });
 
     // -----------------------------------------------------------------------
-    // Step 5: Verify emails resume after unpausing
+    // Click "Resume delivery" in the notification
+    // -----------------------------------------------------------------------
+    await page.getByTestId("action-notification-undo").click();
+
+    // Should show "resumed" notification
+    await expect(page.getByTestId("action-notification-resumed")).toBeVisible({
+      timeout: 10_000,
+    });
+
+    // Status badge should show "Active"
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /active/i
+    );
+
+    // -----------------------------------------------------------------------
+    // Verify emails resume after unpausing
     // -----------------------------------------------------------------------
     await fastForward(request, subscriptionId);
     const cronResult = await triggerCron(request);
     expect(cronResult.sent).toBeGreaterThanOrEqual(1);
 
-    // Day-1 email should now be sent
     const day1Email = await waitForEmail(request, {
       to: email,
       subject: "Day 1",
@@ -415,37 +427,103 @@ test.describe("Pause subscription", () => {
 });
 
 // ===========================================================================
-// TEST 4: Unsubscribe Feature
+// TEST 4: Pause via manage page
 // ===========================================================================
-test.describe("Unsubscribe", () => {
-  test("unsubscribe via email stop link", async ({ page, request }) => {
-    const email = `unsub-${Date.now()}@e2e.test`;
+test.describe("Pause subscription via manage page", () => {
+  test("pause button refreshes page showing paused state with resume option", async ({
+    page,
+    request,
+  }) => {
+    const { email, welcomeEmail } = await setupConfirmedSubscription(
+      page,
+      request,
+      "pause-manage"
+    );
 
-    // Setup: subscribe and confirm
-    const subscriptionId = await subscribeViaApi(request, { email });
-    const confirmEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Confirm",
-    });
-    await page.goto(extractConfirmUrl(confirmEmail.html)!);
-    await expectConfirmSuccess(page);
+    const manageUrl = extractManageUrl(welcomeEmail.html);
+    expect(manageUrl).toBeTruthy();
 
-    // Get welcome email for unsubscribe link
-    const welcomeEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Welcome",
+    // Visit manage page
+    await page.goto(manageUrl!);
+    await expect(page.getByTestId("manage-overview-card")).toBeVisible({
+      timeout: 10_000,
     });
+
+    // Should show active state with pause button
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /active/i
+    );
+    await expect(page.getByTestId("manage-pause-button")).toBeVisible();
+
+    // -----------------------------------------------------------------------
+    // Click pause
+    // -----------------------------------------------------------------------
+    await page.getByTestId("manage-pause-button").click();
+
+    // Page should refresh and show paused state
+    await expect(page.getByTestId("manage-paused-banner")).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /paused/i
+    );
+    await expect(page.getByTestId("manage-resume-button")).toBeVisible();
+
+    // -----------------------------------------------------------------------
+    // Click resume
+    // -----------------------------------------------------------------------
+    await page.getByTestId("manage-resume-button").click();
+
+    // Page should refresh and show active state
+    await expect(page.getByTestId("manage-active-banner")).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /active/i
+    );
+  });
+});
+
+// ===========================================================================
+// TEST 5: Unsubscribe via email link
+// ===========================================================================
+test.describe("Unsubscribe via email link", () => {
+  test("unsubscribe redirects to manage page with notification and stops delivery", async ({
+    page,
+    request,
+  }) => {
+    const { email, subscriptionId, welcomeEmail } =
+      await setupConfirmedSubscription(page, request, "unsub-email");
+
     const stopUrl = extractStopUrl(welcomeEmail.html);
     expect(stopUrl).toBeTruthy();
 
     // -----------------------------------------------------------------------
-    // Step 1: Click unsubscribe link
+    // Step 1: Click unsubscribe link — should redirect to manage page
     // -----------------------------------------------------------------------
     await page.goto(stopUrl!);
-    await page.waitForURL(/\/example\?unsubscribed=true/, { timeout: 10_000 });
+    await page.waitForURL(/\/manage\/[a-f0-9]+\?action=unsubscribed/, {
+      timeout: 10_000,
+    });
 
     // -----------------------------------------------------------------------
-    // Step 2: Verify no emails are sent after unsubscribing
+    // Step 2: Manage page should show unsubscribed notification
+    // -----------------------------------------------------------------------
+    await expect(
+      page.getByTestId("action-notification-unsubscribed")
+    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByTestId("action-notification-undo")).toBeVisible();
+
+    // Status badge should show "Unsubscribed"
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /unsubscribed/i
+    );
+
+    // Danger zone (unsubscribe card) should be hidden
+    await expect(page.getByTestId("manage-danger-zone")).not.toBeVisible();
+
+    // -----------------------------------------------------------------------
+    // Step 3: Verify no emails are sent after unsubscribing
     // -----------------------------------------------------------------------
     const emailCountBefore = (await getEmails(request, { to: email })).length;
 
@@ -456,42 +534,95 @@ test.describe("Unsubscribe", () => {
     expect(emailCountAfter).toBe(emailCountBefore);
   });
 
-  test("unsubscribe via manage page", async ({ page, request }) => {
-    const email = `unsub-manage-${Date.now()}@e2e.test`;
+  test("resubscribe via notification after unsubscribe restores active state", async ({
+    page,
+    request,
+  }) => {
+    const { email, subscriptionId, welcomeEmail } =
+      await setupConfirmedSubscription(page, request, "resub");
 
-    // Setup: subscribe and confirm
-    const subscriptionId = await subscribeViaApi(request, { email });
-    const confirmEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Confirm",
-    });
-    await page.goto(extractConfirmUrl(confirmEmail.html)!);
-    await expectConfirmSuccess(page);
+    const stopUrl = extractStopUrl(welcomeEmail.html);
 
-    // Get welcome email for manage link
-    const welcomeEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Welcome",
+    // Unsubscribe via email link
+    await page.goto(stopUrl!);
+    await page.waitForURL(/\/manage\/[a-f0-9]+\?action=unsubscribed/, {
+      timeout: 10_000,
     });
+    await expect(
+      page.getByTestId("action-notification-unsubscribed")
+    ).toBeVisible({ timeout: 10_000 });
+
+    // -----------------------------------------------------------------------
+    // Click "Resubscribe" in the notification
+    // -----------------------------------------------------------------------
+    await page.getByTestId("action-notification-undo").click();
+
+    // Should show "resumed" notification
+    await expect(page.getByTestId("action-notification-resumed")).toBeVisible({
+      timeout: 10_000,
+    });
+
+    // Status badge should show "Active"
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /active/i
+    );
+
+    // Danger zone should be visible again
+    await expect(page.getByTestId("manage-danger-zone")).toBeVisible();
+
+    // -----------------------------------------------------------------------
+    // Verify emails resume after resubscribing
+    // -----------------------------------------------------------------------
+    await fastForward(request, subscriptionId);
+    const cronResult = await triggerCron(request);
+    expect(cronResult.sent).toBeGreaterThanOrEqual(1);
+
+    const day1Email = await waitForEmail(request, {
+      to: email,
+      subject: "Day 1",
+    });
+    expect(day1Email).toBeTruthy();
+  });
+});
+
+// ===========================================================================
+// TEST 6: Unsubscribe via manage page
+// ===========================================================================
+test.describe("Unsubscribe via manage page", () => {
+  test("unsubscribe button redirects to manage page with notification", async ({
+    page,
+    request,
+  }) => {
+    const { email, subscriptionId, welcomeEmail } =
+      await setupConfirmedSubscription(page, request, "unsub-manage");
+
     const manageUrl = extractManageUrl(welcomeEmail.html);
     expect(manageUrl).toBeTruthy();
 
-    // -----------------------------------------------------------------------
-    // Step 1: Visit manage page
-    // -----------------------------------------------------------------------
+    // Visit manage page
     await page.goto(manageUrl!);
     await expect(page.getByTestId("manage-overview-card")).toBeVisible({
       timeout: 10_000,
     });
 
     // -----------------------------------------------------------------------
-    // Step 2: Click unsubscribe button
+    // Click unsubscribe button
     // -----------------------------------------------------------------------
     await page.getByTestId("manage-unsubscribe-button").click();
-    await page.waitForURL(/\/example\?unsubscribed=true/, { timeout: 10_000 });
+
+    // Should redirect to manage page with unsubscribed notification
+    await page.waitForURL(/\/manage\/[a-f0-9]+\?action=unsubscribed/, {
+      timeout: 10_000,
+    });
+    await expect(
+      page.getByTestId("action-notification-unsubscribed")
+    ).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /unsubscribed/i
+    );
 
     // -----------------------------------------------------------------------
-    // Step 3: Verify no more emails
+    // Verify no more emails
     // -----------------------------------------------------------------------
     const emailCountBefore = (await getEmails(request, { to: email })).length;
 
@@ -501,29 +632,78 @@ test.describe("Unsubscribe", () => {
     const emailCountAfter = (await getEmails(request, { to: email })).length;
     expect(emailCountAfter).toBe(emailCountBefore);
   });
+
+  test("resubscribe from manage page when already unsubscribed", async ({
+    page,
+    request,
+  }) => {
+    const { email, subscriptionId, welcomeEmail } =
+      await setupConfirmedSubscription(page, request, "resub-manage");
+
+    // Unsubscribe via stop link
+    const stopUrl = extractStopUrl(welcomeEmail.html);
+    await page.goto(stopUrl!);
+    await page.waitForURL(/\/manage\/[a-f0-9]+\?action=unsubscribed/, {
+      timeout: 10_000,
+    });
+
+    // Now request a fresh manage link (simulates returning later)
+    await page.goto("/manage");
+    await page.getByTestId("manage-request-email-input").fill(email);
+    await page.getByTestId("manage-request-submit").click();
+    await expect(page.getByTestId("manage-request-success")).toBeVisible({
+      timeout: 10_000,
+    });
+
+    const manageLinkEmail = await waitForEmail(request, {
+      to: email,
+      subject: "Manage your subscription",
+    });
+    const manageUrl = extractManageUrl(manageLinkEmail.html);
+
+    // Visit manage page — should show stopped banner with resubscribe button
+    await page.goto(manageUrl!);
+    await expect(page.getByTestId("manage-overview-card")).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /unsubscribed/i
+    );
+    await expect(page.getByTestId("manage-stopped-banner")).toBeVisible();
+
+    // -----------------------------------------------------------------------
+    // Click resubscribe
+    // -----------------------------------------------------------------------
+    await page.getByTestId("manage-resubscribe-button").click();
+
+    // Page should refresh showing active state
+    await expect(page.getByTestId("manage-active-banner")).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByTestId("manage-status-badge")).toContainText(
+      /active/i
+    );
+
+    // Verify emails resume
+    await fastForward(request, subscriptionId);
+    const cronResult = await triggerCron(request);
+    expect(cronResult.sent).toBeGreaterThanOrEqual(1);
+  });
 });
 
 // ===========================================================================
-// TEST 5: Manage Feature
+// TEST 7: Manage Feature
 // ===========================================================================
 test.describe("Manage subscription", () => {
   test("request manage link, view preferences, update settings", async ({
     page,
     request,
   }) => {
-    const email = `manage-${Date.now()}@e2e.test`;
-
-    // Setup: subscribe and confirm
-    const subscriptionId = await subscribeViaApi(request, { email });
-    const confirmEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Confirm",
-    });
-    await page.goto(extractConfirmUrl(confirmEmail.html)!);
-    await expectConfirmSuccess(page);
-
-    // Wait for welcome email to be sent
-    await waitForEmail(request, { to: email, subject: "Welcome" });
+    const { email } = await setupConfirmedSubscription(
+      page,
+      request,
+      "manage"
+    );
 
     // -----------------------------------------------------------------------
     // Step 1: Go to /manage page
@@ -586,21 +766,15 @@ test.describe("Manage subscription", () => {
     });
   });
 
-  test("manage link expires after use (single-use token)", async ({
+  test("manage link can be revisited (not single-use)", async ({
     page,
     request,
   }) => {
-    const email = `manage-expire-${Date.now()}@e2e.test`;
-
-    // Setup: subscribe and confirm
-    await subscribeViaApi(request, { email });
-    const confirmEmail = await waitForEmail(request, {
-      to: email,
-      subject: "Confirm",
-    });
-    await page.goto(extractConfirmUrl(confirmEmail.html)!);
-    await expectConfirmSuccess(page);
-    await waitForEmail(request, { to: email, subject: "Welcome" });
+    const { email } = await setupConfirmedSubscription(
+      page,
+      request,
+      "manage-reuse"
+    );
 
     // Request manage link
     await page.goto("/manage");
@@ -622,16 +796,16 @@ test.describe("Manage subscription", () => {
       timeout: 10_000,
     });
 
-    // Second visit should show expired (token is single-use)
+    // Second visit should also work (token is reusable until expiry)
     await page.goto(manageUrl!);
-    await expect(page.getByTestId("manage-link-expired")).toBeVisible({
+    await expect(page.getByTestId("manage-overview-card")).toBeVisible({
       timeout: 10_000,
     });
   });
 });
 
 // ===========================================================================
-// TEST 6: Email delivery completeness
+// TEST 8: Email delivery completeness
 // ===========================================================================
 test.describe("Email delivery completeness", () => {
   test("all emails in the pack are delivered in order", async ({

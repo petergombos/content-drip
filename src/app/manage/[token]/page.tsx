@@ -6,13 +6,14 @@ import { createHash } from "crypto";
 import { ManagePreferencesForm } from "@/components/manage-preferences-form";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { stopFromEmailAction } from "@/domains/subscriptions/actions/subscription-actions";
 import { PageShell } from "@/components/page-shell";
 import { getPackByKey } from "@/content-packs/registry";
+import { ActionNotification } from "@/components/action-notification";
 import "@/content-packs";
 
 interface ManageTokenPageProps {
   params: Promise<{ token: string }>;
+  searchParams: Promise<{ action?: string }>;
 }
 
 async function getSubscriptionFromToken(token: string) {
@@ -22,10 +23,7 @@ async function getSubscriptionFromToken(token: string) {
     process.env.APP_BASE_URL || "http://localhost:3000"
   );
 
-  const result = await emailService.verifyAndConsumeToken(
-    tokenHash,
-    "MANAGE"
-  );
+  const result = await emailService.verifyToken(tokenHash, "MANAGE");
 
   if (!result) {
     return null;
@@ -51,8 +49,10 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 
 export default async function ManageTokenPage({
   params,
+  searchParams,
 }: ManageTokenPageProps) {
   const { token } = await params;
+  const { action } = await searchParams;
 
   const subscription = await getSubscriptionFromToken(token);
 
@@ -95,6 +95,14 @@ export default async function ManageTokenPage({
       subtitle="Manage your delivery preferences, pause, or unsubscribe."
       warm
     >
+      {/* ── Action notification ── */}
+      {action && (
+        <ActionNotification
+          action={action}
+          subscription={subscription}
+        />
+      )}
+
       {/* ── Overview card ── */}
       <Card
         className="animate-fade-in-up delay-2 p-6 md:p-8 space-y-5"
@@ -156,50 +164,58 @@ export default async function ManageTokenPage({
           </p>
         </div>
 
-        <ManagePreferencesForm subscription={subscription} />
+        <ManagePreferencesForm
+          key={subscription.status}
+          subscription={subscription}
+        />
       </Card>
 
       {/* ── Danger zone ── */}
-      <Card
-        className="animate-fade-in-up delay-4 mt-6 border-destructive/20 p-6 md:p-8"
-        data-testid="manage-danger-zone"
-      >
-        <p className="text-xs font-medium uppercase tracking-widest text-destructive/60">
-          Unsubscribe
-        </p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Stop all future emails from this course. You can always re-subscribe
-          later to start fresh.
-        </p>
-        <form
-          action={async () => {
-            "use server";
-            const emailService = new EmailService(
-              createMailAdapter(),
-              process.env.APP_BASE_URL || "http://localhost:3000"
-            );
-            const stopToken = emailService.createSignedToken(
-              subscription.id,
-              "STOP"
-            );
-            await stopFromEmailAction({
-              subscriptionId: subscription.id,
-              token: stopToken,
-            });
-            redirect("/example?unsubscribed=true");
-          }}
+      {subscription.status !== "STOPPED" && (
+        <Card
+          className="animate-fade-in-up delay-4 mt-6 border-destructive/20 p-6 md:p-8"
+          data-testid="manage-danger-zone"
         >
-          <Button
-            type="submit"
-            variant="destructive"
-            className="mt-4"
-            size="sm"
-            data-testid="manage-unsubscribe-button"
+          <p className="text-xs font-medium uppercase tracking-widest text-destructive/60">
+            Unsubscribe
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Stop all future emails from this course. You can always re-subscribe
+            later to start fresh.
+          </p>
+          <form
+            action={async () => {
+              "use server";
+              const emailService = new EmailService(
+                createMailAdapter(),
+                process.env.APP_BASE_URL || "http://localhost:3000"
+              );
+              const stopToken = emailService.createSignedToken(
+                subscription.id,
+                "STOP"
+              );
+              const { stopFromEmailAction } = await import(
+                "@/domains/subscriptions/actions/subscription-actions"
+              );
+              await stopFromEmailAction({
+                subscriptionId: subscription.id,
+                token: stopToken,
+              });
+              redirect(`/manage/${token}?action=unsubscribed`);
+            }}
           >
-            Unsubscribe from course
-          </Button>
-        </form>
-      </Card>
+            <Button
+              type="submit"
+              variant="destructive"
+              className="mt-4"
+              size="sm"
+              data-testid="manage-unsubscribe-button"
+            >
+              Unsubscribe from course
+            </Button>
+          </form>
+        </Card>
+      )}
     </PageShell>
   );
 }

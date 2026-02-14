@@ -3,6 +3,7 @@
 import { actionClient } from "@/lib/actions/client";
 import { z } from "zod";
 import { createHash } from "crypto";
+import { revalidatePath } from "next/cache";
 import { SubscriptionService } from "@/domains/subscriptions/services/subscription-service";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { EmailService } from "@/domains/mail/services/email-service";
@@ -75,6 +76,7 @@ export const updateSubscriptionAction = actionClient
       timezone: parsedInput.timezone,
       cronExpression: parsedInput.cronExpression,
     });
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
 
@@ -91,6 +93,7 @@ export const pauseFromEmailAction = actionClient
       parsedInput.subscriptionId,
       parsedInput.token
     );
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
 
@@ -104,6 +107,7 @@ export const stopFromEmailAction = actionClient
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.stopFromEmail(parsedInput.subscriptionId, parsedInput.token);
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
 
@@ -116,6 +120,7 @@ export const pauseSubscriptionAction = actionClient
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.pauseSubscription(parsedInput.subscriptionId);
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
 
@@ -128,5 +133,7 @@ export const resumeSubscriptionAction = actionClient
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.resumeSubscription(parsedInput.subscriptionId);
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
+
