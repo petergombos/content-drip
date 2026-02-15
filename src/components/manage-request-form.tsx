@@ -6,21 +6,11 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { requestManageLinkAction } from "@/domains/subscriptions/actions/subscription-actions";
 import { useState } from "react";
-import { getAllPacks } from "@/content-packs/registry";
-import "@/content-packs"; // Register all packs
 
 const requestManageLinkSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  packKey: z.string().min(1, "Please select a content pack"),
 });
 
 type RequestManageLinkFormData = z.infer<typeof requestManageLinkSchema>;
@@ -30,19 +20,12 @@ export function ManageRequestForm() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const packs = getAllPacks();
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-    setValue,
   } = useForm<RequestManageLinkFormData>({
     resolver: zodResolver(requestManageLinkSchema),
-    defaultValues: {
-      packKey: packs[0]?.key || "",
-    },
   });
 
   const onSubmit = async (data: RequestManageLinkFormData) => {
@@ -52,7 +35,6 @@ export function ManageRequestForm() {
     try {
       const result = await requestManageLinkAction({
         email: data.email,
-        packKey: data.packKey,
       });
 
       if (result?.serverError) {
@@ -127,34 +109,6 @@ export function ManageRequestForm() {
           <p className="text-xs text-destructive">{errors.email.message}</p>
         )}
       </div>
-
-      {packs.length > 1 && (
-        <div className="space-y-1.5">
-          <Label htmlFor="packKey" className="text-xs font-medium">
-            Course
-          </Label>
-          <Select
-            value={watch("packKey")}
-            onValueChange={(value) => setValue("packKey", value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a course" />
-            </SelectTrigger>
-            <SelectContent>
-              {packs.map((pack) => (
-                <SelectItem key={pack.key} value={pack.key}>
-                  {pack.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.packKey && (
-            <p className="text-xs text-destructive">
-              {errors.packKey.message}
-            </p>
-          )}
-        </div>
-      )}
 
       {error && (
         <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive">

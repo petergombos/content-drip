@@ -51,14 +51,13 @@ export const confirmSubscriptionAction = actionClient
 
 const requestManageLinkSchema = z.object({
   email: z.string().email(),
-  packKey: z.string(),
 });
 
 export const requestManageLinkAction = actionClient
   .schema(requestManageLinkSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
-    await service.requestManageLink(parsedInput.email, parsedInput.packKey);
+    await service.requestManageLink(parsedInput.email);
     return { success: true };
   });
 

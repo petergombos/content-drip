@@ -3,20 +3,19 @@ import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo
 import { EmailService } from "@/domains/mail/services/email-service";
 import { createMailAdapter } from "@/domains/mail/create-adapter";
 import { createHash } from "crypto";
-import { ManagePreferencesForm } from "@/components/manage-preferences-form";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/page-shell";
 import { getPackByKey } from "@/content-packs/registry";
-import { ActionNotification } from "@/components/action-notification";
+import { SubscriptionCard } from "@/components/subscription-card";
 import "@/content-packs";
 
 interface ManageTokenPageProps {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ action?: string }>;
+  searchParams: Promise<{ action?: string; sid?: string }>;
 }
 
-async function getSubscriptionFromToken(token: string) {
+async function getSubscriptionsFromToken(token: string) {
   const tokenHash = createHash("sha256").update(token).digest("hex");
   const emailService = new EmailService(
     createMailAdapter(),
@@ -30,33 +29,29 @@ async function getSubscriptionFromToken(token: string) {
   }
 
   const repo = new SubscriptionRepo();
-  return repo.findById(result.subscriptionId);
-}
 
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  ACTIVE: { label: "Active", color: "bg-olive/10 text-olive" },
-  PAUSED: { label: "Paused", color: "bg-primary/10 text-primary" },
-  PENDING_CONFIRM: {
-    label: "Pending confirmation",
-    color: "bg-muted text-muted-foreground",
-  },
-  STOPPED: {
-    label: "Unsubscribed",
-    color: "bg-destructive/10 text-destructive",
-  },
-  COMPLETED: { label: "Completed", color: "bg-olive/10 text-olive" },
-};
+  // Find the anchor subscription to get the email
+  const anchor = await repo.findById(result.subscriptionId);
+  if (!anchor) {
+    return null;
+  }
+
+  // Load ALL subscriptions for this email
+  const allSubscriptions = await repo.findByEmail(anchor.email);
+
+  return { email: anchor.email, subscriptions: allSubscriptions };
+}
 
 export default async function ManageTokenPage({
   params,
   searchParams,
 }: ManageTokenPageProps) {
   const { token } = await params;
-  const { action } = await searchParams;
+  const { action, sid } = await searchParams;
 
-  const subscription = await getSubscriptionFromToken(token);
+  const data = await getSubscriptionsFromToken(token);
 
-  if (!subscription) {
+  if (!data) {
     return (
       <PageShell
         title="Link Expired"
@@ -78,144 +73,76 @@ export default async function ManageTokenPage({
     );
   }
 
-  const pack = getPackByKey(subscription.packKey);
-  const packName = pack?.name ?? subscription.packKey;
-  const totalSteps = pack?.steps.length ?? 0;
-  const currentStep = subscription.currentStepIndex;
-  const progressPct = totalSteps > 0 ? (currentStep / totalSteps) * 100 : 0;
+  const { email, subscriptions } = data;
 
-  const statusInfo = STATUS_LABELS[subscription.status] ?? {
-    label: subscription.status,
-    color: "bg-muted text-muted-foreground",
+  // Determine which subscription is targeted by the action
+  const targetedSid = sid || undefined;
+
+  // Sort: active first, then paused, then others
+  const statusOrder: Record<string, number> = {
+    ACTIVE: 0,
+    PAUSED: 1,
+    PENDING_CONFIRM: 2,
+    STOPPED: 3,
+    COMPLETED: 4,
   };
+  const sorted = [...subscriptions].sort(
+    (a, b) => (statusOrder[a.status] ?? 5) - (statusOrder[b.status] ?? 5)
+  );
 
   return (
     <PageShell
-      title="Your Subscription"
+      title="Your Subscriptions"
       subtitle="Manage your delivery preferences, pause, or unsubscribe."
       warm
     >
-      {/* ── Action notification ── */}
-      {action && (
-        <ActionNotification
-          action={action}
-          subscription={subscription}
-        />
-      )}
+      <div className="space-y-6">
+        <p className="text-sm text-muted-foreground" data-testid="manage-email">{email}</p>
+        {sorted.map((subscription) => {
+          const pack = getPackByKey(subscription.packKey);
+          const packName = pack?.name ?? subscription.packKey;
+          const totalSteps = pack?.steps.length ?? 0;
+          const isTargeted = targetedSid === subscription.id;
+          // Default expand: targeted subscription, or active/paused ones when there's only one
+          const defaultExpanded =
+            isTargeted ||
+            (sorted.length === 1 &&
+              (subscription.status === "ACTIVE" ||
+                subscription.status === "PAUSED" ||
+                subscription.status === "STOPPED"));
 
-      {/* ── Overview card ── */}
-      <Card
-        className="animate-fade-in-up delay-2 p-6 md:p-8 space-y-5"
-        data-testid="manage-overview-card"
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
-              Course
-            </p>
-            <h2
-              className="mt-1 font-serif text-lg font-semibold text-foreground"
-              data-testid="manage-pack-name"
-            >
-              {packName}
-            </h2>
-            <p
-              className="mt-0.5 text-sm text-muted-foreground"
-              data-testid="manage-email"
-            >
-              {subscription.email}
-            </p>
-          </div>
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusInfo.color}`}
-            data-testid="manage-status-badge"
-          >
-            {statusInfo.label}
-          </span>
-        </div>
-
-        {/* Progress */}
-        {totalSteps > 0 && (
-          <div>
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Progress</span>
-              <span>
-                {currentStep} of {totalSteps} lessons
-              </span>
-            </div>
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-primary transition-all duration-500"
-                style={{ width: `${Math.max(progressPct, 2)}%` }}
-              />
-            </div>
-          </div>
-        )}
-      </Card>
-
-      {/* ── Delivery preferences ── */}
-      <Card className="animate-fade-in-up delay-3 mt-6 p-6 md:p-8 space-y-5">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
-            Delivery Preferences
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Adjust when and how often you receive lessons.
-          </p>
-        </div>
-
-        <ManagePreferencesForm
-          key={subscription.status}
-          subscription={subscription}
-        />
-      </Card>
-
-      {/* ── Danger zone ── */}
-      {subscription.status !== "STOPPED" && (
-        <Card
-          className="animate-fade-in-up delay-4 mt-6 border-destructive/20 p-6 md:p-8"
-          data-testid="manage-danger-zone"
-        >
-          <p className="text-xs font-medium uppercase tracking-widest text-destructive/60">
-            Unsubscribe
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Stop all future emails from this course. You can always re-subscribe
-            later to start fresh.
-          </p>
-          <form
-            action={async () => {
-              "use server";
-              const emailService = new EmailService(
-                createMailAdapter(),
-                process.env.APP_BASE_URL || "http://localhost:3000"
-              );
-              const stopToken = emailService.createSignedToken(
-                subscription.id,
-                "STOP"
-              );
-              const { stopFromEmailAction } = await import(
-                "@/domains/subscriptions/actions/subscription-actions"
-              );
-              await stopFromEmailAction({
-                subscriptionId: subscription.id,
-                token: stopToken,
-              });
-              redirect(`/manage/${token}?action=unsubscribed`);
-            }}
-          >
-            <Button
-              type="submit"
-              variant="destructive"
-              className="mt-4"
-              size="sm"
-              data-testid="manage-unsubscribe-button"
-            >
-              Unsubscribe from course
-            </Button>
-          </form>
-        </Card>
-      )}
+          return (
+            <SubscriptionCard
+              key={subscription.id}
+              subscription={subscription}
+              packName={packName}
+              totalSteps={totalSteps}
+              token={token}
+              action={isTargeted ? action : undefined}
+              defaultExpanded={defaultExpanded}
+              onUnsubscribe={async (subscriptionId: string) => {
+                "use server";
+                const emailService = new EmailService(
+                  createMailAdapter(),
+                  process.env.APP_BASE_URL || "http://localhost:3000"
+                );
+                const stopToken = emailService.createSignedToken(
+                  subscriptionId,
+                  "STOP"
+                );
+                const { stopFromEmailAction } = await import(
+                  "@/domains/subscriptions/actions/subscription-actions"
+                );
+                await stopFromEmailAction({
+                  subscriptionId,
+                  token: stopToken,
+                });
+                redirect(`/manage/${token}?action=unsubscribed&sid=${subscriptionId}`);
+              }}
+            />
+          );
+        })}
+      </div>
     </PageShell>
   );
 }

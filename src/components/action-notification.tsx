@@ -9,6 +9,7 @@ import type { Subscription } from "@/domains/subscriptions/model/types";
 interface ActionNotificationProps {
   action: string;
   subscription: Subscription;
+  packName?: string;
 }
 
 const NOTIFICATIONS: Record<
@@ -61,6 +62,7 @@ const NOTIFICATIONS: Record<
 export function ActionNotification({
   action,
   subscription,
+  packName,
 }: ActionNotificationProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -148,7 +150,7 @@ export function ActionNotification({
         </div>
         <div className="flex-1">
           <p className="text-sm font-medium text-foreground">
-            {notification.title}
+            {packName ? `${packName} — ${notification.title}` : notification.title}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {notification.description}

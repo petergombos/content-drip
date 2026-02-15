@@ -20,13 +20,17 @@ const subscribeSchema = z.object({
 
 type SubscribeFormData = z.infer<typeof subscribeSchema>;
 
-export function SubscribeForm() {
+interface SubscribeFormProps {
+  packKey?: string;
+}
+
+export function SubscribeForm({ packKey }: SubscribeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const packs = getAllPacks();
-  const defaultPackKey = useMemo(() => packs[0]?.key || "", [packs]);
+  const defaultPackKey = useMemo(() => packKey || packs[0]?.key || "", [packKey, packs]);
 
   const {
     register,

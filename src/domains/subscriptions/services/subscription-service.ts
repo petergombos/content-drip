@@ -158,24 +158,23 @@ export class SubscriptionService {
   }
 
   /**
-   * Request manage link
+   * Request manage link — uses email only (any subscription for the email works
+   * as anchor; the manage page loads all subscriptions for that email).
    */
-  async requestManageLink(
-    email: string,
-    packKey: string
-  ): Promise<{ manageToken: string }> {
-    const subscription = await this.repo.findByEmailAndPack(email, packKey);
-    if (!subscription) {
+  async requestManageLink(email: string): Promise<{ manageToken: string }> {
+    const subscriptions = await this.repo.findByEmail(email);
+    if (subscriptions.length === 0) {
       throw new Error("Subscription not found");
     }
 
+    // Pick the first subscription as anchor — the manage page resolves all by email
     const { token } = await this.emailService.createToken(
-      subscription.id,
+      subscriptions[0].id,
       TokenType.MANAGE
     );
 
     const manageUrl = this.emailService.buildManageUrl(token);
-    await this.sendManageLinkEmail(subscription.email, manageUrl);
+    await this.sendManageLinkEmail(email, manageUrl);
 
     return { manageToken: token };
   }

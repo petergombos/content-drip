@@ -5,7 +5,7 @@ import { PageShell } from "@/components/page-shell";
 export default function ManagePage() {
   return (
     <PageShell
-      title="Manage Your Subscription"
+      title="Manage Your Subscriptions"
       subtitle="Enter your email below and we'll send you a secure one-time link to manage your delivery preferences."
       warm
     >

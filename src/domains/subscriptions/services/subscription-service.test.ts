@@ -65,6 +65,7 @@ function makeRepo(overrides: Partial<Record<string, unknown>> = {}) {
     ),
     findById: vi.fn(async () => makeSub()),
     findByEmailAndPack: vi.fn(async () => null),
+    findByEmail: vi.fn(async () => []),
     update: vi.fn(async () => makeSub()),
     logSend: vi.fn(async () => {}),
     ...overrides,
@@ -406,11 +407,11 @@ describe("SubscriptionService", () => {
   // ==========================================
   describe("requestManageLink", () => {
     it("creates a manage token and sends email", async () => {
-      (repo.findByEmailAndPack as ReturnType<typeof vi.fn>).mockResolvedValue(
-        makeSub()
-      );
+      (repo.findByEmail as ReturnType<typeof vi.fn>).mockResolvedValue([
+        makeSub(),
+      ]);
 
-      const result = await service.requestManageLink("test@example.com", "my-pack");
+      const result = await service.requestManageLink("test@example.com");
 
       expect(emailService.createToken).toHaveBeenCalledWith(
         "sub-1",
@@ -420,11 +421,11 @@ describe("SubscriptionService", () => {
       expect(result.manageToken).toBe("confirm-tok");
     });
 
-    it("throws when subscription not found", async () => {
-      (repo.findByEmailAndPack as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+    it("throws when no subscriptions found", async () => {
+      (repo.findByEmail as ReturnType<typeof vi.fn>).mockResolvedValue([]);
 
       await expect(
-        service.requestManageLink("unknown@test.com", "my-pack")
+        service.requestManageLink("unknown@test.com")
       ).rejects.toThrow("Subscription not found");
     });
   });

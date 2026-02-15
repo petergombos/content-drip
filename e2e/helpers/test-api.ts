@@ -143,7 +143,7 @@ export async function subscribeViaApi(
     headers: { Authorization: `Bearer ${CRON_SECRET}` },
     data: {
       email: data.email,
-      packKey: data.packKey ?? "dummy",
+      packKey: data.packKey ?? "mindful-productivity",
       timezone: data.timezone ?? "UTC",
       cronExpression: data.cronExpression ?? "0 8 * * *",
     },

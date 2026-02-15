@@ -351,7 +351,7 @@ CRON_SECRET=generate-another-random-string
 ├── content-packs/            # Your courses live here
 │   ├── registry.ts           # ContentPack type definitions
 │   ├── index.ts              # Barrel file (imports all packs)
-│   └── dummy/                # Example pack (delete or modify)
+│   └── mindful-productivity/ # Example pack (delete or modify)
 ├── components/               # Shared UI components
 ├── domains/                  # Business logic
 │   └── subscriptions/
@@ -600,7 +600,7 @@ DRIP_TIME_SCALE=1440
               <P>
                 Follow these steps to create a new content pack from scratch.
                 You can also copy and modify the example{" "}
-                <Code>dummy</Code> pack as a starting point.
+                <Code>mindful-productivity</Code> pack as a starting point.
               </P>
 
               <H3 id="cap-directory">1. Create the directory structure</H3>
@@ -679,8 +679,8 @@ one lesson each morning at the time you chose.
                 Add an import to the barrel file so ContentDrip discovers your
                 pack:
               </P>
-              <CodeBlock label="src/content-packs/index.ts">{`import "@/content-packs/dummy/pack";     // Example pack
-import "@/content-packs/my-course/pack"; // Your new pack`}</CodeBlock>
+              <CodeBlock label="src/content-packs/index.ts">{`import "@/content-packs/mindful-productivity/pack"; // Example pack
+import "@/content-packs/my-course/pack";             // Your new pack`}</CodeBlock>
             </section>
 
             {/* ── Custom Branding ── */}
@@ -752,7 +752,7 @@ export function MyEmailShell(props: PackEmailShellProps) {
               </P>
               <P>
                 Refer to the{" "}
-                <Code>src/content-packs/dummy/email-shell.tsx</Code> file in the
+                <Code>src/content-packs/mindful-productivity/email-shell.tsx</Code> file in the
                 repository for a full production example with images, branded
                 colors, and responsive layout.
               </P>

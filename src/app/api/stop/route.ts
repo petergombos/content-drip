@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     );
     const { token: manageToken } = await emailService.createToken(id, "MANAGE");
     return NextResponse.redirect(
-      new URL(`/manage/${manageToken}?action=unsubscribed`, request.url)
+      new URL(`/manage/${manageToken}?action=unsubscribed&sid=${id}`, request.url)
     );
   } catch (error) {
     return NextResponse.json(

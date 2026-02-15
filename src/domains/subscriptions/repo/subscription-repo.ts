@@ -55,6 +55,14 @@ export class SubscriptionRepo {
     return result ? this.mapToDomain(result) : null;
   }
 
+  async findByEmail(email: string): Promise<Subscription[]> {
+    const results = await db.query.subscriptions.findMany({
+      where: eq(subscriptions.email, email),
+    });
+
+    return results.map((r: typeof results[0]) => this.mapToDomain(r));
+  }
+
   async update(
     id: string,
     updates: Partial<{

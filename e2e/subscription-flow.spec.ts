@@ -17,7 +17,7 @@ import {
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-const PACK_KEY = "dummy";
+const PACK_KEY = "mindful-productivity";
 
 // ---------------------------------------------------------------------------
 // Hooks
@@ -715,7 +715,6 @@ test.describe("Manage subscription", () => {
     // Step 2: Fill in email and submit to request manage link
     // -----------------------------------------------------------------------
     await page.getByTestId("manage-request-email-input").fill(email);
-    // Pack selector should default to the first pack
     await page.getByTestId("manage-request-submit").click();
 
     // -----------------------------------------------------------------------
@@ -864,5 +863,84 @@ test.describe("Email delivery completeness", () => {
     const finalEmails = await getEmails(request, { to: email });
     expect(finalEmails.length).toBe(5);
     expect(finalEmails[4].subject).toContain("Day 3");
+  });
+});
+
+// ===========================================================================
+// TEST 9: Multi-subscription manage page
+// ===========================================================================
+test.describe("Multi-subscription manage page", () => {
+  test("manage page shows all subscriptions for the same email", async ({
+    page,
+    request,
+  }) => {
+    const email = `multi-${Date.now()}@e2e.test`;
+
+    // -----------------------------------------------------------------------
+    // Step 1: Subscribe to two different packs with the same email
+    // -----------------------------------------------------------------------
+    const sub1Id = await subscribeViaApi(request, {
+      email,
+      packKey: "mindful-productivity",
+    });
+    const sub2Id = await subscribeViaApi(request, {
+      email,
+      packKey: "deep-work",
+    });
+
+    // Confirm both subscriptions
+    const confirm1 = await waitForEmail(request, {
+      to: email,
+      subject: "Confirm",
+      tag: "confirm-mindful-productivity",
+    });
+    await page.goto(extractConfirmUrl(confirm1.html)!);
+    await expectConfirmSuccess(page);
+
+    const confirm2 = await waitForEmail(request, {
+      to: email,
+      subject: "Confirm",
+      tag: "confirm-deep-work",
+    });
+    await page.goto(extractConfirmUrl(confirm2.html)!);
+    await expectConfirmSuccess(page);
+
+    // -----------------------------------------------------------------------
+    // Step 2: Request manage link (email only, no pack selector)
+    // -----------------------------------------------------------------------
+    await page.goto("/manage");
+    await page.getByTestId("manage-request-email-input").fill(email);
+    await page.getByTestId("manage-request-submit").click();
+    await expect(page.getByTestId("manage-request-success")).toBeVisible({
+      timeout: 10_000,
+    });
+
+    const manageLinkEmail = await waitForEmail(request, {
+      to: email,
+      subject: "Manage your subscription",
+    });
+    const manageUrl = extractManageUrl(manageLinkEmail.html);
+    expect(manageUrl).toBeTruthy();
+
+    // -----------------------------------------------------------------------
+    // Step 3: Visit manage page — should show both subscriptions
+    // -----------------------------------------------------------------------
+    await page.goto(manageUrl!);
+    await expect(page.getByTestId("manage-email")).toBeVisible({
+      timeout: 10_000,
+    });
+    await expect(page.getByTestId("manage-email")).toContainText(email);
+
+    // Both subscription cards should be visible
+    await expect(
+      page.getByTestId("subscription-card-mindful-productivity")
+    ).toBeVisible();
+    await expect(
+      page.getByTestId("subscription-card-deep-work")
+    ).toBeVisible();
+
+    // Both should show active status
+    const badges = page.getByTestId("manage-status-badge");
+    await expect(badges).toHaveCount(2);
   });
 });

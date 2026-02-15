@@ -19,7 +19,7 @@ function guardTestMode() {
  * Returns captured test emails. Supports filtering:
  *   ?to=email@example.com   - filter by recipient
  *   ?subject=Welcome        - filter by subject (contains, case-insensitive)
- *   ?tag=confirm-dummy      - filter by tag
+ *   ?tag=confirm-mindful-productivity - filter by tag
  *   ?after=<ISO timestamp>  - only emails sent after this time
  */
 export async function GET(request: NextRequest) {

@@ -13,13 +13,9 @@ import {
 import type { PackEmailShellProps } from "@/content-packs/registry";
 
 /**
- * Branded email shell for the dummy content pack.
- *
- * Each content pack can define its own email shell with custom branding
- * (header, colors, footer). This serves as a polished example with
- * a warm, editorial aesthetic that matches the web experience.
+ * Branded email shell for the Deep Work Essentials content pack.
  */
-export function DummyEmailShell(props: PackEmailShellProps) {
+export function DeepWorkEmailShell(props: PackEmailShellProps) {
   return (
     <Html>
       <Head>
@@ -41,10 +37,8 @@ export function DummyEmailShell(props: PackEmailShellProps) {
         <Container style={styles.container}>
           {/* ── Header ── */}
           <Section style={styles.header}>
-            <Text style={styles.headerLabel}>A Free 5-Day Email Course</Text>
-            <Text style={styles.headerTitle}>
-              The Art of Mindful Productivity
-            </Text>
+            <Text style={styles.headerLabel}>A Free 2-Day Email Course</Text>
+            <Text style={styles.headerTitle}>Deep Work Essentials</Text>
           </Section>
 
           {/* ── Content ── */}
@@ -56,9 +50,7 @@ export function DummyEmailShell(props: PackEmailShellProps) {
           {/* ── Footer ── */}
           <Section style={styles.footer}>
             <Hr style={styles.hr} />
-            <Text style={styles.footerBrand}>
-              The Art of Mindful Productivity
-            </Text>
+            <Text style={styles.footerBrand}>Deep Work Essentials</Text>
             <Text style={styles.footerLinks}>
               {props.footer?.manageUrl ? (
                 <>
@@ -125,7 +117,6 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 8,
     overflow: "hidden",
   },
-  /* Header bar */
   header: {
     backgroundColor: "#faf6ef",
     borderBottom: "2px solid #c4956a",
@@ -149,7 +140,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#8b6834",
     fontFamily: "Georgia, 'Times New Roman', serif",
   },
-  /* Main content area */
   main: {
     padding: "36px 32px 12px",
   },
@@ -166,7 +156,6 @@ const styles: Record<string, React.CSSProperties> = {
     lineHeight: "30px",
     color: "#4a3f33",
   },
-  /* Footer */
   footer: {
     padding: "0 32px 32px",
   },

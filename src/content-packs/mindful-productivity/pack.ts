@@ -1,9 +1,9 @@
 import type { ContentPack } from "@/content-packs/registry";
 import { registerPack } from "@/content-packs/registry";
-import { DummyEmailShell } from "@/content-packs/dummy/email-shell";
+import { DefaultEmailShell } from "@/content-packs/mindful-productivity/email-shell";
 
 const pack: ContentPack = {
-  key: "dummy",
+  key: "mindful-productivity",
   name: "The Art of Mindful Productivity",
   description:
     "A free 5-day email course on building sustainable focus and productivity habits.",
@@ -15,7 +15,7 @@ const pack: ContentPack = {
     { slug: "day-4", emailFile: "day-4.md" },
     { slug: "day-5", emailFile: "day-5.md" },
   ],
-  EmailShell: DummyEmailShell,
+  EmailShell: DefaultEmailShell,
 };
 
 registerPack(pack);
