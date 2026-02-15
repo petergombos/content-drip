@@ -10,6 +10,7 @@ const pack: ContentPack = {
   steps: [
     { slug: "welcome", emailFile: "welcome.md" },
     { slug: "day-1", emailFile: "day-1.md" },
+    { slug: "day-2", emailFile: "day-2.md" },
   ],
   EmailShell: DeepWorkEmailShell,
 };

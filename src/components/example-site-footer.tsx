@@ -1,6 +1,10 @@
 import Link from "next/link";
 
-export function SiteFooter() {
+/**
+ * Footer for the example content pack pages.
+ * Uses the imaginary "Learnwise" brand and links to both courses.
+ */
+export function ExampleSiteFooter() {
   return (
     <footer className="border-t bg-warm-subtle">
       <div className="mx-auto max-w-5xl px-6 py-14 md:py-20">
@@ -8,13 +12,13 @@ export function SiteFooter() {
           {/* Brand */}
           <div>
             <Link
-              href="/"
+              href="/mindful-productivity"
               className="group inline-flex items-center gap-2 font-serif text-lg font-semibold no-underline text-foreground"
             >
               <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-[10px] font-bold text-primary">
-                C
+                L
               </span>
-              ContentDrip
+              Learnwise
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
               Thoughtful content, delivered at your pace. Subscribe to curated
@@ -22,26 +26,26 @@ export function SiteFooter() {
             </p>
           </div>
 
-          {/* Navigation */}
+          {/* Courses */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
-              Navigate
+              Courses
             </p>
             <ul className="mt-4 list-none space-y-2.5 p-0">
               <li>
                 <Link
-                  href="/"
+                  href="/mindful-productivity"
                   className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
                 >
-                  Home
+                  Mindful Productivity
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/docs"
+                  href="/deep-work"
                   className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
                 >
-                  Documentation
+                  Deep Work Essentials
                 </Link>
               </li>
               <li>
@@ -79,7 +83,7 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col items-center gap-3 border-t pt-8 sm:flex-row sm:justify-between">
           <p className="text-xs text-muted-foreground/60">
-            &copy; {new Date().getFullYear()} ContentDrip. All rights reserved.
+            &copy; {new Date().getFullYear()} Learnwise. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground/50">
             Built with care for learners everywhere.

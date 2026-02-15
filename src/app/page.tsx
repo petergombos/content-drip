@@ -99,10 +99,10 @@ export default function HomePage() {
               docs
             </Link>
             <Link
-              href="/example"
+              href="/mindful-productivity"
               className="font-mono text-sm text-[#666] no-underline transition-colors hover:text-[#e8e8e8]"
             >
-              example
+              demo
             </Link>
             <a
               href="https://github.com/petergombos/content-drip"
@@ -185,10 +185,10 @@ export default function HomePage() {
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
-              href="/example"
+              href="/mindful-productivity"
               className="inline-flex h-9 items-center border border-[#333] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#777] no-underline transition-colors hover:border-[#555] hover:text-[#e8e8e8]"
             >
-              View Example
+              View Demo
             </Link>
           </div>
 
@@ -505,7 +505,7 @@ standard **markdown**.
           <p className="mt-4 max-w-lg font-mono text-base leading-relaxed text-[#777]">
             Clone the repo, create a content pack in markdown, deploy to Vercel,
             and your subscribers start learning. The whole setup takes minutes,
-            not weeks. Read the docs or explore the live example.
+            not weeks. Read the docs or explore the live demo.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
@@ -516,10 +516,10 @@ standard **markdown**.
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
-              href="/example"
+              href="/mindful-productivity"
               className="inline-flex h-9 items-center border border-[#333] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#777] no-underline transition-colors hover:border-[#555] hover:text-[#e8e8e8]"
             >
-              See a Live Example
+              See a Live Demo
             </Link>
           </div>
         </div>
@@ -548,10 +548,10 @@ standard **markdown**.
                 docs
               </Link>
               <Link
-                href="/example"
+                href="/mindful-productivity"
                 className="font-mono text-[13px] text-[#444] no-underline transition-colors hover:text-[#888]"
               >
-                example
+                demo
               </Link>
               <a
                 href="https://github.com/petergombos/content-drip"

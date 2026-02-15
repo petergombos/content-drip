@@ -3,8 +3,8 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { notFound } from "next/navigation";
 import { renderMarkdownToReact } from "@/lib/markdown/renderer";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { ExampleSiteHeader } from "@/components/example-site-header";
+import { ExampleSiteFooter } from "@/components/example-site-footer";
 import Link from "next/link";
 import "@/content-packs";
 
@@ -47,7 +47,7 @@ export default async function CompanionPage({ params }: CompanionPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SiteHeader />
+      <ExampleSiteHeader />
 
       {/* Course header band */}
       <div className="border-b bg-warm-subtle">
@@ -129,7 +129,7 @@ export default async function CompanionPage({ params }: CompanionPageProps) {
         )}
       </main>
 
-      <SiteFooter />
+      <ExampleSiteFooter />
     </div>
   );
 }

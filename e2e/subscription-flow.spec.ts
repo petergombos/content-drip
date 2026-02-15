@@ -75,7 +75,7 @@ test.describe("Happy Path: Subscribe and receive emails", () => {
     // -----------------------------------------------------------------------
     // Step 1: Visit landing page
     // -----------------------------------------------------------------------
-    await page.goto("/example");
+    await page.goto("/mindful-productivity");
     await expect(page.getByTestId("subscribe-form").first()).toBeVisible();
 
     // -----------------------------------------------------------------------

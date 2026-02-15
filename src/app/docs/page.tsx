@@ -141,10 +141,10 @@ export default function DocsPage() {
               docs
             </Link>
             <Link
-              href="/example"
+              href="/mindful-productivity"
               className="font-mono text-sm text-[#666] no-underline transition-colors hover:text-[#e8e8e8]"
             >
-              example
+              demo
             </Link>
             <a
               href="https://github.com/petergombos/content-drip"
@@ -320,7 +320,7 @@ CRON_SECRET=generate-another-random-string
               <H3 id="qs-run">5. Start the dev server</H3>
               <CodeBlock label="terminal">{`npm run dev`}</CodeBlock>
               <P>
-                Visit <Code>http://localhost:3000/example</Code> to see the
+                Visit <Code>http://localhost:3000/mindful-productivity</Code> to see the
                 example content pack landing page. The subscribe form is fully
                 functional — try subscribing with a test email to see the full
                 flow.
@@ -337,7 +337,8 @@ CRON_SECRET=generate-another-random-string
               <CodeBlock label="project root">{`src/
 ├── app/                      # Next.js App Router
 │   ├── page.tsx              # Marketing homepage
-│   ├── example/page.tsx      # Example content pack landing
+│   ├── mindful-productivity/  # Example content pack landing
+│   ├── deep-work/            # Example content pack landing
 │   ├── docs/page.tsx         # This documentation page
 │   ├── manage/               # Subscription management
 │   ├── confirm/[token]/      # Email confirmation handler
@@ -1019,15 +1020,15 @@ createdAt         integer  creation timestamp (ms)`}</CodeBlock>
               <P>
                 Pauses or stops a subscription via signed token. Parameters:{" "}
                 <Code>?token=...&id=...&action=pause|stop</Code>. Redirects to{" "}
-                <Code>/example?paused=true</Code> or{" "}
-                <Code>/example?unsubscribed=true</Code>.
+                <Code>{"/manage/{token}?action=paused"}</Code> or{" "}
+                <Code>{"/manage/{token}?action=unsubscribed"}</Code>.
               </P>
 
               <H3 id="api-stop">GET /api/stop</H3>
               <P>
                 Unsubscribes via signed token. Parameters:{" "}
                 <Code>?token=...&id=...</Code>. Redirects to{" "}
-                <Code>/example?unsubscribed=true</Code>.
+                <Code>{"/manage/{token}?action=unsubscribed"}</Code>.
               </P>
 
               <H3 id="api-confirm">GET /confirm/[token]</H3>
@@ -1080,10 +1081,10 @@ createdAt         integer  creation timestamp (ms)`}</CodeBlock>
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Link
-                  href="/example"
+                  href="/mindful-productivity"
                   className="group inline-flex h-9 items-center gap-2 bg-[#c8ff00] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#050505] no-underline transition-colors hover:bg-[#d8ff44]"
                 >
-                  See the Example
+                  See the Demo
                   <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                 </Link>
                 <a
@@ -1112,10 +1113,10 @@ createdAt         integer  creation timestamp (ms)`}</CodeBlock>
               home
             </Link>
             <Link
-              href="/example"
+              href="/mindful-productivity"
               className="font-mono text-[13px] text-[#444] no-underline transition-colors hover:text-[#888]"
             >
-              example
+              demo
             </Link>
             <Link
               href="/manage"

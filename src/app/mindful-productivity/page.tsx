@@ -1,5 +1,6 @@
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import Link from "next/link";
+import { ExampleSiteFooter } from "@/components/example-site-footer";
+import { ExampleSiteHeader } from "@/components/example-site-header";
 import { SubscribeForm } from "@/components/subscribe-form";
 import { Card } from "@/components/ui/card";
 import "@/content-packs";
@@ -7,9 +8,9 @@ import { ChevronDown } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Example — The Art of Mindful Productivity",
+  title: "The Art of Mindful Productivity — Learnwise",
   description:
-    "A live demo of a ContentDrip email course. See how a content pack landing page looks and works.",
+    "A free 5-day email course on building sustainable focus and productivity habits.",
 };
 
 /* ── Static data ── */
@@ -103,10 +104,10 @@ const TESTIMONIALS = [
 
 /* ── Page ── */
 
-export default function ExamplePage() {
+export default function MindfulProductivityPage() {
   return (
     <div className="min-h-screen bg-background">
-      <SiteHeader />
+      <ExampleSiteHeader />
 
       {/* ── Demo Banner ── */}
       <div className="border-b bg-primary/5 px-6 py-3 text-center">
@@ -141,7 +142,7 @@ export default function ExamplePage() {
 
           <div className="animate-fade-in-up delay-3 mx-auto mt-10 max-w-sm">
             <Card className="p-6 shadow-xl shadow-foreground/3 ring-1 ring-border/60">
-              <SubscribeForm />
+              <SubscribeForm packKey="mindful-productivity" />
             </Card>
             <p className="mt-5 text-[11px] tracking-wide text-muted-foreground/70">
               No spam&ensp;&middot;&ensp;Unsubscribe
@@ -375,6 +376,28 @@ export default function ExamplePage() {
         </div>
       </section>
 
+      {/* ── Cross-link ── */}
+      <section className="border-b bg-warm-subtle py-16 md:py-20">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+            Also from Learnwise
+          </p>
+          <h2 className="mt-3 font-serif text-2xl font-semibold tracking-tight md:text-3xl">
+            Deep Work Essentials
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+            A free 2-day email course on mastering deep work. Learn to eliminate
+            distractions and produce your best work.
+          </p>
+          <Link
+            href="/deep-work"
+            className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary no-underline hover:underline"
+          >
+            Explore Deep Work Essentials &rarr;
+          </Link>
+        </div>
+      </section>
+
       {/* ── Final CTA ── */}
       <section className="relative overflow-hidden bg-foreground py-20 md:py-28">
         {/* Subtle texture */}
@@ -393,13 +416,13 @@ export default function ExamplePage() {
           </p>
           <div className="mx-auto mt-10 max-w-sm">
             <Card className="p-6 shadow-2xl ring-1 ring-white/10">
-              <SubscribeForm />
+              <SubscribeForm packKey="mindful-productivity" />
             </Card>
           </div>
         </div>
       </section>
 
-      <SiteFooter />
+      <ExampleSiteFooter />
     </div>
   );
 }
