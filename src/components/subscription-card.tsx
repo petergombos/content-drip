@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ManagePreferencesForm } from "@/components/manage-preferences-form";
 import { ActionNotification } from "@/components/action-notification";
+import { ChevronRight } from "lucide-react";
 import type { Subscription } from "@/domains/subscriptions/model/types";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -100,25 +101,19 @@ export function SubscriptionCard({
         )}
 
         {/* Expand/collapse toggle */}
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="sm"
           onClick={() => setExpanded(!expanded)}
-          className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="gap-1.5 px-0 text-muted-foreground hover:text-foreground"
           data-testid="subscription-card-toggle"
         >
-          <svg
+          <ChevronRight
             className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-90" : ""}`}
-            viewBox="0 0 24 24"
-            fill="none"
-            strokeWidth={2.5}
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
+          />
           {expanded ? "Hide preferences" : "Manage preferences"}
-        </button>
+        </Button>
 
         {/* Expandable: preferences + danger zone */}
         {expanded && (
@@ -126,7 +121,7 @@ export function SubscriptionCard({
             {/* Delivery preferences */}
             <div className="space-y-3">
               <div>
-                <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
                   Delivery Preferences
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -146,7 +141,7 @@ export function SubscriptionCard({
                 className="rounded-lg border border-destructive/20 p-4"
                 data-testid="manage-danger-zone"
               >
-                <p className="text-xs font-medium uppercase tracking-widest text-destructive/60">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-destructive/60">
                   Unsubscribe
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">

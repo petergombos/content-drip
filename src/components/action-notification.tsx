@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { resumeSubscriptionAction } from "@/domains/subscriptions/actions/subscription-actions";
+import { Pause, Check, CircleX } from "lucide-react";
 import type { Subscription } from "@/domains/subscriptions/model/types";
 
 interface ActionNotificationProps {
@@ -59,6 +60,12 @@ const NOTIFICATIONS: Record<
   },
 };
 
+const ICON_MAP = {
+  pause: Pause,
+  check: Check,
+  stop: CircleX,
+} as const;
+
 export function ActionNotification({
   action,
   subscription,
@@ -102,6 +109,8 @@ export function ActionNotification({
     }
   };
 
+  const Icon = ICON_MAP[notification.icon];
+
   return (
     <div
       className={`mb-6 animate-fade-in-up rounded-lg border ${notification.borderColor} ${notification.bgColor} p-4`}
@@ -111,42 +120,7 @@ export function ActionNotification({
         <div
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${notification.iconBg}`}
         >
-          {notification.icon === "pause" ? (
-            <svg
-              className={`h-4 w-4 ${notification.iconColor}`}
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <rect x="6" y="4" width="4" height="16" rx="1" />
-              <rect x="14" y="4" width="4" height="16" rx="1" />
-            </svg>
-          ) : notification.icon === "check" ? (
-            <svg
-              className={`h-4 w-4 ${notification.iconColor}`}
-              viewBox="0 0 24 24"
-              fill="none"
-              strokeWidth={2.5}
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M5 13l4 4L19 7" />
-            </svg>
-          ) : (
-            <svg
-              className={`h-4 w-4 ${notification.iconColor}`}
-              viewBox="0 0 24 24"
-              fill="none"
-              strokeWidth={2.5}
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="15" y1="9" x2="9" y2="15" />
-              <line x1="9" y1="9" x2="15" y2="15" />
-            </svg>
-          )}
+          <Icon className={`h-4 w-4 ${notification.iconColor}`} strokeWidth={2} />
         </div>
         <div className="flex-1">
           <p className="text-sm font-medium text-foreground">

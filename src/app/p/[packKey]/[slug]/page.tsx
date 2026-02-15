@@ -101,7 +101,7 @@ export default async function CompanionPage({ params }: CompanionPageProps) {
                   href={`/p/${packKey}/${prevStep.slug}`}
                   className="group flex flex-1 flex-col items-start gap-1 border-r px-6 py-5 no-underline transition-colors hover:bg-(--surface-warm-hover)"
                 >
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
                     &larr; Previous
                   </span>
                   <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
@@ -116,7 +116,7 @@ export default async function CompanionPage({ params }: CompanionPageProps) {
                   href={`/p/${packKey}/${nextStep.slug}`}
                   className="group flex flex-1 flex-col items-end gap-1 px-6 py-5 no-underline transition-colors hover:bg-(--surface-warm-hover)"
                 >
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
                     Next &rarr;
                   </span>
                   <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">

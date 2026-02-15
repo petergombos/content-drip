@@ -28,7 +28,7 @@ export function ExampleSiteFooter() {
 
           {/* Courses */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
               Courses
             </p>
             <ul className="mt-4 list-none space-y-2.5 p-0">
@@ -61,7 +61,7 @@ export function ExampleSiteFooter() {
 
           {/* Promise */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
               Our Promise
             </p>
             <ul className="mt-4 list-none space-y-2.5 p-0">

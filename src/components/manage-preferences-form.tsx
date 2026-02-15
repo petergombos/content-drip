@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { SuccessState } from "@/components/success-state";
 import { IntervalSelector, intervalToCron, cronToInterval } from "@/components/interval-selector";
 import { TimezoneSelector } from "@/components/timezone-selector";
 import { SendTimeSelector, mergeHourIntoCron } from "@/components/send-time-selector";
@@ -14,6 +15,7 @@ import {
   pauseSubscriptionAction,
   resumeSubscriptionAction,
 } from "@/domains/subscriptions/actions/subscription-actions";
+import { Loader2, Play, Pause, CircleX } from "lucide-react";
 import { useState } from "react";
 import type { Subscription } from "@/domains/subscriptions/model/types";
 
@@ -146,29 +148,12 @@ export function ManagePreferencesForm({
 
   if (success) {
     return (
-      <div
-        className="rounded-lg border border-olive/20 bg-olive/5 px-4 py-4 text-center animate-scale-in"
-        data-testid="manage-preferences-success"
-      >
-        <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-olive/10">
-          <svg
-            className="h-5 w-5 text-olive"
-            viewBox="0 0 24 24"
-            fill="none"
-            strokeWidth={2.5}
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <p className="text-sm font-medium text-olive">
-          Preferences updated successfully
-        </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Your changes take effect starting with your next delivery.
-        </p>
+      <div data-testid="manage-preferences-success">
+        <SuccessState
+          icon="check"
+          title="Preferences updated"
+          description="Your changes take effect starting with your next delivery."
+        />
       </div>
     );
   }
@@ -182,13 +167,7 @@ export function ManagePreferencesForm({
         >
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-olive/10">
-              <svg
-                className="h-4 w-4 text-olive"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <polygon points="5,3 19,12 5,21" />
-              </svg>
+              <Play className="h-4 w-4 text-olive" fill="currentColor" strokeWidth={0} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">
@@ -218,14 +197,7 @@ export function ManagePreferencesForm({
         >
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-              <svg
-                className="h-4 w-4 text-primary"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <rect x="6" y="4" width="4" height="16" rx="1" />
-                <rect x="14" y="4" width="4" height="16" rx="1" />
-              </svg>
+              <Pause className="h-4 w-4 text-primary" fill="currentColor" strokeWidth={0} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">
@@ -254,23 +226,11 @@ export function ManagePreferencesForm({
         >
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/10">
-              <svg
-                className="h-4 w-4 text-destructive"
-                viewBox="0 0 24 24"
-                fill="none"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-              </svg>
+              <CircleX className="h-4 w-4 text-destructive" strokeWidth={2} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">
-                You're unsubscribed
+                You&apos;re unsubscribed
               </p>
               <p className="text-xs text-muted-foreground">
                 Resubscribe to continue receiving lessons where you left off.
@@ -344,30 +304,13 @@ export function ManagePreferencesForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-10"
+          className="w-full"
+          size="lg"
           data-testid="manage-preferences-submit"
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
-              <svg
-                className="h-3.5 w-3.5 animate-spin"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
               Saving…
             </span>
           ) : (

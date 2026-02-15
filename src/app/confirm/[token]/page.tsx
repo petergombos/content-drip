@@ -7,6 +7,7 @@ import { EmailService } from "@/domains/mail/services/email-service";
 import { PageShell } from "@/components/page-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
 import "@/content-packs";
 
 interface ConfirmPageProps {
@@ -41,18 +42,8 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
           data-testid="confirm-success"
         >
           {/* Celebratory icon */}
-          <div className="animate-scale-in mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-olive/10">
-            <svg
-              className="h-10 w-10 text-olive"
-              viewBox="0 0 24 24"
-              fill="none"
-              strokeWidth={2}
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M5 13l4 4L19 7" />
-            </svg>
+          <div className="animate-scale-in mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-olive/10">
+            <Check className="h-8 w-8 text-olive" strokeWidth={2} />
           </div>
 
           <h1
@@ -66,7 +57,7 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
             your chosen time tomorrow morning.
           </p>
 
-          <Card className="animate-fade-in-up delay-3 mt-8 p-6 text-left">
+          <Card className="animate-fade-in-up delay-3 mt-8 p-6 md:p-8 text-left">
             <h2 className="text-sm font-semibold text-foreground">
               What happens next?
             </h2>
@@ -104,10 +95,10 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
 
           <div className="animate-fade-in-up delay-4 mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
             <Button asChild>
-              <Link href="/">Back to home</Link>
+              <Link href="/manage">Manage subscription</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href="/manage">Manage subscription</Link>
+              <Link href="/">Back to home</Link>
             </Button>
           </div>
         </div>
@@ -126,10 +117,10 @@ export default async function ConfirmPage({ params }: ConfirmPageProps) {
       >
         <p className="text-sm text-muted-foreground">{errorMessage}</p>
         <div className="flex flex-col gap-2 sm:flex-row">
-          <Button asChild variant="outline">
+          <Button asChild>
             <Link href="/manage">Request a new link</Link>
           </Button>
-          <Button asChild variant="ghost">
+          <Button asChild variant="outline">
             <Link href="/">Back to home</Link>
           </Button>
         </div>

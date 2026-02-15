@@ -4,7 +4,7 @@ import { ExampleSiteHeader } from "@/components/example-site-header";
 import { SubscribeForm } from "@/components/subscribe-form";
 import { Card } from "@/components/ui/card";
 import "@/content-packs";
-import { ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Mail, Star } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -162,13 +162,10 @@ export default function MindfulProductivityPage() {
                 </p>
                 <div className="flex items-center gap-1">
                   {[...Array(5)].map((_, j) => (
-                    <svg
+                    <Star
                       key={j}
                       className="h-3.5 w-3.5 fill-current text-amber-500/80"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
+                    />
                   ))}
                   <span className="ml-1.5 text-xs font-medium text-muted-foreground">
                     4.9 avg
@@ -185,19 +182,7 @@ export default function MindfulProductivityPage() {
                     key={label}
                     className="inline-flex items-center gap-1.5 rounded-full bg-background/50 px-3 py-1.5 text-[11px] font-medium tracking-wide text-muted-foreground shadow-sm ring-1 ring-border/40 backdrop-blur-sm"
                   >
-                    <svg
-                      className="h-3 w-3 text-primary/70"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                    <Check className="h-3 w-3 text-primary/70" strokeWidth={2.5} />
                     {label}
                   </span>
                 ),
@@ -213,19 +198,7 @@ export default function MindfulProductivityPage() {
               <div className="bg-linear-to-r from-primary/10 via-primary/5 to-transparent px-7 pb-4 pt-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 shadow-sm">
-                    <svg
-                      className="h-5 w-5 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                      />
-                    </svg>
+                    <Mail className="h-5 w-5 text-primary" strokeWidth={1.5} />
                   </div>
                   <div>
                     <p className="text-[15px] font-semibold text-foreground">
@@ -422,13 +395,10 @@ export default function MindfulProductivityPage() {
                 {/* Stars */}
                 <div className="flex gap-0.5 text-primary/60">
                   {[...Array(5)].map((_, j) => (
-                    <svg
+                    <Star
                       key={j}
                       className="h-3.5 w-3.5 fill-current"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
+                    />
                   ))}
                 </div>
                 <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">

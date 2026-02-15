@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/page-shell";
 import { getPackByKey } from "@/content-packs/registry";
 import { SubscriptionCard } from "@/components/subscription-card";
+import { Mail } from "lucide-react";
 import "@/content-packs";
 
 interface ManageTokenPageProps {
@@ -65,7 +66,7 @@ export default async function ManageTokenPage({
             Management links are single-use for security. You can request a
             fresh one at any time.
           </p>
-          <Button asChild className="mt-4" variant="outline">
+          <Button asChild className="mt-4">
             <a href="/manage">Request a new link</a>
           </Button>
         </Card>
@@ -98,10 +99,7 @@ export default async function ManageTokenPage({
     >
       <div className="space-y-6">
         <div className="flex items-center gap-3 rounded-lg border bg-card px-4 py-3" data-testid="manage-email">
-          <svg className="h-4 w-4 shrink-0 text-muted-foreground" viewBox="0 0 24 24" fill="none" strokeWidth={1.5} stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-          </svg>
+          <Mail className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
           <span className="text-sm text-foreground">{email}</span>
         </div>
         {sorted.map((subscription) => {

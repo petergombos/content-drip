@@ -6,7 +6,9 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SuccessState } from "@/components/success-state";
 import { requestManageLinkAction } from "@/domains/subscriptions/actions/subscription-actions";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 const requestManageLinkSchema = z.object({
@@ -55,34 +57,12 @@ export function ManageRequestForm() {
 
   if (success) {
     return (
-      <div
-        className="py-4 text-center animate-scale-in"
-        data-testid="manage-request-success"
-      >
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-olive/10">
-          <svg
-            className="h-7 w-7 text-olive"
-            viewBox="0 0 24 24"
-            fill="none"
-            strokeWidth={2}
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <polyline points="3 7 12 13 21 7" />
-          </svg>
-        </div>
-        <h2
-          className="font-serif text-xl font-semibold text-foreground"
-          data-testid="manage-request-success-title"
-        >
-          Check your email
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          If an active subscription exists for that address, we&apos;ve sent a
-          management link. It expires in 24 hours.
-        </p>
+      <div data-testid="manage-request-success">
+        <SuccessState
+          icon="mail"
+          title="Check your email"
+          description="If an active subscription exists for that address, we've sent a management link. It expires in 24 hours."
+        />
       </div>
     );
   }
@@ -119,30 +99,13 @@ export function ManageRequestForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full h-10"
+        className="w-full"
+        size="lg"
         data-testid="manage-request-submit"
       >
         {isSubmitting ? (
           <span className="flex items-center gap-2">
-            <svg
-              className="h-3.5 w-3.5 animate-spin"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
             Sending…
           </span>
         ) : (

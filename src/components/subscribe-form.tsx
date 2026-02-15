@@ -8,6 +8,7 @@ import {
   SendTimeSelector,
   mergeHourIntoCron,
 } from "@/components/send-time-selector";
+import { SuccessState } from "@/components/success-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ import "@/content-packs"; // Register all packs
 import { getAllPacks } from "@/content-packs/registry";
 import { subscribeAction } from "@/domains/subscriptions/actions/subscription-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -109,42 +111,12 @@ export function SubscribeForm({ packKey, cadence }: SubscribeFormProps) {
 
   if (success) {
     return (
-      <div
-        className="py-3 text-center animate-scale-in"
-        data-testid="subscribe-success"
-      >
-        {/* Animated check */}
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-olive/10">
-          <svg
-            className="h-7 w-7 text-olive"
-            viewBox="0 0 24 24"
-            fill="none"
-            strokeWidth={2.5}
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path
-              d="M5 13l4 4L19 7"
-              style={{
-                strokeDasharray: 24,
-                strokeDashoffset: 0,
-                animation: "check-draw 0.4s ease-out 0.2s both",
-              }}
-            />
-          </svg>
-        </div>
-        <h2
-          className="font-serif text-xl font-semibold text-foreground"
-          data-testid="subscribe-success-title"
-        >
-          Check your inbox
-        </h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          We&apos;ve sent a confirmation email.
-          <br />
-          Click the link inside to start your journey.
-        </p>
+      <div data-testid="subscribe-success">
+        <SuccessState
+          icon="check"
+          title="Check your inbox"
+          description="We've sent a confirmation email. Click the link inside to start your journey."
+        />
       </div>
     );
   }
@@ -230,31 +202,13 @@ export function SubscribeForm({ packKey, cadence }: SubscribeFormProps) {
       <Button
         type="submit"
         disabled={isSubmitting || !timezone}
-        className="w-full h-10"
+        className="w-full"
         size="lg"
         data-testid="subscribe-submit"
       >
         {isSubmitting ? (
           <span className="flex items-center gap-2">
-            <svg
-              className="h-3.5 w-3.5 animate-spin"
-              viewBox="0 0 24 24"
-              fill="none"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
             Subscribing…
           </span>
         ) : (
