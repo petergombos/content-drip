@@ -1,112 +1,153 @@
 import { redirect } from "next/navigation";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { EmailService } from "@/domains/mail/services/email-service";
-import { PostmarkAdapter } from "@/domains/mail/adapters/postmark/postmark-adapter";
+import { createMailAdapter } from "@/domains/mail/create-adapter";
 import { createHash } from "crypto";
-import { ManagePreferencesForm } from "@/components/manage-preferences-form";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { stopFromEmailAction } from "@/domains/subscriptions/actions/subscription-actions";
 import { PageShell } from "@/components/page-shell";
+import { getPackByKey } from "@/content-packs/registry";
+import { SubscriptionCard } from "@/components/subscription-card";
+import { Mail } from "lucide-react";
+import "@/content-packs";
 
 interface ManageTokenPageProps {
   params: Promise<{ token: string }>;
+  searchParams: Promise<{ action?: string; sid?: string }>;
 }
 
-async function getSubscriptionFromToken(token: string) {
+async function getSubscriptionsFromToken(token: string) {
   const tokenHash = createHash("sha256").update(token).digest("hex");
   const emailService = new EmailService(
-    new PostmarkAdapter({
-      serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-      fromEmail: process.env.MAIL_FROM!,
-      messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-    }),
+    createMailAdapter(),
     process.env.APP_BASE_URL || "http://localhost:3000"
   );
 
-  const result = await emailService.verifyAndConsumeToken(
-    tokenHash,
-    "MANAGE"
-  );
+  const result = await emailService.verifyToken(tokenHash, "MANAGE");
 
   if (!result) {
     return null;
   }
 
   const repo = new SubscriptionRepo();
-  return repo.findById(result.subscriptionId);
+
+  // Find the anchor subscription to get the email
+  const anchor = await repo.findById(result.subscriptionId);
+  if (!anchor) {
+    return null;
+  }
+
+  // Load ALL subscriptions for this email
+  const allSubscriptions = await repo.findByEmail(anchor.email);
+
+  return { email: anchor.email, subscriptions: allSubscriptions };
 }
 
 export default async function ManageTokenPage({
   params,
+  searchParams,
 }: ManageTokenPageProps) {
   const { token } = await params;
+  const { action, sid } = await searchParams;
 
-  const subscription = await getSubscriptionFromToken(token);
+  const data = await getSubscriptionsFromToken(token);
 
-  if (!subscription) {
+  if (!data) {
     return (
       <PageShell
-        title="This link has expired"
-        subtitle="Request a new management link and we’ll email it to you."
+        title="Link Expired"
+        subtitle="This management link has already been used or has expired. Request a new one below."
       >
-        <Card className="p-6 md:p-8">
+        <Card
+          className="animate-fade-in-up delay-2 p-6 md:p-8"
+          data-testid="manage-link-expired"
+        >
           <p className="text-sm text-muted-foreground">
-            Invalid or expired token.
+            Management links are single-use for security. You can request a
+            fresh one at any time.
           </p>
+          <Button asChild className="mt-4">
+            <a href="/manage">Request a new link</a>
+          </Button>
         </Card>
       </PageShell>
     );
   }
 
+  const { email, subscriptions } = data;
+
+  // Determine which subscription is targeted by the action
+  const targetedSid = sid || undefined;
+
+  // Sort: active first, then paused, then others
+  const statusOrder: Record<string, number> = {
+    ACTIVE: 0,
+    PAUSED: 1,
+    PENDING_CONFIRM: 2,
+    STOPPED: 3,
+    COMPLETED: 4,
+  };
+  const sorted = [...subscriptions].sort(
+    (a, b) => (statusOrder[a.status] ?? 5) - (statusOrder[b.status] ?? 5)
+  );
+
   return (
     <PageShell
-      title="Preferences"
-      subtitle="Adjust delivery timing, timezone, or unsubscribe." 
+      title="Your Subscriptions"
+      subtitle="Manage your delivery preferences, pause, or unsubscribe."
+      warm
     >
-      <Card className="p-6 md:p-8 space-y-6">
-        <div>
-          <h2 className="font-semibold mb-1">Subscription</h2>
-          <p className="text-sm text-muted-foreground">{subscription.email}</p>
-          <p className="text-sm text-muted-foreground">
-            {subscription.packKey} · {subscription.status} · Step {subscription.currentStepIndex + 1}
-          </p>
+      <div className="space-y-6">
+        <div className="flex items-center gap-3 rounded-lg border bg-card px-4 py-3" data-testid="manage-email">
+          <Mail className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.5} />
+          <span className="text-sm text-foreground">{email}</span>
         </div>
+        {sorted.map((subscription) => {
+          const pack = getPackByKey(subscription.packKey);
+          const packName = pack?.name ?? subscription.packKey;
+          const totalSteps = pack?.steps.length ?? 0;
+          const isTargeted = targetedSid === subscription.id;
+          // Default expand: targeted subscription, or active/paused ones when there's only one
+          const defaultExpanded =
+            isTargeted ||
+            (sorted.length === 1 &&
+              (subscription.status === "ACTIVE" ||
+                subscription.status === "PAUSED" ||
+                subscription.status === "STOPPED"));
 
-        <div>
-          <h2 className="font-semibold mb-4">Delivery</h2>
-          <ManagePreferencesForm subscription={subscription} />
-        </div>
-
-        <div className="pt-4 border-t">
-          <form
-            action={async () => {
-              "use server";
-              const emailService = new EmailService(
-                new PostmarkAdapter({
-                  serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-                  fromEmail: process.env.MAIL_FROM!,
-                  messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-                }),
-                process.env.APP_BASE_URL || "http://localhost:3000"
-              );
-              const stopToken = emailService.createSignedToken(
-                subscription.id,
-                "STOP"
-              );
-              await stopFromEmailAction({
-                subscriptionId: subscription.id,
-                token: stopToken,
-              });
-              redirect("/?unsubscribed=true");
-            }}
-          >
-            <Button type="submit" variant="destructive" className="w-full">
-              Unsubscribe
-            </Button>
-          </form>
-        </div>
-      </Card>
+          return (
+            <SubscriptionCard
+              key={subscription.id}
+              subscription={subscription}
+              packName={packName}
+              totalSteps={totalSteps}
+              token={token}
+              action={isTargeted ? action : undefined}
+              defaultExpanded={defaultExpanded}
+              cadence={pack?.cadence}
+              onUnsubscribe={async (subscriptionId: string) => {
+                "use server";
+                const emailService = new EmailService(
+                  createMailAdapter(),
+                  process.env.APP_BASE_URL || "http://localhost:3000"
+                );
+                const stopToken = emailService.createSignedToken(
+                  subscriptionId,
+                  "STOP"
+                );
+                const { stopFromEmailAction } = await import(
+                  "@/domains/subscriptions/actions/subscription-actions"
+                );
+                await stopFromEmailAction({
+                  subscriptionId,
+                  token: stopToken,
+                });
+                redirect(`/manage/${token}?action=unsubscribed&sid=${subscriptionId}`);
+              }}
+            />
+          );
+        })}
+      </div>
     </PageShell>
   );
 }

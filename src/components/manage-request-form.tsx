@@ -6,15 +6,13 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SuccessState } from "@/components/success-state";
 import { requestManageLinkAction } from "@/domains/subscriptions/actions/subscription-actions";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { getAllPacks } from "@/content-packs/registry";
-import "@/content-packs"; // Register all packs
 
 const requestManageLinkSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  packKey: z.string().min(1, "Please select a content pack"),
 });
 
 type RequestManageLinkFormData = z.infer<typeof requestManageLinkSchema>;
@@ -24,19 +22,12 @@ export function ManageRequestForm() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const packs = getAllPacks();
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-    setValue,
   } = useForm<RequestManageLinkFormData>({
     resolver: zodResolver(requestManageLinkSchema),
-    defaultValues: {
-      packKey: packs[0]?.key || "",
-    },
   });
 
   const onSubmit = async (data: RequestManageLinkFormData) => {
@@ -46,11 +37,14 @@ export function ManageRequestForm() {
     try {
       const result = await requestManageLinkAction({
         email: data.email,
-        packKey: data.packKey,
       });
 
       if (result?.serverError) {
-        setError(typeof result.serverError === 'string' ? result.serverError : 'An error occurred');
+        setError(
+          typeof result.serverError === "string"
+            ? result.serverError
+            : "An error occurred"
+        );
       } else if (result?.data) {
         setSuccess(true);
       }
@@ -63,60 +57,60 @@ export function ManageRequestForm() {
 
   if (success) {
     return (
-      <div className="rounded-lg border p-6 text-center">
-        <h2 className="text-xl font-semibold mb-2">Check your email!</h2>
-        <p className="text-muted-foreground">
-          We&apos;ve sent you a link to manage your subscription.
-        </p>
+      <div data-testid="manage-request-success">
+        <SuccessState
+          icon="mail"
+          title="Check your email"
+          description="If an active subscription exists for that address, we've sent a management link. It expires in 24 hours."
+        />
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4"
+      data-testid="manage-request-form"
+    >
+      <div className="space-y-1.5">
+        <Label htmlFor="email" className="text-xs font-medium">
+          Email address
+        </Label>
         <Input
           id="email"
           type="email"
           {...register("email")}
-          placeholder="your@email.com"
+          data-testid="manage-request-email-input"
+          placeholder="you@example.com"
+          className="h-10"
         />
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="packKey">Content Pack</Label>
-        <Select
-          value={watch("packKey")}
-          onValueChange={(value) => setValue("packKey", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a content pack" />
-          </SelectTrigger>
-          <SelectContent>
-            {packs.map((pack) => (
-              <SelectItem key={pack.key} value={pack.key}>
-                {pack.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.packKey && (
-          <p className="text-sm text-destructive">{errors.packKey.message}</p>
+          <p className="text-xs text-destructive">{errors.email.message}</p>
         )}
       </div>
 
       {error && (
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive">
           {error}
         </div>
       )}
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "Sending..." : "Send Manage Link"}
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full"
+        size="lg"
+        data-testid="manage-request-submit"
+      >
+        {isSubmitting ? (
+          <span className="flex items-center gap-2">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Sending…
+          </span>
+        ) : (
+          "Send Management Link"
+        )}
       </Button>
     </form>
   );

@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { subscriptions, sendLog } from "@/db/subscription-schema";
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import type { Subscription, SubscriptionStatus } from "../model/types";
 import { SubscriptionStatus as StatusEnum } from "../model/types";
 import { generateUUID } from "@/lib/uuid";
@@ -55,6 +55,14 @@ export class SubscriptionRepo {
     return result ? this.mapToDomain(result) : null;
   }
 
+  async findByEmail(email: string): Promise<Subscription[]> {
+    const results = await db.query.subscriptions.findMany({
+      where: eq(subscriptions.email, email),
+    });
+
+    return results.map((r: typeof results[0]) => this.mapToDomain(r));
+  }
+
   async update(
     id: string,
     updates: Partial<{
@@ -83,6 +91,25 @@ export class SubscriptionRepo {
   async findActiveSubscriptions(): Promise<Subscription[]> {
     const results = await db.query.subscriptions.findMany({
       where: eq(subscriptions.status, StatusEnum.ACTIVE),
+    });
+
+    return results.map((r: typeof results[0]) => this.mapToDomain(r));
+  }
+
+  async findActiveSubscriptionIds(): Promise<string[]> {
+    const results = await db
+      .select({ id: subscriptions.id })
+      .from(subscriptions)
+      .where(eq(subscriptions.status, StatusEnum.ACTIVE));
+
+    return results.map((r) => r.id);
+  }
+
+  async findByIds(ids: string[]): Promise<Subscription[]> {
+    if (ids.length === 0) return [];
+
+    const results = await db.query.subscriptions.findMany({
+      where: inArray(subscriptions.id, ids),
     });
 
     return results.map((r: typeof results[0]) => this.mapToDomain(r));

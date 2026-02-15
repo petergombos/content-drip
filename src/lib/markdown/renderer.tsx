@@ -3,7 +3,7 @@ import * as production from "react/jsx-runtime";
 import rehypeReact from "rehype-react";
 import rehypeStringify from "rehype-stringify";
 import { remark } from "remark";
-import remarkRehype from 'remark-rehype';
+import remarkRehype from "remark-rehype";
 
 export interface MarkdownFrontmatter {
   subject?: string;
@@ -26,12 +26,23 @@ export function parseMarkdown(markdown: string): ParsedMarkdown {
 
   // Convert markdown to HTML for email rendering
   // Using unified pipeline: remark -> rehype -> stringify
-  const html = String(
+  let html = String(
     remark()
-      .use(remarkRehype)
-      .use(rehypeStringify)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeStringify, { allowDangerousHtml: true })
       .processSync(parsed.content)
   );
+
+  // Convert {button} sugar into styled CTA buttons.
+  // Markdown pattern: [Button text](url){button}
+  // After remark, {button} survives as literal text following the <a> tag.
+  html = html.replace(
+    /<a href="([^"]+)">([^<]+)<\/a>\{button\}/g,
+    (_match, href: string, text: string) =>
+      `</p><div style="text-align:center;margin:28px 0"><a href="${href}" style="background:#8b6834;color:#fffdf9;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;display:inline-block;font-family:system-ui,-apple-system,sans-serif">${text}</a></div><p>`
+  );
+  // Clean up empty <p></p> tags left by the split
+  html = html.replace(/<p><\/p>/g, "");
 
   return {
     frontmatter,
@@ -50,6 +61,8 @@ export function renderMarkdownToHtml(markdown: string): string {
 
 /**
  * Render markdown to React components (for web pages)
+ *
+ * Uses an editorial typographic system with warm, bookish styling.
  */
 export function renderMarkdownToReact(markdown: string): React.ReactElement {
   const parsed = parseMarkdown(markdown);
@@ -57,34 +70,55 @@ export function renderMarkdownToReact(markdown: string): React.ReactElement {
   // Use unified pipeline with rehype-react
   // rehype-react v8+ requires using the production JSX runtime
   const result = remark()
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeReact, {
       ...production,
       components: {
         h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-          <h1 className="text-3xl font-bold mt-8 mb-4" {...props} />
+          <h1
+            className="mb-6 mt-0 font-serif text-3xl font-semibold leading-tight tracking-tight text-foreground md:text-4xl"
+            {...props}
+          />
         ),
         h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-          <h2 className="text-2xl font-semibold mt-6 mb-3" {...props} />
+          <h2
+            className="mb-4 mt-10 font-serif text-2xl font-semibold tracking-tight text-foreground first:mt-0"
+            {...props}
+          />
         ),
         h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-          <h3 className="text-xl font-semibold mt-4 mb-2" {...props} />
+          <h3
+            className="mb-3 mt-8 text-lg font-semibold tracking-tight text-foreground"
+            {...props}
+          />
         ),
         p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-          <p className="mb-4 leading-relaxed" {...props} />
+          <p
+            className="mb-5 text-base leading-[1.8] text-foreground/80"
+            {...props}
+          />
         ),
         ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-          <ul className="list-disc list-inside mb-4 space-y-2" {...props} />
+          <ul
+            className="mb-6 list-none space-y-2 pl-0 text-foreground/80"
+            {...props}
+          />
         ),
         ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-          <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />
+          <ol
+            className="mb-6 list-none space-y-2 pl-0 text-foreground/80 [counter-reset:item]"
+            {...props}
+          />
         ),
         li: (props: React.HTMLAttributes<HTMLLIElement>) => (
-          <li className="ml-4" {...props} />
+          <li
+            className="relative pl-6 leading-[1.8] before:absolute before:left-0 before:text-primary/50 before:content-['—'] [ol>&]:before:content-[counter(item)_'.\00a0'] [ol>&]:[counter-increment:item]"
+            {...props}
+          />
         ),
         a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
           <a
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="font-medium text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary/70 transition-colors"
             {...props}
           />
         ),
@@ -92,21 +126,49 @@ export function renderMarkdownToReact(markdown: string): React.ReactElement {
           props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>
         ) => (
           <blockquote
-            className="border-l-4 border-gray-300 pl-4 italic my-4"
+            className="my-8 border-l-2 border-primary/25 pl-5 text-base italic leading-[1.8] text-muted-foreground"
             {...props}
           />
         ),
         code: (props: React.HTMLAttributes<HTMLElement>) => (
           <code
-            className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono"
+            className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[0.85em]"
             {...props}
           />
         ),
         pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
           <pre
-            className="bg-gray-100 p-4 rounded overflow-x-auto my-4"
+            className="my-6 overflow-x-auto rounded-lg bg-foreground/3 border border-border/50 p-5"
             {...props}
           />
+        ),
+        img: (
+          props: React.ImgHTMLAttributes<HTMLImageElement> & {
+            node?: unknown;
+          }
+        ) => {
+          const { node: _node, ...rest } = props;
+          // eslint-disable-next-line @next/next/no-img-element
+          return (
+            <img
+              className="my-8 h-auto w-full rounded-lg shadow-lg shadow-foreground/4"
+              loading="lazy"
+              alt={rest.alt ?? ""}
+              {...rest}
+            />
+          );
+        },
+        hr: (props: React.HTMLAttributes<HTMLHRElement>) => (
+          <hr
+            className="my-10 border-0 border-t border-border/60"
+            {...props}
+          />
+        ),
+        strong: (props: React.HTMLAttributes<HTMLElement>) => (
+          <strong className="font-semibold text-foreground" {...props} />
+        ),
+        em: (props: React.HTMLAttributes<HTMLElement>) => (
+          <em className="not-italic text-muted-foreground" {...props} />
         ),
       },
     })

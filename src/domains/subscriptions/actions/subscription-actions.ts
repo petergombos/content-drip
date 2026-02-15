@@ -3,21 +3,18 @@
 import { actionClient } from "@/lib/actions/client";
 import { z } from "zod";
 import { createHash } from "crypto";
+import { revalidatePath } from "next/cache";
 import { SubscriptionService } from "@/domains/subscriptions/services/subscription-service";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { EmailService } from "@/domains/mail/services/email-service";
-import { PostmarkAdapter } from "@/domains/mail/adapters/postmark/postmark-adapter";
+import { createMailAdapter } from "@/domains/mail/create-adapter";
 // Ensure packs are registered
 import "@/content-packs";
 
 // Initialize services (singleton pattern)
 const getSubscriptionService = () => {
   const repo = new SubscriptionRepo();
-  const mailAdapter = new PostmarkAdapter({
-    serverToken: process.env.POSTMARK_SERVER_TOKEN!,
-    fromEmail: process.env.MAIL_FROM!,
-    messageStream: process.env.POSTMARK_MESSAGE_STREAM,
-  });
+  const mailAdapter = createMailAdapter();
   const emailService = new EmailService(mailAdapter);
   return new SubscriptionService(repo, emailService);
 };
@@ -54,14 +51,13 @@ export const confirmSubscriptionAction = actionClient
 
 const requestManageLinkSchema = z.object({
   email: z.string().email(),
-  packKey: z.string(),
 });
 
 export const requestManageLinkAction = actionClient
   .schema(requestManageLinkSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
-    await service.requestManageLink(parsedInput.email, parsedInput.packKey);
+    await service.requestManageLink(parsedInput.email);
     return { success: true };
   });
 
@@ -79,6 +75,7 @@ export const updateSubscriptionAction = actionClient
       timezone: parsedInput.timezone,
       cronExpression: parsedInput.cronExpression,
     });
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
 
@@ -95,6 +92,7 @@ export const pauseFromEmailAction = actionClient
       parsedInput.subscriptionId,
       parsedInput.token
     );
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
 
@@ -108,6 +106,20 @@ export const stopFromEmailAction = actionClient
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.stopFromEmail(parsedInput.subscriptionId, parsedInput.token);
+    revalidatePath("/manage", "layout");
+    return { success: true };
+  });
+
+const pauseSubscriptionSchema = z.object({
+  subscriptionId: z.string(),
+});
+
+export const pauseSubscriptionAction = actionClient
+  .schema(pauseSubscriptionSchema)
+  .action(async ({ parsedInput }) => {
+    const service = getSubscriptionService();
+    await service.pauseSubscription(parsedInput.subscriptionId);
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
 
@@ -120,5 +132,7 @@ export const resumeSubscriptionAction = actionClient
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.resumeSubscription(parsedInput.subscriptionId);
+    revalidatePath("/manage", "layout");
     return { success: true };
   });
+

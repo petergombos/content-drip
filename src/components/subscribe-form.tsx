@@ -1,32 +1,52 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import {
+  IntervalSelector,
+  intervalToCron,
+} from "@/components/interval-selector";
+import {
+  SendTimeSelector,
+  mergeHourIntoCron,
+} from "@/components/send-time-selector";
+import { SuccessState } from "@/components/success-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SendTimeSelector, hourToCron } from "@/components/send-time-selector";
-import { subscribeAction } from "@/domains/subscriptions/actions/subscription-actions";
-import { useEffect, useMemo, useState } from "react";
-import { getAllPacks } from "@/content-packs/registry";
 import "@/content-packs"; // Register all packs
+import { getAllPacks } from "@/content-packs/registry";
+import { subscribeAction } from "@/domains/subscriptions/actions/subscription-actions";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const subscribeSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   sendTime: z.number().min(0).max(23),
   timezone: z.string().min(1, "Missing timezone"),
+  interval: z.string().optional(),
 });
 
 type SubscribeFormData = z.infer<typeof subscribeSchema>;
 
-export function SubscribeForm() {
+interface SubscribeFormProps {
+  packKey?: string;
+  /** When set, locks the cadence — hides the interval selector. */
+  cadence?: string;
+}
+
+export function SubscribeForm({ packKey, cadence }: SubscribeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const packs = getAllPacks();
-  const defaultPackKey = useMemo(() => packs[0]?.key || "", [packs]);
+  const defaultPackKey = useMemo(
+    () => packKey || packs[0]?.key || "",
+    [packKey, packs],
+  );
+  const hasFixedCadence = !!cadence;
 
   const {
     register,
@@ -39,6 +59,7 @@ export function SubscribeForm() {
     defaultValues: {
       sendTime: 8,
       timezone: "",
+      interval: "Daily",
     },
   });
 
@@ -58,8 +79,12 @@ export function SubscribeForm() {
     setError(null);
 
     try {
-      // Daily cadence for the base template: run at the selected hour.
-      const cronExpression = hourToCron(data.sendTime);
+      const cronExpression = hasFixedCadence
+        ? mergeHourIntoCron(cadence!, data.sendTime)
+        : mergeHourIntoCron(
+            intervalToCron(data.interval || "Daily"),
+            data.sendTime,
+          );
 
       const result = await subscribeAction({
         email: data.email,
@@ -69,7 +94,11 @@ export function SubscribeForm() {
       });
 
       if (result?.serverError) {
-        setError(typeof result.serverError === 'string' ? result.serverError : 'An error occurred');
+        setError(
+          typeof result.serverError === "string"
+            ? result.serverError
+            : "An error occurred",
+        );
       } else if (result?.data) {
         setSuccess(true);
       }
@@ -82,11 +111,12 @@ export function SubscribeForm() {
 
   if (success) {
     return (
-      <div className="rounded-lg border p-6 text-center">
-        <h2 className="text-xl font-semibold mb-2">Check your email!</h2>
-        <p className="text-muted-foreground">
-          We&apos;ve sent you a confirmation email. Click the link to activate your subscription.
-        </p>
+      <div data-testid="subscribe-success">
+        <SuccessState
+          icon="check"
+          title="Check your inbox"
+          description="We've sent a confirmation email. Click the link inside to start your journey."
+        />
       </div>
     );
   }
@@ -94,7 +124,7 @@ export function SubscribeForm() {
   if (!defaultPackKey) {
     return (
       <div className="rounded-lg border p-6 text-center">
-        <h2 className="text-xl font-semibold mb-2">No content pack found</h2>
+        <h2 className="mb-2 text-xl font-semibold">No content pack found</h2>
         <p className="text-muted-foreground">
           Add a pack in <code>src/content-packs</code> and register it.
         </p>
@@ -103,46 +133,87 @@ export function SubscribeForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4"
+      data-testid="subscribe-form"
+    >
       {/* timezone is auto-detected; keep it in the form payload */}
       <input type="hidden" {...register("timezone")} />
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="email" className="text-xs font-medium">
+          Email address
+        </Label>
         <Input
           id="email"
           type="email"
           {...register("email")}
+          data-testid="subscribe-email-input"
           placeholder="you@example.com"
           autoComplete="email"
+          className="h-10"
         />
         {errors.email && (
-          <p className="text-sm text-destructive">{errors.email.message}</p>
+          <p className="text-xs text-destructive">{errors.email.message}</p>
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="sendTime">Delivery time</Label>
+      {!hasFixedCadence && (
+        <div className="space-y-1.5">
+          <Label htmlFor="interval" className="text-xs font-medium">
+            Frequency
+          </Label>
+          <IntervalSelector
+            value={watch("interval") || "Daily"}
+            onValueChange={(value) => setValue("interval", value)}
+          />
+        </div>
+      )}
+
+      <div className="space-y-1.5">
+        <Label htmlFor="sendTime" className="text-xs font-medium">
+          Preferred delivery time{" "}
+          {timezone ? (
+            <>
+              <span className="font-medium text-muted-foreground">
+                ({timezone.replace(/_/g, " ")})
+              </span>
+            </>
+          ) : (
+            "Detecting your timezone…"
+          )}
+        </Label>
         <SendTimeSelector
           value={sendTime}
           onValueChange={(value) => setValue("sendTime", value)}
         />
-        <p className="text-sm text-muted-foreground">
-          Timezone: <span className="font-mono">{timezone || "Detecting…"}</span>
-        </p>
         {errors.timezone && (
-          <p className="text-sm text-destructive">{errors.timezone.message}</p>
+          <p className="text-xs text-destructive">{errors.timezone.message}</p>
         )}
       </div>
 
       {error && (
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive">
           {error}
         </div>
       )}
 
-      <Button type="submit" disabled={isSubmitting || !timezone} className="w-full">
-        {isSubmitting ? "Subscribing..." : "Subscribe"}
+      <Button
+        type="submit"
+        disabled={isSubmitting || !timezone}
+        className="w-full"
+        size="lg"
+        data-testid="subscribe-submit"
+      >
+        {isSubmitting ? (
+          <span className="flex items-center gap-2">
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            Subscribing…
+          </span>
+        ) : (
+          "Start My Free Course"
+        )}
       </Button>
     </form>
   );

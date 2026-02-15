@@ -1,21 +1,36 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
-export function SiteHeader(props: { action?: React.ReactNode }) {
+export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/50">
-      <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
-        <Link href="/" className="flex items-baseline gap-2">
-          <span className="font-serif text-lg tracking-tight">Content Drip</span>
-          <span className="text-xs text-muted-foreground">quiet delivery</span>
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-lg supports-backdrop-filter:bg-background/70">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+        <Link
+          href="/"
+          className="group flex items-center gap-2.5 no-underline transition-opacity hover:opacity-80"
+        >
+          {/* Small decorative mark */}
+          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary transition-colors group-hover:bg-primary/15">
+            C
+          </span>
+          <span className="font-serif text-lg font-semibold tracking-tight text-foreground">
+            ContentDrip
+          </span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          {props.action}
-          <Button asChild variant="secondary" size="sm">
-            <Link href="/manage">Manage</Link>
-          </Button>
-        </div>
+        <nav className="flex items-center gap-6">
+          <Link
+            href="/docs"
+            className="text-[13px] font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
+          >
+            Docs
+          </Link>
+          <Link
+            href="/manage"
+            className="text-[13px] font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
+          >
+            Manage
+          </Link>
+        </nav>
       </div>
     </header>
   );

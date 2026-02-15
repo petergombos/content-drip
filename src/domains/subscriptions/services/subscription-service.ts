@@ -158,24 +158,23 @@ export class SubscriptionService {
   }
 
   /**
-   * Request manage link
+   * Request manage link — uses email only (any subscription for the email works
+   * as anchor; the manage page loads all subscriptions for that email).
    */
-  async requestManageLink(
-    email: string,
-    packKey: string
-  ): Promise<{ manageToken: string }> {
-    const subscription = await this.repo.findByEmailAndPack(email, packKey);
-    if (!subscription) {
+  async requestManageLink(email: string): Promise<{ manageToken: string }> {
+    const subscriptions = await this.repo.findByEmail(email);
+    if (subscriptions.length === 0) {
       throw new Error("Subscription not found");
     }
 
+    // Pick the first subscription as anchor — the manage page resolves all by email
     const { token } = await this.emailService.createToken(
-      subscription.id,
+      subscriptions[0].id,
       TokenType.MANAGE
     );
 
     const manageUrl = this.emailService.buildManageUrl(token);
-    await this.sendManageLinkEmail(subscription.email, manageUrl);
+    await this.sendManageLinkEmail(email, manageUrl);
 
     return { manageToken: token };
   }
@@ -199,7 +198,25 @@ export class SubscriptionService {
   }
 
   /**
-   * Resume paused subscription
+   * Pause subscription (from manage page, already authenticated)
+   */
+  async pauseSubscription(subscriptionId: string): Promise<void> {
+    const subscription = await this.repo.findById(subscriptionId);
+    if (!subscription) {
+      throw new Error("Subscription not found");
+    }
+
+    if (subscription.status !== SubscriptionStatus.ACTIVE) {
+      throw new Error("Subscription is not active");
+    }
+
+    await this.repo.update(subscription.id, {
+      status: SubscriptionStatus.PAUSED,
+    });
+  }
+
+  /**
+   * Resume paused or stopped subscription
    */
   async resumeSubscription(subscriptionId: string): Promise<void> {
     const subscription = await this.repo.findById(subscriptionId);
@@ -207,8 +224,11 @@ export class SubscriptionService {
       throw new Error("Subscription not found");
     }
 
-    if (subscription.status !== SubscriptionStatus.PAUSED) {
-      throw new Error("Subscription is not paused");
+    if (
+      subscription.status !== SubscriptionStatus.PAUSED &&
+      subscription.status !== SubscriptionStatus.STOPPED
+    ) {
+      throw new Error("Subscription is not paused or stopped");
     }
 
     await this.repo.update(subscription.id, {
@@ -328,7 +348,7 @@ export class SubscriptionService {
         title: parsed.frontmatter.subject || "Welcome",
         preview: parsed.frontmatter.preview,
         html: parsed.html,
-        footer: { unsubscribeUrl: stopUrl, manageUrl },
+        footer: { unsubscribeUrl: stopUrl, manageUrl, pauseUrl },
         EmailShell: pack.EmailShell,
       })
     );
