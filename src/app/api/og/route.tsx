@@ -5,13 +5,13 @@ import { DarkTemplate, WarmTemplate, loadFonts } from "@/lib/og";
 export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
-  const { searchParams, origin } = req.nextUrl;
+  const { searchParams } = req.nextUrl;
   const type = searchParams.get("type") ?? "default";
   const title = searchParams.get("title") ?? "ContentDrip";
   const description = searchParams.get("description") ?? undefined;
   const label = searchParams.get("label") ?? undefined;
 
-  const fonts = await loadFonts(origin);
+  const fonts = await loadFonts();
 
   const node =
     type === "landing" ? (
