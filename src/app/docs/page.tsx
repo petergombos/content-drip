@@ -276,6 +276,9 @@ cd content-drip`}</CodeBlock>
 TURSO_DATABASE_URL=libsql://your-db-name.turso.io
 TURSO_AUTH_TOKEN=your-turso-auth-token
 
+# App — public URL for generating subscriber links
+APP_BASE_URL=http://localhost:3000
+
 # Email — pick ONE provider:
 
 # Option A: Resend
@@ -371,6 +374,7 @@ CRON_SECRET=generate-another-random-string
   description: string;        // Short description for landing pages
   steps: ContentStep[];       // Ordered list of lessons
   EmailShell?: Component;     // Optional custom email template
+  cadence?: string;           // Optional fixed cron (e.g. "0 8 * * *")
 }
 
 interface ContentStep {
@@ -396,6 +400,14 @@ interface ContentStep {
                 that wraps every outgoing email in your pack&apos;s custom
                 branding — header, footer, typography, colors. If omitted, a
                 default shell is used.
+              </P>
+              <P>
+                The optional <Code>cadence</Code> field locks subscribers to a
+                fixed delivery frequency. When set (e.g.,{" "}
+                <Code>{`"0 8 * * *"`}</Code> for daily at 8am), subscribers can
+                only choose their timezone and send hour — they cannot change the
+                interval. When omitted, subscribers pick their own frequency
+                (daily, every other day, weekly, etc.) from a dropdown.
               </P>
             </section>
 
@@ -668,6 +680,8 @@ const pack: ContentPack = {
     { slug: "day-5",   emailFile: "day-5.md" },
   ],
   EmailShell: MyEmailShell,
+  // Optional: lock subscribers to daily delivery at their chosen hour
+  // cadence: "0 * * * *",
 };
 
 registerPack(pack);`}</CodeBlock>
@@ -847,6 +861,20 @@ export function MyEmailShell(props: PackEmailShellProps) {
                 absolute URLs for images (relative paths won&apos;t work in
                 email clients).
               </P>
+              <H3 id="mf-button">Button syntax</H3>
+              <P>
+                Append <Code>{`{button}`}</Code> to any markdown link to render
+                it as a styled CTA button instead of a plain link. This works in
+                both emails and companion pages:
+              </P>
+              <CodeBlock label="button example">{`[Confirm my subscription]({{confirmUrl}}){button}
+
+[Read this lesson online]({{companionUrl}}){button}`}</CodeBlock>
+              <P>
+                The <Code>{`{button}`}</Code> suffix is stripped during
+                rendering and replaced with an inline-styled button element that
+                works across email clients.
+              </P>
             </section>
 
             {/* ── Placeholders ── */}
@@ -867,6 +895,7 @@ export function MyEmailShell(props: PackEmailShellProps) {
                   <tbody className="divide-y divide-[#1a1a1a]">
                     {[
                       ["{{companionUrl}}", "Web-readable version of this specific lesson. Points to /p/{packKey}/{stepSlug}."],
+                      ["{{confirmUrl}}", "Confirmation link for the subscriber. Used in the confirm email template (emails/confirm.md)."],
                       ["{{manageUrl}}", "Manage subscription preferences page. Uses a signed single-use token for authentication."],
                       ["{{pauseUrl}}", "One-click pause delivery. Hits /api/pause with a signed token. Subscriber can resume later."],
                       ["{{stopUrl}}", "One-click unsubscribe. Hits /api/stop with a signed token. Immediately stops all delivery."],
@@ -929,6 +958,7 @@ export function MyEmailShell(props: PackEmailShellProps) {
                     {[
                       ["TURSO_DATABASE_URL", "Yes", "LibSQL / Turso database connection URL"],
                       ["TURSO_AUTH_TOKEN", "Yes", "Database authentication token"],
+                      ["APP_BASE_URL", "Yes", "Public URL of your app (e.g. https://yourdomain.com). Used for generating subscriber links."],
                       ["RESEND_API_KEY", "No*", "Resend API key. If set, Resend is used as the email provider"],
                       ["POSTMARK_SERVER_TOKEN", "No*", "Postmark API key. Used when RESEND_API_KEY is not set"],
                       ["POSTMARK_MESSAGE_STREAM", "No", "Postmark message stream name (e.g. content-emails)"],
