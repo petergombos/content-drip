@@ -5,7 +5,7 @@ preview: One click to start your productivity journey
 
 Almost there! You're one step away from starting **The Art of Mindful Productivity** — a free 5-day email course that will transform how you approach your work.
 
-[**Confirm my subscription →**]({{confirmUrl}})
+[Confirm my subscription]({{confirmUrl}}){button}
 
 Here's what you'll receive over the next five days:
 

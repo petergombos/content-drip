@@ -26,12 +26,23 @@ export function parseMarkdown(markdown: string): ParsedMarkdown {
 
   // Convert markdown to HTML for email rendering
   // Using unified pipeline: remark -> rehype -> stringify
-  const html = String(
+  let html = String(
     remark()
       .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeStringify, { allowDangerousHtml: true })
       .processSync(parsed.content)
   );
+
+  // Convert {button} sugar into styled CTA buttons.
+  // Markdown pattern: [Button text](url){button}
+  // After remark, {button} survives as literal text following the <a> tag.
+  html = html.replace(
+    /<a href="([^"]+)">([^<]+)<\/a>\{button\}/g,
+    (_match, href: string, text: string) =>
+      `</p><div style="text-align:center;margin:28px 0"><a href="${href}" style="background:#8b6834;color:#fffdf9;padding:14px 32px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;display:inline-block;font-family:system-ui,-apple-system,sans-serif">${text}</a></div><p>`
+  );
+  // Clean up empty <p></p> tags left by the split
+  html = html.replace(/<p><\/p>/g, "");
 
   return {
     frontmatter,
