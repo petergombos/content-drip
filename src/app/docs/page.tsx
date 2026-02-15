@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CodeBlock } from "./code-block";
+import { DocsNav } from "./docs-nav";
 
 export const metadata: Metadata = {
   title: "Documentation",
@@ -48,9 +49,17 @@ function H2({
   return (
     <h2
       id={id}
-      className="scroll-mt-20 text-2xl font-bold tracking-tight text-[#e8e8e8] md:text-3xl"
+      className="group/h2 scroll-mt-20 text-2xl font-bold tracking-tight text-[#e8e8e8] md:text-3xl"
     >
-      {children}
+      <a
+        href={`#${id}`}
+        className="no-underline text-inherit hover:no-underline"
+      >
+        {children}
+        <span className="ml-2 text-[#555] opacity-0 transition-opacity group-hover/h2:opacity-100">
+          #
+        </span>
+      </a>
     </h2>
   );
 }
@@ -168,61 +177,10 @@ export default function DocsPage() {
       </header>
 
       <div className="mx-auto max-w-[1400px] lg:grid lg:grid-cols-[240px_1fr]">
-        {/* ── Sidebar (desktop) ── */}
-        <aside className="hidden border-r border-[#1a1a1a] lg:block">
-          <nav className="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto px-5 py-8">
-            {NAV.map((group) => (
-              <div key={group.category} className="mb-6">
-                <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#555]">
-                  {group.category}
-                </p>
-                <ul className="mt-2.5 space-y-1">
-                  {group.items.map((item) => (
-                    <li key={item.id}>
-                      <a
-                        href={`#${item.id}`}
-                        className="block py-1 font-mono text-[13px] text-[#777] no-underline transition-colors hover:text-[#c8ff00]"
-                      >
-                        {item.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </nav>
-        </aside>
+        <DocsNav items={NAV} />
 
         {/* ── Content ── */}
         <main className="min-w-0 px-6 py-10 md:px-10 md:py-14 lg:px-16">
-          {/* Mobile TOC */}
-          <details className="mb-10 border border-[#1a1a1a] lg:hidden">
-            <summary className="cursor-pointer px-4 py-3 font-mono text-[13px] font-bold uppercase tracking-widest text-[#666]">
-              Table of Contents
-            </summary>
-            <div className="border-t border-[#1a1a1a] px-4 py-4">
-              {NAV.map((group) => (
-                <div key={group.category} className="mb-4 last:mb-0">
-                  <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#555]">
-                    {group.category}
-                  </p>
-                  <ul className="mt-1.5 space-y-1">
-                    {group.items.map((item) => (
-                      <li key={item.id}>
-                        <a
-                          href={`#${item.id}`}
-                          className="block py-0.5 font-mono text-[13px] text-[#777] no-underline transition-colors hover:text-[#c8ff00]"
-                        >
-                          {item.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </details>
-
           {/* Page title */}
           <div className="mb-14 border-b border-[#1a1a1a] pb-10">
             <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#c8ff00]">
