@@ -6,22 +6,22 @@ const STEPS = [
   {
     n: "01",
     title: "Clone",
-    desc: "Fork or clone the ContentDrip template repository. It's a standard Next.js app — no custom build tools, no exotic dependencies.",
+    desc: "Fork or clone the template. Standard Next.js — no custom tooling.",
   },
   {
     n: "02",
     title: "Write",
-    desc: "Create a content pack: markdown files with YAML frontmatter, a delivery schedule in pack.ts, and an EmailShell for branding.",
+    desc: "Create a content pack: markdown files with YAML frontmatter, a schedule, and an email shell.",
   },
   {
     n: "03",
     title: "Deploy",
-    desc: "Push to Vercel or any Node.js host. Set env vars for database, email provider, and cron secret. That's the infrastructure.",
+    desc: "Push to Vercel or any Node.js host. Set env vars. Done.",
   },
   {
     n: "04",
     title: "Drip",
-    desc: "Subscribers choose their delivery time. They confirm via email, get a welcome, then one lesson per day in their timezone.",
+    desc: "Subscribers choose their time. One lesson per day, in their timezone.",
   },
 ];
 

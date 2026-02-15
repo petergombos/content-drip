@@ -11,14 +11,14 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "The Art of Mindful Productivity — Learnwise",
   description:
-    "A free 5-day email course on building sustainable focus and productivity habits.",
+    "A free 5-day email course on building focus that lasts. One morning lesson at a time.",
   openGraph: {
     title: "The Art of Mindful Productivity",
     description:
-      "A free 5-day email course on building sustainable focus and productivity habits.",
+      "A free 5-day email course on building focus that lasts. One morning lesson at a time.",
     images: [
       {
-        url: "/api/og?type=landing&title=The+Art+of+Mindful+Productivity&description=A+free+5-day+email+course+on+building+sustainable+focus+and+productivity+habits.",
+        url: "/api/og?type=landing&title=The+Art+of+Mindful+Productivity&description=A+free+5-day+email+course+on+building+focus+that+lasts.+One+morning+lesson+at+a+time.",
         width: 1200,
         height: 630,
       },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "The Art of Mindful Productivity — Learnwise",
     images: [
-      "/api/og?type=landing&title=The+Art+of+Mindful+Productivity&description=A+free+5-day+email+course+on+building+sustainable+focus+and+productivity+habits.",
+      "/api/og?type=landing&title=The+Art+of+Mindful+Productivity&description=A+free+5-day+email+course+on+building+focus+that+lasts.+One+morning+lesson+at+a+time.",
     ],
   },
 };
@@ -39,13 +39,13 @@ const COURSE_OUTLINE = [
     day: "Welcome",
     title: "Welcome & What to Expect",
     description:
-      "A warm introduction to the course, what you'll learn, and how to squeeze every drop of value from each lesson.",
+      "A warm introduction to the course and how to get the most from each lesson.",
   },
   {
     day: "Day 1",
     title: "The Power of Single-Tasking",
     description:
-      "Multitasking is a myth. Discover why doing one thing at a time isn't just productive — it's transformative.",
+      "Multitasking is a myth. Discover why doing one thing at a time doesn't just improve your work — it changes how you think.",
   },
   {
     day: "Day 2",
@@ -103,19 +103,19 @@ const FAQS = [
 const TESTIMONIALS = [
   {
     quote:
-      "This course changed how I approach my mornings. The single-tasking lesson alone was worth signing up for — I'm more focused than I've been in years.",
+      "The single-tasking lesson changed everything. I used to jump between five tabs and wonder why nothing got done. Now I close everything except the one thing that matters. My mornings feel completely different.",
     name: "Sarah K.",
     role: "Product Designer",
   },
   {
     quote:
-      "Perfectly paced. Each email gave me exactly one thing to implement that day. No overwhelm, just steady progress.",
+      "Each email gave me exactly one thing to try that day. No fluff, no overwhelm. By day three I'd already noticed my attention span improving.",
     name: "Marcus R.",
     role: "Software Engineer",
   },
   {
     quote:
-      "I've tried dozens of productivity systems. This is the first that actually stuck — because it taught me habits, not hacks.",
+      "I've tried every productivity app and system out there. This is the first thing that stuck — probably because it taught me how to build habits instead of just giving me another to-do list.",
     name: "Aisha M.",
     role: "Marketing Director",
   },
@@ -145,9 +145,9 @@ export default function MindfulProductivityPage() {
             </p>
 
             <h1 className="animate-fade-in-up delay-1 mt-8 font-serif text-[2.75rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-[3.75rem]">
-              Master the Art of{" "}
+              Build Focus That{" "}
               <span className="relative inline-block italic text-primary">
-                Mindful
+                Lasts
                 <svg
                   className="absolute -bottom-2 left-0 w-full"
                   viewBox="0 0 200 14"
@@ -164,12 +164,12 @@ export default function MindfulProductivityPage() {
                   />
                 </svg>
               </span>{" "}
-              <span className="italic text-primary">Productivity</span>
+              <span className="italic text-primary">Without Burning Out</span>
             </h1>
 
             <p className="animate-fade-in-up delay-2 mt-6 max-w-md text-base leading-relaxed text-muted-foreground md:text-[17px] md:leading-[1.75]">
               One actionable lesson in your inbox each morning. Five days to
-              transform how you work, think, and focus.
+              build the kind of productivity that actually feels sustainable.
             </p>
 
             {/* Social proof strip */}
@@ -247,7 +247,7 @@ export default function MindfulProductivityPage() {
               How it works
             </p>
             <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight md:text-4xl">
-              Three steps to better habits
+              From inbox to habit in three steps
             </h2>
           </div>
 
@@ -266,7 +266,7 @@ export default function MindfulProductivityPage() {
                 },
                 {
                   num: "03",
-                  title: "Transform",
+                  title: "Practice",
                   desc: "Build real habits with practical exercises you can start using immediately.",
                 },
               ] as const
@@ -492,7 +492,7 @@ export default function MindfulProductivityPage() {
             Start Today
           </p>
           <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-primary-foreground md:text-4xl">
-            Ready to Transform Your Mornings?
+            Start Building Better Mornings
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/60">
             Five days. Five lessons. One email at a time, at the hour you

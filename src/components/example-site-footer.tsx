@@ -21,8 +21,8 @@ export function ExampleSiteFooter() {
               Learnwise
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Thoughtful content, delivered at your pace. Subscribe to curated
-              email courses and build lasting knowledge one lesson at a time.
+              Email courses for people who want to learn without the overwhelm.
+              One focused lesson at a time, delivered at your pace.
             </p>
           </div>
 
@@ -86,7 +86,7 @@ export function ExampleSiteFooter() {
             &copy; {new Date().getFullYear()} Learnwise. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground/50">
-            Built with care for learners everywhere.
+            Made with care. Delivered with intention.
           </p>
         </div>
       </div>

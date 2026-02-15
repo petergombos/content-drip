@@ -58,19 +58,19 @@ const COURSE_OUTLINE = [
 const FAQS = [
   {
     q: "Is this really free?",
-    a: "Completely. No credit card, no hidden upsells. Two days of focused, actionable content.",
+    a: "Completely. No credit card, no hidden upsells, no catch. Just two days of focused, actionable content delivered to your inbox.",
   },
   {
     q: "Can I pause my subscription?",
-    a: "Of course. Every email includes a manage link where you can pause deliveries and pick up where you left off.",
+    a: "Of course. Every email includes a manage link where you can pause deliveries and pick up exactly where you left off.",
   },
   {
     q: "How do I unsubscribe?",
-    a: "One click. Every email has an unsubscribe link at the bottom.",
+    a: "One click. Every email has an unsubscribe link at the bottom. We also include a manage link if you'd rather adjust preferences instead.",
   },
   {
     q: "When will I receive emails?",
-    a: "You choose your preferred time when you sign up. Emails arrive at that time in your local timezone.",
+    a: "You choose your preferred time when you sign up. Emails arrive at that time in your local timezone, making it easy to build this into your daily routine.",
   },
 ];
 
@@ -92,13 +92,13 @@ export default function DeepWorkPage() {
           </p>
 
           <h1 className="animate-fade-in-up delay-1 mx-auto mt-6 max-w-2xl font-serif text-[2.75rem] font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            Master the Art of{" "}
-            <span className="italic text-primary">Deep Work</span>
+            Reclaim Your Attention, Produce{" "}
+            <span className="italic text-primary">Exceptional Work</span>
           </h1>
 
           <p className="animate-fade-in-up delay-2 mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted-foreground md:text-lg">
-            Two focused lessons delivered to your inbox. Learn to eliminate
-            distractions and produce your best work.
+            Two powerful lessons delivered to your inbox. Learn to silence the
+            noise and do the work that actually matters.
           </p>
 
           <div className="animate-fade-in-up delay-3 mx-auto mt-10 max-w-sm">
@@ -121,7 +121,7 @@ export default function DeepWorkPage() {
               How it works
             </p>
             <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight md:text-4xl">
-              Three steps to laser focus
+              From distraction to deep focus
             </h2>
           </div>
 
@@ -259,11 +259,11 @@ export default function DeepWorkPage() {
             Start Today
           </p>
           <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-primary-foreground md:text-4xl">
-            Ready to Master Deep Work?
+            Start Doing Your Best Work
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/60">
             Two days. Two focused lessons. One email at a time, at the hour you
-            choose. No spam, no nonsense — just focused work.
+            choose. No spam, no nonsense — just the tools you need to reclaim your attention.
           </p>
           <div className="mx-auto mt-10 max-w-sm">
             <Card className="p-6 shadow-2xl ring-1 ring-white/10">

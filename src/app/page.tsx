@@ -1,3 +1,5 @@
+import { HeroAnimation } from "@/components/hero-animation";
+import { HowItWorksSection } from "@/components/how-it-works-section";
 import {
   ArrowRight,
   CircleCheckBig,
@@ -14,38 +16,36 @@ import {
   Plug,
   RefreshCcw,
   ShieldCheck,
-  Users,
   UserPlus,
+  Users,
   Workflow,
   Zap,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HeroAnimation } from "@/components/hero-animation";
-import { HowItWorksSection } from "@/components/how-it-works-section";
 
 export const metadata: Metadata = {
-  title: "ContentDrip — Open-Source Email Drip Courses",
+  title: "ContentDrip — Build Email Courses That Run Themselves",
   description:
-    "Turn your knowledge into automated email courses. Open-source, self-hosted, built with Next.js.",
+    "No platform fees. No subscriber limits. Write in markdown, deploy once, and let your course deliver automatically. Open-source Next.js template for automated drip courses.",
   openGraph: {
-    title: "ContentDrip — Open-Source Email Drip Courses",
+    title: "ContentDrip — Build Email Courses That Run Themselves",
     description:
-      "Turn your knowledge into automated email courses. Open-source, self-hosted, built with Next.js.",
+      "No platform fees. No subscriber limits. Write in markdown, deploy once, and let your course deliver automatically. Open-source Next.js template.",
     images: [
       {
-        url: "/api/og?type=default&title=Ship+email+courses+from+markdown.&label=Open+Source",
+        url: "/api/og?type=default&title=Build+email+courses+that+run+themselves.&label=Open+Source",
         width: 1200,
         height: 630,
       },
     ],
   },
   twitter: {
-    title: "ContentDrip — Open-Source Email Drip Courses",
+    title: "ContentDrip — Build Email Courses That Run Themselves",
     description:
-      "Turn your knowledge into automated email courses. Open-source, self-hosted, built with Next.js.",
+      "No platform fees. No subscriber limits. Write in markdown, deploy once, and let your course deliver automatically. Open-source Next.js template.",
     images: [
-      "/api/og?type=default&title=Ship+email+courses+from+markdown.&label=Open+Source",
+      "/api/og?type=default&title=Build+email+courses+that+run+themselves.&label=Open+Source",
     ],
   },
 };
@@ -122,17 +122,16 @@ export default function HomePage() {
             Open Source
           </p>
 
-          <h1 className="animate-fade-in-up delay-1 mt-6 max-w-4xl text-[clamp(2.5rem,8vw,5.5rem)] font-bold leading-[1.02] tracking-tighter">
-            Ship email courses
+          <h1 className="animate-fade-in-up delay-1 mt-6 max-w-4xl text-[clamp(2.5rem,8vw,5rem)] font-bold leading-[1.02] tracking-tighter">
+            Build email courses
             <br />
-            from <span className="text-[#c8ff00]">markdown</span>.
+            that <span className="text-[#c8ff00]">run themselves</span>
           </h1>
 
           <p className="animate-fade-in-up delay-2 mt-6 max-w-xl font-mono text-base leading-relaxed text-[#777]">
-            ContentDrip is an open-source Next.js template for building
-            automated email drip courses. You write content in markdown, define
-            a delivery schedule, and subscribers receive one lesson at a time —
-            at the hour they choose, in their timezone.
+            No platform fees. No subscriber limits. Write in markdown, deploy
+            once, and let your course deliver automatically — on your schedule,
+            in your subscribers&apos; timezones.
           </p>
 
           {/* CTAs */}
@@ -141,14 +140,14 @@ export default function HomePage() {
               href="/docs"
               className="group inline-flex h-9 items-center gap-2 bg-[#c8ff00] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#050505] no-underline transition-colors hover:bg-[#d8ff44]"
             >
-              Get Started
+              Deploy Your First Course
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="/mindful-productivity"
               className="inline-flex h-9 items-center border border-[#333] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#777] no-underline transition-colors hover:border-[#555] hover:text-[#e8e8e8]"
             >
-              View Demo
+              See a Live Course
             </Link>
           </div>
 
@@ -165,142 +164,532 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── The Drip Flow ── */}
+      {/* ── How It Works ── */}
       <section className="border-b border-[#1a1a1a]">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
           <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
-            The Drip Flow
+            How It Works
           </p>
-          <h2 className="mt-4 max-w-2xl text-3xl font-bold tracking-tight md:text-4xl">
-            What happens after someone subscribes
+          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
+            From clone to first subscriber in 30 minutes.
+          </h2>
+
+          <HowItWorksSection />
+        </div>
+      </section>
+
+      {/* ── Content Packs ── */}
+      <section className="overflow-hidden border-b border-[#1a1a1a]">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
+            Content Packs
+          </p>
+          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
+            Write once. Render everywhere.
           </h2>
           <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
-            Every subscription follows the same lifecycle. No configuration
-            needed — this is how ContentDrip works out of the box.
+            Focus on writing. We handle the delivery, scheduling, and
+            unsubscribe links.
           </p>
 
-          {/* Horizontal timeline */}
-          <div className="mt-10 overflow-x-auto">
-            <div className="relative min-w-[700px]">
-              {/* Horizontal line */}
-              <div className="absolute left-0 right-0 top-5 h-px bg-[#1a1a1a]" />
-
-              <div className="grid grid-cols-5">
-                {(
-                  [
-                    {
-                      icon: UserPlus,
-                      label: "Subscribe",
-                      desc: "Visitor enters email + preferred delivery time",
-                    },
-                    {
-                      icon: ShieldCheck,
-                      label: "Confirm",
-                      desc: "Signed token email → click to activate",
-                    },
-                    {
-                      icon: Mail,
-                      label: "Welcome",
-                      desc: "Sent immediately on confirmation",
-                    },
-                    {
-                      icon: Clock,
-                      label: "Drip",
-                      desc: "One lesson per day at the chosen time & timezone",
-                    },
-                    {
-                      icon: CircleCheckBig,
-                      label: "Complete",
-                      desc: "Marked as completed after final step",
-                    },
-                  ] as const
-                ).map((step) => (
-                  <div key={step.label} className="relative flex flex-col items-center text-center">
-                    {/* Node */}
-                    <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a1a1a] bg-[#0a0a0a]">
-                      <step.icon
-                        className="h-4 w-4 text-[#c8ff00]"
-                        strokeWidth={1.5}
-                      />
-                    </div>
-                    {/* Content */}
-                    <p className="mt-3 font-mono text-[12px] font-bold uppercase tracking-wider text-[#c8ff00]">
-                      {step.label}
-                    </p>
-                    <p className="mt-1 px-2 text-[13px] leading-relaxed text-[#555]">
-                      {step.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Anytime actions */}
-          <div className="mt-8 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2">
-            <div className="flex items-center gap-3 bg-[#050505] px-5 py-4">
-              <Pause
-                className="h-4 w-4 shrink-0 text-[#c8ff00]"
-                strokeWidth={1.5}
-              />
-              <div>
-                <p className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#888]">
-                  Pause
-                </p>
-                <p className="mt-0.5 text-[13px] text-[#555]">
-                  Resume exactly where they left off
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-[#050505] px-5 py-4">
-              <LogOut
-                className="h-4 w-4 shrink-0 text-[#c8ff00]"
-                strokeWidth={1.5}
-              />
-              <div>
-                <p className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#888]">
-                  Unsubscribe
-                </p>
-                <p className="mt-0.5 text-[13px] text-[#555]">
-                  One-click, signed link, instant
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-3">
-            {(
-              [
-                {
-                  icon: KeyRound,
-                  label: "Signed Tokens",
-                  desc: "Every action link (confirm, manage, pause, stop) uses a cryptographically signed, single-use token. No passwords, no sessions.",
-                },
-                {
-                  icon: RefreshCcw,
-                  label: "Idempotent Delivery",
-                  desc: "The send log tracks every email sent. If the cron job runs twice, the same step is never sent again. Safe to retry, safe to overlap.",
-                },
-                {
-                  icon: Workflow,
-                  label: "Status Machine",
-                  desc: "Subscriptions move through PENDING_CONFIRM → ACTIVE → PAUSED → COMPLETED or STOPPED. Every transition is logged and auditable.",
-                },
-              ] as const
-            ).map((item) => (
-              <div key={item.label} className="bg-[#050505] p-5">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-[#c8ff0020] bg-[#c8ff0008] shadow-[0_0_16px_#c8ff0015]">
-                  <item.icon
-                    className="h-5 w-5 text-[#c8ff00]"
-                    strokeWidth={1.5}
-                  />
+          {/* Visual pipeline */}
+          <div className="mt-12 grid items-stretch gap-0 lg:grid-cols-[1fr_auto_1fr]">
+            {/* Left: Markdown input */}
+            <div className="min-w-0 border border-[#1a1a1a] bg-[#0a0a0a]">
+              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
+                <div className="flex gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
                 </div>
+                <span className="font-mono text-xs text-[#444]">day-1.md</span>
+              </div>
+              <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-[1.8] text-[#555]">
+                <code>
+                  <span className="text-[#444]">---</span>
+                  {"\n"}
+                  <span className="text-[#666]">subject:</span>{" "}
+                  <span className="text-[#888]">
+                    {'"'}Day 1: Getting Started{'"'}
+                  </span>
+                  {"\n"}
+                  <span className="text-[#666]">preview:</span>{" "}
+                  <span className="text-[#888]">
+                    {'"'}Your first lesson{'"'}
+                  </span>
+                  {"\n"}
+                  <span className="text-[#444]">---</span>
+                  {"\n\n"}
+                  <span className="text-[#666]">Good morning!</span>
+                  {"\n\n"}
+                  <span className="text-[#666]">
+                    Today we{`'`}re covering the
+                  </span>
+                  {"\n"}
+                  <span className="text-[#666]">fundamentals of...</span>
+                  {"\n\n"}
+                  <span className="text-[#666]">## The Key Idea</span>
+                  {"\n\n"}
+                  <span className="text-[#666]">Content in **markdown**.</span>
+                  {"\n\n"}
+                  <span className="text-[#666]">[Read online →](</span>
+                  <span className="text-[#c8ff00]">{"{{companionUrl}}"}</span>
+                  <span className="text-[#666]">)</span>
+                </code>
+              </pre>
+            </div>
+
+            {/* Center: Pipeline connector */}
+            <div className="flex items-center justify-center py-6 lg:px-6 lg:py-0">
+              <div className="flex items-center gap-3 lg:flex-col lg:gap-4">
+                {/* Arrow / chevrons */}
+                <div className="flex gap-1 text-[#333] lg:flex-col">
+                  <svg
+                    className="h-5 w-5 rotate-90 lg:rotate-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+
+                {/* Pipeline steps */}
+                <div className="flex flex-wrap justify-center gap-2 lg:flex-col lg:gap-3">
+                  {["parse frontmatter", "inject URLs", "render email"].map(
+                    (step) => (
+                      <div
+                        key={step}
+                        className="whitespace-nowrap border border-[#1a1a1a] bg-[#0a0a0a] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[#444]"
+                      >
+                        {step}
+                      </div>
+                    ),
+                  )}
+                </div>
+
+                {/* Arrow / chevrons */}
+                <div className="flex gap-1 text-[#333] lg:flex-col">
+                  <svg
+                    className="h-5 w-5 rotate-90 lg:rotate-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Email output mockup */}
+            <div className="min-w-0 border border-[#1a1a1a] bg-[#0a0a0a]">
+              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
+                <svg
+                  className="h-4 w-4 text-[#333]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                  />
+                </svg>
+                <span className="font-mono text-xs text-[#444]">
+                  Delivered email
+                </span>
+              </div>
+              <div className="p-5">
+                {/* Email header area */}
+                <div className="mb-4 border-b border-[#1a1a1a] pb-4">
+                  <div className="mb-2 h-5 w-24 bg-[#1a1a1a]" />
+                  <p className="font-mono text-sm font-medium text-[#888]">
+                    Day 1: Getting Started
+                  </p>
+                  <p className="mt-0.5 font-mono text-[11px] text-[#444]">
+                    Your first lesson
+                  </p>
+                </div>
+
+                {/* Email body skeleton */}
+                <div className="space-y-3">
+                  <p className="font-mono text-[13px] leading-relaxed text-[#666]">
+                    Good morning!
+                  </p>
+                  <p className="font-mono text-[13px] leading-relaxed text-[#555]">
+                    Today we{`'`}re covering the fundamentals of...
+                  </p>
+
+                  {/* Section heading */}
+                  <p className="mt-1 font-mono text-[13px] font-semibold text-[#777]">
+                    The Key Idea
+                  </p>
+
+                  {/* Body skeleton lines */}
+                  <div className="space-y-2">
+                    <div className="h-2.5 w-full bg-[#111]" />
+                    <div className="h-2.5 w-4/5 bg-[#111]" />
+                  </div>
+
+                  {/* CTA button */}
+                  <div className="pt-2">
+                    <div className="inline-block border border-[#c8ff00] px-4 py-2 font-mono text-[12px] font-medium text-[#c8ff00]">
+                      Read online →
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer area */}
+                <div className="mt-5 border-t border-[#1a1a1a] pt-3">
+                  <div className="flex gap-3 font-mono text-[10px] text-[#333]">
+                    <span>Manage</span>
+                    <span>·</span>
+                    <span>Pause</span>
+                    <span>·</span>
+                    <span>Unsubscribe</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Template variables */}
+          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { var: "{{companionUrl}}", desc: "Web version of this lesson" },
+              { var: "{{manageUrl}}", desc: "Manage subscription page" },
+              { var: "{{pauseUrl}}", desc: "Pause delivery one-click" },
+              { var: "{{stopUrl}}", desc: "Unsubscribe one-click" },
+            ].map((v) => (
+              <div key={v.var} className="bg-[#050505] p-4">
+                <code className="font-mono text-[13px] text-[#c8ff00]">
+                  {v.var}
+                </code>
+                <p className="mt-1 text-[13px] text-[#555]">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Companion Pages ── */}
+      <section className="border-b border-[#1a1a1a]">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
+            Companion Pages
+          </p>
+          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
+            Every lesson lives on the web.
+          </h2>
+          <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
+            Every email becomes a permanent URL. Subscribers share content
+            without forwarding emails. You keep control of formatting.
+          </p>
+
+          {/* Split-screen: Email vs Web */}
+          <div className="mt-12 grid items-stretch gap-0 lg:grid-cols-[1fr_auto_1fr]">
+            {/* Left: Email mockup */}
+            <div className="border border-[#1a1a1a] bg-[#0a0a0a]">
+              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
+                <Mail className="h-4 w-4 text-[#333]" />
+                <span className="font-mono text-xs text-[#444]">
+                  Email inbox
+                </span>
+              </div>
+              <div className="p-5">
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full bg-[#c8ff00]/20" />
+                  <span className="font-mono text-[12px] font-medium text-[#888]">
+                    Day 1: Getting Started
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-2 w-full bg-[#151515]" />
+                  <div className="h-2 w-5/6 bg-[#151515]" />
+                  <div className="h-2 w-4/5 bg-[#151515]" />
+                  <div className="h-2 w-2/3 bg-[#151515]" />
+                </div>
+                <div className="mt-4 space-y-1 text-[11px] text-[#333]">
+                  <div className="flex gap-2 font-mono">
+                    <span>Manage</span>
+                    <span>&middot;</span>
+                    <span>Pause</span>
+                    <span>&middot;</span>
+                    <span>Unsubscribe</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Center: Connector bridge */}
+            <div className="flex items-center justify-center py-6 lg:px-6 lg:py-0">
+              <div className="flex items-center gap-3 lg:flex-col lg:gap-3">
+                <div className="h-px w-8 border-t border-dashed border-[#333] lg:h-8 lg:w-px lg:border-l lg:border-t-0" />
+                <div className="whitespace-nowrap border border-[#c8ff00]/20 bg-[#c8ff00]/5 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[#c8ff00]/60">
+                  linked pair
+                </div>
+                <div className="h-px w-8 border-t border-dashed border-[#333] lg:h-8 lg:w-px lg:border-l lg:border-t-0" />
+              </div>
+            </div>
+
+            {/* Right: Browser/web page mockup — visually richer */}
+            <div className="border border-[#1a1a1a] bg-[#0a0a0a]">
+              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
+                <div className="flex gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[#1a1a1a]" />
+                  <span className="h-2 w-2 rounded-full bg-[#1a1a1a]" />
+                  <span className="h-2 w-2 rounded-full bg-[#1a1a1a]" />
+                </div>
+                <span className="ml-1 font-mono text-[10px] text-[#333]">
+                  yoursite.com/p/course/day-1
+                </span>
+              </div>
+              <div className="p-5">
+                <div className="mb-3">
+                  <span className="font-mono text-[12px] font-medium text-[#888]">
+                    Day 1: Getting Started
+                  </span>
+                </div>
+                {/* Intro paragraph lines */}
+                <div className="space-y-2">
+                  <div className="h-2 w-full rounded-sm bg-[#151515]" />
+                  <div className="h-2 w-5/6 rounded-sm bg-[#151515]" />
+                  <div className="h-2 w-4/5 rounded-sm bg-[#151515]" />
+                </div>
+                {/* Image placeholder — shows richer content */}
+                <div className="my-3 flex h-14 items-center justify-center border border-dashed border-[#1a1a1a] bg-[#080808]">
+                  <span className="font-mono text-[10px] text-[#333]">
+                    image / embed
+                  </span>
+                </div>
+                {/* Extended content — more lines than the email */}
+                <div className="space-y-2">
+                  <div className="h-2 w-full rounded-sm bg-[#151515]" />
+                  <div className="h-2 w-5/6 rounded-sm bg-[#151515]" />
+                  <div className="h-2 w-full rounded-sm bg-[#151515]" />
+                  <div className="h-2 w-2/3 rounded-sm bg-[#151515]" />
+                </div>
+                <div className="mt-3 flex items-center gap-2 font-mono text-[11px] text-[#444]">
+                  <Globe className="h-3 w-3" />
+                  Shareable &middot; permanent &middot; any device
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Feature callouts */}
+          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-3">
+            <div className="bg-[#050505] p-4">
+              <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                Go Deeper
+              </p>
+              <p className="mt-1 text-[13px] text-[#555]">
+                Pages aren&apos;t limited to what fits in an email. Add images,
+                embeds, extended writing — no inbox constraints.
+              </p>
+            </div>
+            <div className="bg-[#050505] p-4">
+              <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                Permanent URLs
+              </p>
+              <p className="mt-1 text-[13px] text-[#555]">
+                Every page has a shareable link. Subscribers share content
+                without forwarding emails.
+              </p>
+            </div>
+            <div className="bg-[#050505] p-4">
+              <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                Optional Per Lesson
+              </p>
+              <p className="mt-1 text-[13px] text-[#555]">
+                Add a companion page to any lesson or skip it entirely. Each
+                step decides for itself.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Multiple Packs ── */}
+      <section className="border-b border-[#1a1a1a]">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
+            Multi-Pack
+          </p>
+          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
+            One brand. Many courses. Each with its own style.
+          </h2>
+          <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
+            Each pack is fully independent. Own subscribers, own schedule, own
+            branding. Deploy once, run as many courses as you want.
+          </p>
+
+          {/* Shared brand header */}
+          <div className="mt-12 flex items-center gap-3 border border-[#1a1a1a] border-b-0 bg-[#0a0a0a] px-5 py-3">
+            <div className="flex h-6 w-6 items-center justify-center bg-[#c8ff00] text-[11px] font-bold text-[#050505]">
+              L
+            </div>
+            <span className="font-mono text-[13px] font-medium text-[#888]">
+              Learnwise
+            </span>
+            <span className="ml-auto font-mono text-[11px] text-[#333]">
+              2 packs &middot; 1 deploy
+            </span>
+          </div>
+
+          {/* Pack cards */}
+          <div className="flex flex-col gap-px bg-[#1a1a1a] p-px md:flex-row">
+            {[
+              {
+                name: "The Art of Mindful Productivity",
+                slug: "/mindful-productivity",
+                desc: "A free 5-day email course on building sustainable focus and productivity habits.",
+                steps: 6,
+                cadence: "daily at 8am",
+                subs: 142,
+                active: 89,
+                completed: 53,
+                accent: "#c8ff00",
+                files: [
+                  "welcome.md",
+                  "day-1.md",
+                  "day-2.md",
+                  "day-3.md",
+                  "day-4.md",
+                  "day-5.md",
+                ],
+              },
+              {
+                name: "Deep Work Essentials",
+                slug: "/deep-work",
+                desc: "A free 2-day email course on mastering deep work.",
+                steps: 3,
+                cadence: "subscriber picks",
+                subs: 56,
+                active: 41,
+                completed: 15,
+                accent: "#ff6b9d",
+                files: ["welcome.md", "day-1.md", "day-2.md"],
+              },
+            ].map((pack) => (
+              <div
+                key={pack.name}
+                className="flex flex-1 flex-col bg-[#050505] p-5 md:p-6"
+              >
+                {/* Pack header with accent stripe */}
+                <div
+                  className="mb-4 h-1 w-12"
+                  style={{ backgroundColor: pack.accent }}
+                />
+                <p className="text-[16px] font-bold text-[#e8e8e8]">
+                  {pack.name}
+                </p>
+                <p className="mt-1 font-mono text-[11px] text-[#444]">
+                  {pack.slug}
+                </p>
+                <p className="mt-2 text-[13px] leading-relaxed text-[#555]">
+                  {pack.desc}
+                </p>
+
+                {/* Stats row */}
+                <div className="mt-4 flex items-center gap-3">
+                  <span className="border border-[#1a1a1a] bg-[#0a0a0a] px-2 py-0.5 font-mono text-[11px] text-[#666]">
+                    {pack.steps} lessons
+                  </span>
+                  <span className="font-mono text-[11px] text-[#444]">
+                    {pack.cadence}
+                  </span>
+                </div>
+
+                {/* Mini file tree */}
+                <div className="mt-4 border border-[#1a1a1a] bg-[#0a0a0a] p-3">
+                  <p className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-[#333]">
+                    emails/
+                  </p>
+                  {pack.files.map((file, i) => (
+                    <div
+                      key={`${pack.name}-${i}`}
+                      className="flex items-center gap-2 py-0.5"
+                    >
+                      <span className="font-mono text-[10px] text-[#333]">
+                        └
+                      </span>
+                      <span className="font-mono text-[11px] text-[#555]">
+                        {file}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Subscriber breakdown */}
+                <div className="mt-auto pt-5">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 font-mono text-[12px] text-[#777]">
+                      <Users className="h-3 w-3" />
+                      {pack.subs} subscribers
+                    </span>
+                  </div>
+                  <div className="mt-2 flex h-1.5 w-full overflow-hidden bg-[#111]">
+                    <div
+                      className="h-full"
+                      style={{
+                        width: `${(pack.active / pack.subs) * 100}%`,
+                        backgroundColor: pack.accent,
+                        opacity: 0.4,
+                      }}
+                    />
+                    <div
+                      className="h-full"
+                      style={{
+                        width: `${(pack.completed / pack.subs) * 100}%`,
+                        backgroundColor: pack.accent,
+                        opacity: 0.15,
+                      }}
+                    />
+                  </div>
+                  <div className="mt-1.5 flex gap-4 font-mono text-[10px] text-[#444]">
+                    <span>{pack.active} active</span>
+                    <span>{pack.completed} completed</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Key facts row */}
+          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-3">
+            {[
+              {
+                label: "Independent Subscribers",
+                desc: "Each pack has its own subscriber list — no cross-talk, no shared state.",
+              },
+              {
+                label: "Namespaced URLs",
+                desc: "Routes are scoped per pack. /mindful-productivity and /deep-work coexist cleanly.",
+              },
+              {
+                label: "Per-Pack Branding",
+                desc: "Every pack gets its own email shell, colors, and companion page styling.",
+              },
+            ].map((fact) => (
+              <div key={fact.label} className="bg-[#050505] p-4">
                 <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
-                  {item.label}
+                  {fact.label}
                 </p>
-                <p className="mt-2 text-[15px] leading-relaxed text-[#777]">
-                  {item.desc}
-                </p>
+                <p className="mt-1 text-[13px] text-[#555]">{fact.desc}</p>
               </div>
             ))}
           </div>
@@ -314,7 +703,7 @@ export default function HomePage() {
             Features
           </p>
           <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
-            Everything you need, nothing you don&apos;t.
+            Skip the email platform. Own your stack.
           </h2>
 
           <div className="mt-10 flex flex-col gap-px bg-[#1a1a1a] p-px">
@@ -575,537 +964,146 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── How It Works ── */}
+      {/* ── The Drip Flow ── */}
       <section className="border-b border-[#1a1a1a]">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
           <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
-            How It Works
+            The Drip Flow
           </p>
-          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
-            From repo to running course in four steps.
-          </h2>
-
-          <HowItWorksSection />
-        </div>
-      </section>
-
-      {/* ── Content Packs ── */}
-      <section className="overflow-hidden border-b border-[#1a1a1a]">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
-            Content Packs
-          </p>
-          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
-            Markdown in, emails out.
+          <h2 className="mt-4 max-w-2xl text-3xl font-bold tracking-tight md:text-4xl">
+            What happens after someone subscribes
           </h2>
           <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
-            Write lessons in markdown. ContentDrip handles templating,
-            rendering, and delivery.
+            Every subscription follows the same lifecycle. Zero configuration.
           </p>
 
-          {/* Visual pipeline */}
-          <div className="mt-12 grid items-stretch gap-0 lg:grid-cols-[1fr_auto_1fr]">
-            {/* Left: Markdown input */}
-            <div className="min-w-0 border border-[#1a1a1a] bg-[#0a0a0a]">
-              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
-                <div className="flex gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
-                </div>
-                <span className="font-mono text-xs text-[#444]">day-1.md</span>
-              </div>
-              <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-[1.8] text-[#555]">
-                <code>
-                  <span className="text-[#444]">---</span>
-                  {"\n"}
-                  <span className="text-[#666]">subject:</span>{" "}
-                  <span className="text-[#888]">
-                    {'"'}Day 1: Getting Started{'"'}
-                  </span>
-                  {"\n"}
-                  <span className="text-[#666]">preview:</span>{" "}
-                  <span className="text-[#888]">
-                    {'"'}Your first lesson{'"'}
-                  </span>
-                  {"\n"}
-                  <span className="text-[#444]">---</span>
-                  {"\n\n"}
-                  <span className="text-[#666]">Good morning!</span>
-                  {"\n\n"}
-                  <span className="text-[#666]">
-                    Today we{`'`}re covering the
-                  </span>
-                  {"\n"}
-                  <span className="text-[#666]">fundamentals of...</span>
-                  {"\n\n"}
-                  <span className="text-[#666]">## The Key Idea</span>
-                  {"\n\n"}
-                  <span className="text-[#666]">Content in **markdown**.</span>
-                  {"\n\n"}
-                  <span className="text-[#666]">[Read online →](</span>
-                  <span className="text-[#c8ff00]">{"{{companionUrl}}"}</span>
-                  <span className="text-[#666]">)</span>
-                </code>
-              </pre>
-            </div>
+          {/* Horizontal timeline */}
+          <div className="mt-10 overflow-x-auto">
+            <div className="relative min-w-[700px]">
+              {/* Horizontal line */}
+              <div className="absolute left-0 right-0 top-5 h-px bg-[#1a1a1a]" />
 
-            {/* Center: Pipeline connector */}
-            <div className="flex items-center justify-center py-6 lg:px-6 lg:py-0">
-              <div className="flex items-center gap-3 lg:flex-col lg:gap-4">
-                {/* Arrow / chevrons */}
-                <div className="flex gap-1 text-[#333] lg:flex-col">
-                  <svg
-                    className="h-5 w-5 rotate-90 lg:rotate-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
+              <div className="grid grid-cols-5">
+                {(
+                  [
+                    {
+                      icon: UserPlus,
+                      label: "Subscribe",
+                      desc: "Visitor enters email + preferred delivery time",
+                    },
+                    {
+                      icon: ShieldCheck,
+                      label: "Confirm",
+                      desc: "Signed token email → click to activate",
+                    },
+                    {
+                      icon: Mail,
+                      label: "Welcome",
+                      desc: "Sent immediately on confirmation",
+                    },
+                    {
+                      icon: Clock,
+                      label: "Drip",
+                      desc: "One lesson per day at the chosen time & timezone",
+                    },
+                    {
+                      icon: CircleCheckBig,
+                      label: "Complete",
+                      desc: "Marked as completed after final step",
+                    },
+                  ] as const
+                ).map((step) => (
+                  <div
+                    key={step.label}
+                    className="relative flex flex-col items-center text-center"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
-
-                {/* Pipeline steps */}
-                <div className="flex flex-wrap justify-center gap-2 lg:flex-col lg:gap-3">
-                  {["parse frontmatter", "inject URLs", "render email"].map(
-                    (step) => (
-                      <div
-                        key={step}
-                        className="whitespace-nowrap border border-[#1a1a1a] bg-[#0a0a0a] px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[#444]"
-                      >
-                        {step}
-                      </div>
-                    ),
-                  )}
-                </div>
-
-                {/* Arrow / chevrons */}
-                <div className="flex gap-1 text-[#333] lg:flex-col">
-                  <svg
-                    className="h-5 w-5 rotate-90 lg:rotate-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
+                    {/* Node */}
+                    <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a1a1a] bg-[#0a0a0a]">
+                      <step.icon
+                        className="h-4 w-4 text-[#c8ff00]"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                    {/* Content */}
+                    <p className="mt-3 font-mono text-[12px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                      {step.label}
+                    </p>
+                    <p className="mt-1 px-2 text-[13px] leading-relaxed text-[#555]">
+                      {step.desc}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
+          </div>
 
-            {/* Right: Email output mockup */}
-            <div className="min-w-0 border border-[#1a1a1a] bg-[#0a0a0a]">
-              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
-                <svg
-                  className="h-4 w-4 text-[#333]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+          {/* Anytime actions */}
+          <div className="mt-8 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2">
+            <div className="flex items-center gap-3 bg-[#050505] px-5 py-4">
+              <Pause
+                className="h-4 w-4 shrink-0 text-[#c8ff00]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <p className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#888]">
+                  Pause
+                </p>
+                <p className="mt-0.5 text-[13px] text-[#555]">
+                  Resume exactly where they left off
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-[#050505] px-5 py-4">
+              <LogOut
+                className="h-4 w-4 shrink-0 text-[#c8ff00]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <p className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#888]">
+                  Unsubscribe
+                </p>
+                <p className="mt-0.5 text-[13px] text-[#555]">
+                  One-click, signed link, instant
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-3">
+            {(
+              [
+                {
+                  icon: KeyRound,
+                  label: "Signed Tokens",
+                  desc: "Every action link (confirm, manage, pause, stop) uses a cryptographically signed, single-use token. No passwords, no sessions.",
+                },
+                {
+                  icon: RefreshCcw,
+                  label: "Idempotent Delivery",
+                  desc: "The send log tracks every email sent. If the cron job runs twice, the same step is never sent again. Safe to retry, safe to overlap.",
+                },
+                {
+                  icon: Workflow,
+                  label: "Status Machine",
+                  desc: "Subscriptions move through PENDING_CONFIRM → ACTIVE → PAUSED → COMPLETED or STOPPED. Every transition is logged and auditable.",
+                },
+              ] as const
+            ).map((item) => (
+              <div key={item.label} className="bg-[#050505] p-5">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full border border-[#c8ff0020] bg-[#c8ff0008] shadow-[0_0_16px_#c8ff0015]">
+                  <item.icon
+                    className="h-5 w-5 text-[#c8ff00]"
+                    strokeWidth={1.5}
                   />
-                </svg>
-                <span className="font-mono text-xs text-[#444]">
-                  Delivered email
-                </span>
-              </div>
-              <div className="p-5">
-                {/* Email header area */}
-                <div className="mb-4 border-b border-[#1a1a1a] pb-4">
-                  <div className="mb-2 h-5 w-24 bg-[#1a1a1a]" />
-                  <p className="font-mono text-sm font-medium text-[#888]">
-                    Day 1: Getting Started
-                  </p>
-                  <p className="mt-0.5 font-mono text-[11px] text-[#444]">
-                    Your first lesson
-                  </p>
                 </div>
-
-                {/* Email body skeleton */}
-                <div className="space-y-3">
-                  <p className="font-mono text-[13px] leading-relaxed text-[#666]">
-                    Good morning!
-                  </p>
-                  <p className="font-mono text-[13px] leading-relaxed text-[#555]">
-                    Today we{`'`}re covering the fundamentals of...
-                  </p>
-
-                  {/* Section heading */}
-                  <p className="mt-1 font-mono text-[13px] font-semibold text-[#777]">
-                    The Key Idea
-                  </p>
-
-                  {/* Body skeleton lines */}
-                  <div className="space-y-2">
-                    <div className="h-2.5 w-full bg-[#111]" />
-                    <div className="h-2.5 w-4/5 bg-[#111]" />
-                  </div>
-
-                  {/* CTA button */}
-                  <div className="pt-2">
-                    <div className="inline-block border border-[#c8ff00] px-4 py-2 font-mono text-[12px] font-medium text-[#c8ff00]">
-                      Read online →
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer area */}
-                <div className="mt-5 border-t border-[#1a1a1a] pt-3">
-                  <div className="flex gap-3 font-mono text-[10px] text-[#333]">
-                    <span>Manage</span>
-                    <span>·</span>
-                    <span>Pause</span>
-                    <span>·</span>
-                    <span>Unsubscribe</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Template variables */}
-          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { var: "{{companionUrl}}", desc: "Web version of this lesson" },
-              { var: "{{manageUrl}}", desc: "Manage subscription page" },
-              { var: "{{pauseUrl}}", desc: "Pause delivery one-click" },
-              { var: "{{stopUrl}}", desc: "Unsubscribe one-click" },
-            ].map((v) => (
-              <div key={v.var} className="bg-[#050505] p-4">
-                <code className="font-mono text-[13px] text-[#c8ff00]">
-                  {v.var}
-                </code>
-                <p className="mt-1 text-[13px] text-[#555]">{v.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Multiple Packs ── */}
-      <section className="border-b border-[#1a1a1a]">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
-            Multi-Pack
-          </p>
-          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
-            One deploy, many courses.
-          </h2>
-          <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
-            Each content pack is fully independent — its own subscribers, its
-            own schedule, its own branding. Deploy once, run as many courses as
-            you want from a single instance.
-          </p>
-
-          {/* Shared brand header */}
-          <div className="mt-12 flex items-center gap-3 border border-[#1a1a1a] border-b-0 bg-[#0a0a0a] px-5 py-3">
-            <div className="flex h-6 w-6 items-center justify-center bg-[#c8ff00] text-[11px] font-bold text-[#050505]">
-              L
-            </div>
-            <span className="font-mono text-[13px] font-medium text-[#888]">
-              Learnwise
-            </span>
-            <span className="ml-auto font-mono text-[11px] text-[#333]">
-              2 packs &middot; 1 deploy
-            </span>
-          </div>
-
-          {/* Pack cards */}
-          <div className="flex flex-col gap-px bg-[#1a1a1a] p-px md:flex-row">
-            {[
-              {
-                name: "The Art of Mindful Productivity",
-                slug: "/mindful-productivity",
-                desc: "A free 5-day email course on building sustainable focus and productivity habits.",
-                steps: 6,
-                cadence: "daily at 8am",
-                subs: 142,
-                active: 89,
-                completed: 53,
-                accent: "#c8ff00",
-                files: [
-                  "welcome.md",
-                  "day-1.md",
-                  "day-2.md",
-                  "day-3.md",
-                  "day-4.md",
-                  "day-5.md",
-                ],
-              },
-              {
-                name: "Deep Work Essentials",
-                slug: "/deep-work",
-                desc: "A free 2-day email course on mastering deep work.",
-                steps: 3,
-                cadence: "subscriber picks",
-                subs: 56,
-                active: 41,
-                completed: 15,
-                accent: "#ff6b9d",
-                files: ["welcome.md", "day-1.md", "day-2.md"],
-              },
-            ].map((pack) => (
-              <div
-                key={pack.name}
-                className="flex flex-1 flex-col bg-[#050505] p-5 md:p-6"
-              >
-                {/* Pack header with accent stripe */}
-                <div
-                  className="mb-4 h-1 w-12"
-                  style={{ backgroundColor: pack.accent }}
-                />
-                <p className="text-[16px] font-bold text-[#e8e8e8]">
-                  {pack.name}
-                </p>
-                <p className="mt-1 font-mono text-[11px] text-[#444]">
-                  {pack.slug}
-                </p>
-                <p className="mt-2 text-[13px] leading-relaxed text-[#555]">
-                  {pack.desc}
-                </p>
-
-                {/* Stats row */}
-                <div className="mt-4 flex items-center gap-3">
-                  <span className="border border-[#1a1a1a] bg-[#0a0a0a] px-2 py-0.5 font-mono text-[11px] text-[#666]">
-                    {pack.steps} lessons
-                  </span>
-                  <span className="font-mono text-[11px] text-[#444]">
-                    {pack.cadence}
-                  </span>
-                </div>
-
-                {/* Mini file tree */}
-                <div className="mt-4 border border-[#1a1a1a] bg-[#0a0a0a] p-3">
-                  <p className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-[#333]">
-                    emails/
-                  </p>
-                  {pack.files.map((file, i) => (
-                    <div
-                      key={`${pack.name}-${i}`}
-                      className="flex items-center gap-2 py-0.5"
-                    >
-                      <span className="font-mono text-[10px] text-[#333]">
-                        └
-                      </span>
-                      <span className="font-mono text-[11px] text-[#555]">
-                        {file}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Subscriber breakdown */}
-                <div className="mt-auto pt-5">
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 font-mono text-[12px] text-[#777]">
-                      <Users className="h-3 w-3" />
-                      {pack.subs} subscribers
-                    </span>
-                  </div>
-                  <div className="mt-2 flex h-1.5 w-full overflow-hidden bg-[#111]">
-                    <div
-                      className="h-full"
-                      style={{
-                        width: `${(pack.active / pack.subs) * 100}%`,
-                        backgroundColor: pack.accent,
-                        opacity: 0.4,
-                      }}
-                    />
-                    <div
-                      className="h-full"
-                      style={{
-                        width: `${(pack.completed / pack.subs) * 100}%`,
-                        backgroundColor: pack.accent,
-                        opacity: 0.15,
-                      }}
-                    />
-                  </div>
-                  <div className="mt-1.5 flex gap-4 font-mono text-[10px] text-[#444]">
-                    <span>{pack.active} active</span>
-                    <span>{pack.completed} completed</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Key facts row */}
-          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-3">
-            {[
-              {
-                label: "Independent Subscribers",
-                desc: "Each pack has its own subscriber list — no cross-talk, no shared state.",
-              },
-              {
-                label: "Namespaced URLs",
-                desc: "Routes are scoped per pack. /mindful-productivity and /deep-work coexist cleanly.",
-              },
-              {
-                label: "Per-Pack Branding",
-                desc: "Every pack gets its own email shell, colors, and companion page styling.",
-              },
-            ].map((fact) => (
-              <div key={fact.label} className="bg-[#050505] p-4">
                 <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
-                  {fact.label}
+                  {item.label}
                 </p>
-                <p className="mt-1 text-[13px] text-[#555]">{fact.desc}</p>
+                <p className="mt-2 text-[15px] leading-relaxed text-[#777]">
+                  {item.desc}
+                </p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Companion Pages ── */}
-      <section className="border-b border-[#1a1a1a]">
-        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
-            Companion Pages
-          </p>
-          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
-            Every email gets a web page.
-          </h2>
-          <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
-            Each lesson can have a companion page — a shareable, persistent web
-            version. Keep it minimal or go deeper than the email with extended
-            content, images, and rich formatting. For many courses, the page
-            becomes the main event.
-          </p>
-
-          {/* Split-screen: Email vs Web */}
-          <div className="mt-12 grid items-stretch gap-0 lg:grid-cols-[1fr_auto_1fr]">
-            {/* Left: Email mockup */}
-            <div className="border border-[#1a1a1a] bg-[#0a0a0a]">
-              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
-                <Mail className="h-4 w-4 text-[#333]" />
-                <span className="font-mono text-xs text-[#444]">
-                  Email inbox
-                </span>
-              </div>
-              <div className="p-5">
-                <div className="mb-3 flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-[#c8ff00]/20" />
-                  <span className="font-mono text-[12px] font-medium text-[#888]">
-                    Day 1: Getting Started
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  <div className="h-2 w-full bg-[#151515]" />
-                  <div className="h-2 w-5/6 bg-[#151515]" />
-                  <div className="h-2 w-4/5 bg-[#151515]" />
-                  <div className="h-2 w-2/3 bg-[#151515]" />
-                </div>
-                <div className="mt-4 space-y-1 text-[11px] text-[#333]">
-                  <div className="flex gap-2 font-mono">
-                    <span>Manage</span>
-                    <span>&middot;</span>
-                    <span>Pause</span>
-                    <span>&middot;</span>
-                    <span>Unsubscribe</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Center: Connector bridge */}
-            <div className="flex items-center justify-center py-6 lg:px-6 lg:py-0">
-              <div className="flex items-center gap-3 lg:flex-col lg:gap-3">
-                <div className="h-px w-8 border-t border-dashed border-[#333] lg:h-8 lg:w-px lg:border-l lg:border-t-0" />
-                <div className="whitespace-nowrap border border-[#c8ff00]/20 bg-[#c8ff00]/5 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-[#c8ff00]/60">
-                  linked pair
-                </div>
-                <div className="h-px w-8 border-t border-dashed border-[#333] lg:h-8 lg:w-px lg:border-l lg:border-t-0" />
-              </div>
-            </div>
-
-            {/* Right: Browser/web page mockup — visually richer */}
-            <div className="border border-[#1a1a1a] bg-[#0a0a0a]">
-              <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
-                <div className="flex gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-[#1a1a1a]" />
-                  <span className="h-2 w-2 rounded-full bg-[#1a1a1a]" />
-                  <span className="h-2 w-2 rounded-full bg-[#1a1a1a]" />
-                </div>
-                <span className="ml-1 font-mono text-[10px] text-[#333]">
-                  yoursite.com/p/course/day-1
-                </span>
-              </div>
-              <div className="p-5">
-                <div className="mb-3">
-                  <span className="font-mono text-[12px] font-medium text-[#888]">
-                    Day 1: Getting Started
-                  </span>
-                </div>
-                {/* Intro paragraph lines */}
-                <div className="space-y-2">
-                  <div className="h-2 w-full rounded-sm bg-[#151515]" />
-                  <div className="h-2 w-5/6 rounded-sm bg-[#151515]" />
-                  <div className="h-2 w-4/5 rounded-sm bg-[#151515]" />
-                </div>
-                {/* Image placeholder — shows richer content */}
-                <div className="my-3 flex h-14 items-center justify-center border border-dashed border-[#1a1a1a] bg-[#080808]">
-                  <span className="font-mono text-[10px] text-[#333]">
-                    image / embed
-                  </span>
-                </div>
-                {/* Extended content — more lines than the email */}
-                <div className="space-y-2">
-                  <div className="h-2 w-full rounded-sm bg-[#151515]" />
-                  <div className="h-2 w-5/6 rounded-sm bg-[#151515]" />
-                  <div className="h-2 w-full rounded-sm bg-[#151515]" />
-                  <div className="h-2 w-2/3 rounded-sm bg-[#151515]" />
-                </div>
-                <div className="mt-3 flex items-center gap-2 font-mono text-[11px] text-[#444]">
-                  <Globe className="h-3 w-3" />
-                  Shareable &middot; permanent &middot; any device
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Feature callouts */}
-          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-3">
-            <div className="bg-[#050505] p-4">
-              <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
-                Go Deeper
-              </p>
-              <p className="mt-1 text-[13px] text-[#555]">
-                Pages aren&apos;t limited to what fits in an email. Add images,
-                embeds, extended writing — no inbox constraints.
-              </p>
-            </div>
-            <div className="bg-[#050505] p-4">
-              <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
-                Permanent URLs
-              </p>
-              <p className="mt-1 text-[13px] text-[#555]">
-                Every page has a shareable link. Subscribers share content
-                without forwarding emails.
-              </p>
-            </div>
-            <div className="bg-[#050505] p-4">
-              <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
-                Optional Per Lesson
-              </p>
-              <p className="mt-1 text-[13px] text-[#555]">
-                Add a companion page to any lesson or skip it entirely. Each
-                step decides for itself.
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -1121,7 +1119,7 @@ export default function HomePage() {
           </h2>
           <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
             No locked-down templates. Every surface is a React component you
-            own — landing pages, emails, companion pages, and subscribe forms.
+            own.
           </p>
 
           {/* 4 mini-mockup cards */}
@@ -1244,7 +1242,9 @@ export default function HomePage() {
                 <span className="text-[#666]">function</span>{" "}
                 <span className="text-[#c8ff00]/60">EmailShell</span>
                 {"({ "}
-                <span className="text-[#888]">children, packName, accentColor, logoUrl</span>
+                <span className="text-[#888]">
+                  children, packName, accentColor, logoUrl
+                </span>
                 {" }) {"}
                 {"\n  "}
                 <span className="text-[#666]">return</span> {"("}
@@ -1256,15 +1256,11 @@ export default function HomePage() {
                 <span className="text-[#444]">
                   {"<Header logo={logoUrl} /> "}
                 </span>
-                <span className="text-[#333]">
-                  {"// ← your component"}
-                </span>
+                <span className="text-[#333]">{"// ← your component"}</span>
                 {"\n      "}
                 <span className="text-[#444]">{"{children}"}</span>
                 {"\n      "}
-                <span className="text-[#444]">
-                  {"<Footer />"}
-                </span>
+                <span className="text-[#444]">{"<Footer />"}</span>
                 {"\n    "}
                 <span className="text-[#444]">
                   {"</Container> </Body> </Html>"}
@@ -1283,11 +1279,11 @@ export default function HomePage() {
             Dev Mode
           </p>
           <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
-            Compress days into minutes.
+            Test a 7-day course in 7 minutes.
           </h2>
           <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
-            Fast-test mode scales down all delivery intervals so you can
-            preview your entire course without waiting days.
+            No waiting for real-time delivery. Fast-test mode compresses days
+            into minutes so you can preview your entire course instantly.
           </p>
 
           <div className="mt-12 space-y-8">
@@ -1298,19 +1294,17 @@ export default function HomePage() {
               </p>
               <div className="relative flex items-center justify-between">
                 <div className="absolute left-0 right-0 top-1/2 h-px bg-[#1a1a1a]" />
-                {["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"].map(
-                  (day) => (
-                    <div
-                      key={day}
-                      className="relative z-10 flex flex-col items-center"
-                    >
-                      <div className="h-3 w-3 rounded-full border border-[#333] bg-[#0a0a0a]" />
-                      <span className="mt-2 font-mono text-[11px] text-[#555]">
-                        {day}
-                      </span>
-                    </div>
-                  ),
-                )}
+                {["Day 1", "Day 2", "Day 3", "Day 4", "Day 5"].map((day) => (
+                  <div
+                    key={day}
+                    className="relative z-10 flex flex-col items-center"
+                  >
+                    <div className="h-3 w-3 rounded-full border border-[#333] bg-[#0a0a0a]" />
+                    <span className="mt-2 font-mono text-[11px] text-[#555]">
+                      {day}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -1395,30 +1389,118 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Why ContentDrip ── */}
+      <section className="border-b border-[#1a1a1a]">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
+            Why ContentDrip?
+          </p>
+          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
+            Own your email courses. Literally.
+          </h2>
+
+          {/* Comparison table */}
+          <div className="mt-12 overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b border-[#1a1a1a]">
+                  <th className="px-4 py-3 text-left font-mono text-[13px] font-bold uppercase tracking-wider text-[#444]">
+                    Feature
+                  </th>
+                  <th className="px-4 py-3 text-left font-mono text-[13px] font-bold uppercase tracking-wider text-[#444]">
+                    SaaS Platforms
+                  </th>
+                  <th className="px-4 py-3 text-left font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                    ContentDrip
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    feature: "Monthly fee",
+                    saas: "$29-$199/mo",
+                    contentdrip: "$0 (hosting only)",
+                  },
+                  {
+                    feature: "Subscriber limits",
+                    saas: "500-10K cap",
+                    contentdrip: "Unlimited",
+                  },
+                  {
+                    feature: "Design control",
+                    saas: "Templates only",
+                    contentdrip: "Full React codebase",
+                  },
+                  {
+                    feature: "Data ownership",
+                    saas: "Platform owns",
+                    contentdrip: "You own everything",
+                  },
+                  {
+                    feature: "Email portability",
+                    saas: "Export CSV",
+                    contentdrip: "Git repo",
+                  },
+                ].map((row, i) => (
+                  <tr
+                    key={row.feature}
+                    className="border-b border-[#1a1a1a] transition-colors hover:bg-[#0a0a0a]"
+                  >
+                    <td className="px-4 py-4 font-mono text-[13px] text-[#888]">
+                      {row.feature}
+                    </td>
+                    <td className="px-4 py-4 font-mono text-[13px] text-[#555]">
+                      {row.saas}
+                    </td>
+                    <td className="px-4 py-4 font-mono text-[13px] font-medium text-[#c8ff00]">
+                      {row.contentdrip}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Key differentiator callout */}
+          <div className="mt-6 border border-[#c8ff00]/20 bg-[#c8ff00]/5 p-6">
+            <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+              The Real Difference
+            </p>
+            <p className="mt-2 text-[15px] leading-relaxed text-[#888]">
+              Email platforms rent you their infrastructure. ContentDrip gives
+              you the source code. When you clone the repo, you own the entire
+              stack — database schema, email templates, subscriber management,
+              everything. No API calls to a third party. No monthly fees that
+              scale with your success.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── CTA ── */}
       <section className="border-b border-[#1a1a1a]">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
           <h2 className="text-4xl font-bold tracking-tight md:text-5xl">
-            Start building.
+            Your course can be live in an hour.
           </h2>
           <p className="mt-4 max-w-lg font-mono text-base leading-relaxed text-[#777]">
-            Clone the repo, create a content pack in markdown, deploy to Vercel,
-            and your subscribers start learning. The whole setup takes minutes,
-            not weeks. Read the docs or explore the live demo.
+            Clone the repo, write your first lesson, deploy to Vercel. No credit
+            card. No setup wizard. Just code.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
               href="/docs"
               className="group inline-flex h-9 items-center gap-2 bg-[#c8ff00] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#050505] no-underline transition-colors hover:bg-[#d8ff44]"
             >
-              Read the Docs
+              Clone the Repo
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="/mindful-productivity"
               className="inline-flex h-9 items-center border border-[#333] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#777] no-underline transition-colors hover:border-[#555] hover:text-[#e8e8e8]"
             >
-              See a Live Demo
+              See a Live Course
             </Link>
           </div>
         </div>
