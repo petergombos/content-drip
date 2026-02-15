@@ -39,6 +39,7 @@ interface SubscribeFormProps {
 export function SubscribeForm({ packKey, cadence }: SubscribeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [alreadySubscribed, setAlreadySubscribed] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const packs = getAllPacks();
@@ -100,7 +101,11 @@ export function SubscribeForm({ packKey, cadence }: SubscribeFormProps) {
             : "An error occurred",
         );
       } else if (result?.data) {
-        setSuccess(true);
+        if (result.data.alreadySubscribed) {
+          setAlreadySubscribed(true);
+        } else {
+          setSuccess(true);
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -108,6 +113,18 @@ export function SubscribeForm({ packKey, cadence }: SubscribeFormProps) {
       setIsSubmitting(false);
     }
   };
+
+  if (alreadySubscribed) {
+    return (
+      <div data-testid="subscribe-already-subscribed">
+        <SuccessState
+          icon="mail"
+          title="You're already subscribed"
+          description="We've sent a management link to your email. Use it to view your subscription status, update preferences, or resume delivery."
+        />
+      </div>
+    );
+  }
 
   if (success) {
     return (

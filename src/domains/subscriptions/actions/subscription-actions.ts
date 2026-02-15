@@ -31,7 +31,11 @@ export const subscribeAction = actionClient
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     const result = await service.subscribe(parsedInput);
-    return { success: true, subscriptionId: result.subscriptionId };
+    return {
+      success: true,
+      subscriptionId: result.subscriptionId,
+      alreadySubscribed: result.alreadySubscribed ?? false,
+    };
   });
 
 const confirmSchema = z.object({

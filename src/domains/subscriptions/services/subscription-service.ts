@@ -25,7 +25,11 @@ export class SubscriptionService {
     packKey: string;
     timezone: string;
     cronExpression: string;
-  }): Promise<{ subscriptionId: string; confirmToken: string }> {
+  }): Promise<{
+    subscriptionId: string;
+    confirmToken?: string;
+    alreadySubscribed?: boolean;
+  }> {
     // Check if pack exists
     const pack = getPackByKey(data.packKey);
     if (!pack) {
@@ -48,7 +52,9 @@ export class SubscriptionService {
         await this.sendConfirmationEmail(existing.id, data.email, data.packKey, token);
         return { subscriptionId: existing.id, confirmToken: token };
       }
-      throw new Error("Subscription already exists");
+      // Already has an active/paused/completed subscription — send management link
+      await this.requestManageLink(data.email);
+      return { subscriptionId: existing.id, alreadySubscribed: true };
     }
 
     // Create subscription
