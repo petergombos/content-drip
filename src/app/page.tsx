@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DripBackground } from "@/components/drip-background";
+import { HeroAnimation } from "@/components/hero-animation";
+import { HowItWorksSection } from "@/components/how-it-works-section";
 
 export const metadata: Metadata = {
   title: "ContentDrip — Open-Source Email Drip Courses",
@@ -25,29 +28,6 @@ export const metadata: Metadata = {
 };
 
 /* ── Data ── */
-
-const STEPS = [
-  {
-    n: "01",
-    title: "Clone",
-    desc: "Fork or clone the ContentDrip template repository. It's a standard Next.js app with the App Router — no custom build tools, no exotic dependencies. If you've used Next.js before, you already know how this works.",
-  },
-  {
-    n: "02",
-    title: "Write",
-    desc: "Create a content pack by writing markdown files with YAML frontmatter for subjects and previews. Define your steps in pack.ts, build an EmailShell for branding, and register the pack. That's the entire content model.",
-  },
-  {
-    n: "03",
-    title: "Deploy",
-    desc: "Push to Vercel (or any Node.js host). Set your environment variables for the database (Turso), email provider (Postmark or Resend), and cron secret. Configure a cron job to hit /api/cron every minute. That's the infrastructure.",
-  },
-  {
-    n: "04",
-    title: "Drip",
-    desc: "Visitors land on your pack's page, enter their email, and choose a delivery time. They confirm via email, get a welcome message immediately, then receive one lesson per day at their chosen time in their timezone.",
-  },
-];
 
 const STACK = [
   { name: "Next.js", note: "App Router, Server Actions, API Routes" },
@@ -104,10 +84,18 @@ export default function HomePage() {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative border-b border-[#1a1a1a]">
+      <section className="relative overflow-hidden border-b border-[#1a1a1a]">
         <div className="absolute inset-0 bg-grid-dark" />
+        <DripBackground />
 
         <div className="relative mx-auto max-w-6xl px-6 pb-20 pt-20 md:pb-32 md:pt-28">
+          {/* Right: animated subscription → drip visual (absolutely positioned) */}
+          <div className="pointer-events-none absolute bottom-0 right-6 top-0 hidden w-[340px] items-center lg:flex">
+            <div className="animate-fade-in delay-3 w-full">
+              <HeroAnimation />
+            </div>
+          </div>
+
           <p className="animate-fade-in-up font-mono text-[13px] uppercase tracking-[0.3em] text-[#c8ff00]">
             Open Source
           </p>
@@ -125,40 +113,8 @@ export default function HomePage() {
             at the hour they choose, in their timezone.
           </p>
 
-          {/* Terminal */}
-          <div className="animate-fade-in-up delay-3 mt-10 max-w-lg border border-[#1a1a1a] bg-[#0a0a0a]">
-            <div className="flex items-center gap-1.5 border-b border-[#1a1a1a] px-4 py-2">
-              <span className="h-2 w-2 rounded-full bg-[#333]" />
-              <span className="h-2 w-2 rounded-full bg-[#333]" />
-              <span className="h-2 w-2 rounded-full bg-[#333]" />
-              <span className="ml-auto font-mono text-xs text-[#333]">
-                terminal
-              </span>
-            </div>
-            <div className="p-4 font-mono text-[15px] leading-loose">
-              <p>
-                <span className="text-[#c8ff00]">$</span>{" "}
-                <span className="text-[#999]">
-                  git clone petergombos/content-drip.git
-                </span>
-              </p>
-              <p>
-                <span className="text-[#c8ff00]">$</span>{" "}
-                <span className="text-[#999]">cd my-course && npm install</span>
-              </p>
-              <p>
-                <span className="text-[#c8ff00]">$</span>{" "}
-                <span className="text-[#999]">npm run dev</span>
-              </p>
-              <p className="text-[#444]">
-                ▸ Ready on localhost:3000
-                <span className="animate-cursor-blink ml-0.5 inline-block h-3.5 w-[7px] translate-y-[3px] bg-[#c8ff00]" />
-              </p>
-            </div>
-          </div>
-
           {/* CTAs */}
-          <div className="animate-fade-in-up delay-4 mt-8 flex flex-wrap items-center gap-3">
+          <div className="animate-fade-in-up delay-3 mt-10 flex flex-wrap items-center gap-3">
             <Link
               href="/docs"
               className="group inline-flex h-9 items-center gap-2 bg-[#c8ff00] px-4 font-mono text-[13px] font-bold uppercase tracking-widest text-[#050505] no-underline transition-colors hover:bg-[#d8ff44]"
@@ -174,7 +130,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <p className="animate-fade-in-up delay-5 mt-6 font-mono text-xs uppercase tracking-widest text-[#333]">
+          <p className="animate-fade-in-up delay-4 mt-6 font-mono text-xs uppercase tracking-widest text-[#333]">
             MIT Licensed &middot; Self-Hosted &middot; No Vendor Lock-In
           </p>
         </div>
@@ -194,84 +150,91 @@ export default function HomePage() {
             needed — this is how ContentDrip works out of the box.
           </p>
 
-          <div className="mt-10 border border-[#1a1a1a] bg-[#0a0a0a]">
-            <div className="border-b border-[#1a1a1a] px-4 py-2 font-mono text-xs uppercase tracking-widest text-[#444]">
-              subscription lifecycle
-            </div>
-            <div className="space-y-0 p-5 font-mono text-[13px] md:p-6">
-              {(
-                [
-                  {
-                    icon: UserPlus,
-                    num: "01",
-                    label: "subscribe",
-                    desc: "visitor enters email + preferred delivery time",
-                  },
-                  {
-                    icon: ShieldCheck,
-                    num: "02",
-                    label: "confirm",
-                    desc: "signed token email → click to activate",
-                  },
-                  {
-                    icon: Mail,
-                    num: "03",
-                    label: "welcome",
-                    desc: "step 0 sent immediately on confirmation",
-                  },
-                  {
-                    icon: Clock,
-                    num: "04",
-                    label: "drip",
-                    desc: "one lesson per day at the chosen time & timezone",
-                  },
-                  {
-                    icon: CircleCheckBig,
-                    num: "05",
-                    label: "complete",
-                    desc: "subscription marked as completed after final step",
-                  },
-                ] as const
-              ).map((step, i) => (
-                <div key={step.num} className="flex items-center gap-3 py-3">
-                  <step.icon
-                    className="h-4 w-4 shrink-0 text-[#c8ff00]"
-                    strokeWidth={1.5}
-                  />
-                  <div className="flex min-w-0 items-baseline gap-2">
-                    <span className="text-[#c8ff00]">{step.num}</span>
-                    <span className="text-[#999]">{step.label}</span>
-                    <span className="hidden text-[#333] sm:inline">
-                      ── {step.desc}
-                    </span>
-                  </div>
-                  {i < 4 && (
-                    <div className="ml-auto hidden h-px flex-1 bg-[#1a1a1a] lg:block" />
-                  )}
-                </div>
-              ))}
+          {/* Horizontal timeline */}
+          <div className="mt-10 overflow-x-auto">
+            <div className="relative min-w-[700px]">
+              {/* Horizontal line */}
+              <div className="absolute left-0 right-0 top-5 h-px bg-[#1a1a1a]" />
 
-              {/* Anytime actions */}
-              <div className="mt-1 space-y-0 border-t border-[#1a1a1a] pt-3">
-                <div className="flex items-center gap-3 py-2">
-                  <Pause
-                    className="h-4 w-4 shrink-0 text-[#c8ff00]"
-                    strokeWidth={1.5}
-                  />
-                  <span className="text-[#666]">
-                    at any point: pause ──→ resume exactly where they left off
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 py-2">
-                  <LogOut
-                    className="h-4 w-4 shrink-0 text-[#c8ff00]"
-                    strokeWidth={1.5}
-                  />
-                  <span className="text-[#666]">
-                    at any point: unsubscribe ──→ one-click, signed link,
-                    instant
-                  </span>
-                </div>
+              <div className="grid grid-cols-5">
+                {(
+                  [
+                    {
+                      icon: UserPlus,
+                      label: "Subscribe",
+                      desc: "Visitor enters email + preferred delivery time",
+                    },
+                    {
+                      icon: ShieldCheck,
+                      label: "Confirm",
+                      desc: "Signed token email → click to activate",
+                    },
+                    {
+                      icon: Mail,
+                      label: "Welcome",
+                      desc: "Sent immediately on confirmation",
+                    },
+                    {
+                      icon: Clock,
+                      label: "Drip",
+                      desc: "One lesson per day at the chosen time & timezone",
+                    },
+                    {
+                      icon: CircleCheckBig,
+                      label: "Complete",
+                      desc: "Marked as completed after final step",
+                    },
+                  ] as const
+                ).map((step) => (
+                  <div key={step.label} className="relative flex flex-col items-center text-center">
+                    {/* Node */}
+                    <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border border-[#1a1a1a] bg-[#0a0a0a]">
+                      <step.icon
+                        className="h-4 w-4 text-[#c8ff00]"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                    {/* Content */}
+                    <p className="mt-3 font-mono text-[12px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                      {step.label}
+                    </p>
+                    <p className="mt-1 px-2 text-[13px] leading-relaxed text-[#555]">
+                      {step.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Anytime actions */}
+          <div className="mt-8 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2">
+            <div className="flex items-center gap-3 bg-[#050505] px-5 py-4">
+              <Pause
+                className="h-4 w-4 shrink-0 text-[#c8ff00]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <p className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#888]">
+                  Pause
+                </p>
+                <p className="mt-0.5 text-[13px] text-[#555]">
+                  Resume exactly where they left off
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-[#050505] px-5 py-4">
+              <LogOut
+                className="h-4 w-4 shrink-0 text-[#c8ff00]"
+                strokeWidth={1.5}
+              />
+              <div>
+                <p className="font-mono text-[12px] font-bold uppercase tracking-wider text-[#888]">
+                  Unsubscribe
+                </p>
+                <p className="mt-0.5 text-[13px] text-[#555]">
+                  One-click, signed link, instant
+                </p>
               </div>
             </div>
           </div>
@@ -593,21 +556,7 @@ export default function HomePage() {
             From repo to running course in four steps.
           </h2>
 
-          <div className="mt-10 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((s) => (
-              <div key={s.n} className="bg-[#050505] p-5 md:p-6">
-                <span className="font-mono text-[13px] text-[#c8ff00]/40">
-                  {s.n}
-                </span>
-                <h3 className="mt-2 text-xl font-bold tracking-tight">
-                  {s.title}
-                </h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-[#777]">
-                  {s.desc}
-                </p>
-              </div>
-            ))}
-          </div>
+          <HowItWorksSection />
         </div>
       </section>
 
