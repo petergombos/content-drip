@@ -1,3 +1,4 @@
+import { DemoBanner } from "@/components/demo-banner";
 import { ExampleSiteFooter } from "@/components/example-site-footer";
 import { ExampleSiteHeader } from "@/components/example-site-header";
 import { SubscribeForm } from "@/components/subscribe-form";
@@ -107,18 +108,8 @@ const TESTIMONIALS = [
 export default function MindfulProductivityPage() {
   return (
     <div className="min-h-screen bg-background">
+      <DemoBanner />
       <ExampleSiteHeader />
-
-      {/* ── Demo Banner ── */}
-      <div className="border-b bg-primary/5 px-6 py-3 text-center">
-        <p className="text-sm text-muted-foreground">
-          This is a <strong className="text-foreground">live demo</strong> of a
-          ContentDrip content pack.{" "}
-          <a href="/" className="font-medium text-primary hover:underline">
-            Learn more about ContentDrip &rarr;
-          </a>
-        </p>
-      </div>
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b bg-grain">

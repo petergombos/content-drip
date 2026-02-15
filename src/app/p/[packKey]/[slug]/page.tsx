@@ -3,6 +3,7 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { notFound } from "next/navigation";
 import { renderMarkdownToReact } from "@/lib/markdown/renderer";
+import { DemoBanner } from "@/components/demo-banner";
 import { ExampleSiteHeader } from "@/components/example-site-header";
 import { ExampleSiteFooter } from "@/components/example-site-footer";
 import Link from "next/link";
@@ -47,6 +48,7 @@ export default async function CompanionPage({ params }: CompanionPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <DemoBanner />
       <ExampleSiteHeader />
 
       {/* Course header band */}

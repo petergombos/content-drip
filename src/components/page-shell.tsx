@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { DemoBanner } from "@/components/demo-banner";
 import { ExampleSiteHeader } from "@/components/example-site-header";
 import { ExampleSiteFooter } from "@/components/example-site-footer";
 
@@ -12,6 +13,7 @@ export function PageShell(props: {
 }) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <DemoBanner />
       <ExampleSiteHeader />
 
       <main className="flex-1">
