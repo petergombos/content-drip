@@ -122,8 +122,10 @@ describe("SchedulerService", () => {
 
     it("skips subscriptions that are not due (cron)", async () => {
       const sub = makeSub({
-        cronExpression: "0 0 1 1 *", // once a year on Jan 1
+        cronExpression: "0 8 * * *", // daily at 8 AM
       });
+      // Simulate: already sent after today's 8 AM match
+      (repo.getLastSuccessfulSendAt as ReturnType<typeof vi.fn>).mockResolvedValue(new Date());
       (repo.findActiveSubscriptions as ReturnType<typeof vi.fn>).mockResolvedValue([sub]);
 
       const result = await service.sendDueSubscriptions();
@@ -229,7 +231,9 @@ describe("SchedulerService", () => {
   // ==========================================
   describe("processSubscription", () => {
     it('returns "skipped" when not due (cron)', async () => {
-      const sub = makeSub({ cronExpression: "0 0 1 1 *" });
+      const sub = makeSub({ cronExpression: "0 8 * * *" });
+      // Simulate: already sent after today's 8 AM match
+      (repo.getLastSuccessfulSendAt as ReturnType<typeof vi.fn>).mockResolvedValue(new Date());
       const result = await service.processSubscription(sub, new Date(), null);
       expect(result).toBe("skipped");
     });
@@ -250,7 +254,26 @@ describe("SchedulerService", () => {
       });
       // 8:00:00.000 AM ET = 12:00:00.000 UTC (summer, UTC-4)
       const exactMatch = new Date("2025-06-15T12:00:00.000Z");
+      // Last send was yesterday — today's 8 AM match is new
+      (repo.getLastSuccessfulSendAt as ReturnType<typeof vi.fn>).mockResolvedValue(
+        new Date("2025-06-14T12:00:00.000Z")
+      );
       const result = await service.processSubscription(sub, exactMatch, null);
+      expect(result).toBe("sent");
+    });
+
+    it("is due hours after the cron match when the window was missed", async () => {
+      const sub = makeSub({
+        cronExpression: "0 8 * * *",
+        timezone: "Europe/Budapest",
+      });
+      // It's 2 PM Budapest — the 8 AM match was 6 hours ago
+      const now = new Date("2026-02-16T13:00:00.000Z"); // 2 PM Budapest (CET, UTC+1)
+      // Last send was yesterday (welcome email)
+      (repo.getLastSuccessfulSendAt as ReturnType<typeof vi.fn>).mockResolvedValue(
+        new Date("2026-02-15T16:57:00.000Z")
+      );
+      const result = await service.processSubscription(sub, now, null);
       expect(result).toBe("sent");
     });
 
@@ -399,10 +422,14 @@ describe("SchedulerService", () => {
     it("aggregates mixed results (sent, skipped, completed)", async () => {
       const subs = [
         makeSub({ id: "sent-1" }),
-        makeSub({ id: "skipped-1", cronExpression: "0 0 1 1 *" }), // not due
+        makeSub({ id: "skipped-1", cronExpression: "0 8 * * *" }), // not due (already sent)
         makeSub({ id: "completed-1" }),
       ];
       (repo.findByIds as ReturnType<typeof vi.fn>).mockResolvedValue(subs);
+      // skipped-1: simulate already sent after today's match
+      (repo.getLastSuccessfulSendAt as ReturnType<typeof vi.fn>).mockImplementation(
+        async (id: string) => (id === "skipped-1" ? new Date() : null)
+      );
 
       // completed-1 has no next step
       mockGetNextStep.mockImplementation(

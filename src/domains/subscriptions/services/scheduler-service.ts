@@ -175,9 +175,11 @@ export class SchedulerService {
           now,
           fastTestStepMinutes
         )
-      : this.isDueByCron(
+      : await this.isDueByCron(
+          subscription.id,
           subscription.cronExpression,
           subscription.timezone,
+          subscription.updatedAt,
           now
         );
 
@@ -214,13 +216,19 @@ export class SchedulerService {
   }
 
   /**
-   * Check if a cron expression matches the current time in the given timezone
+   * Check if a cron occurrence has passed since the last email was sent.
+   *
+   * Instead of a fragile 1-minute window, we compare the most recent cron
+   * match against the last successful send time. This means a missed 8:00 AM
+   * window is retried at 8:01, 8:02, … until the email goes out.
    */
-  private isDueByCron(
+  private async isDueByCron(
+    subscriptionId: string,
     cronExpression: string,
     timezone: string,
+    fallbackAnchor: Date,
     now: Date
-  ): boolean {
+  ): Promise<boolean> {
     try {
       // +1ms so that prev() includes the exact-match instant
       // (cron-parser v5 treats currentDate as exclusive for prev())
@@ -229,13 +237,14 @@ export class SchedulerService {
         tz: timezone,
       });
 
-      const prev = interval.prev();
-      const prevTime = prev.getTime();
+      const prevMatchTime = interval.prev().getTime();
 
-      const diff = now.getTime() - prevTime;
-      const oneMinute = 60 * 1000;
+      const lastSentAt =
+        await this.repo.getLastSuccessfulSendAt(subscriptionId);
+      const anchor = lastSentAt ?? fallbackAnchor;
 
-      return diff >= 0 && diff < oneMinute;
+      // Due if a cron match occurred after the last send (or activation)
+      return prevMatchTime > anchor.getTime();
     } catch (error) {
       console.error(`Error parsing cron expression ${cronExpression}:`, error);
       return false;
