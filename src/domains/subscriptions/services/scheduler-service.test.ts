@@ -241,6 +241,19 @@ describe("SchedulerService", () => {
       expect(emailService.sendEmail).toHaveBeenCalledTimes(1);
     });
 
+    it("is due when now lands exactly on the cron match instant", async () => {
+      // cron-parser v5 treats currentDate as exclusive for prev(), so
+      // without the +1ms offset this would return "skipped"
+      const sub = makeSub({
+        cronExpression: "0 8 * * *",
+        timezone: "America/New_York",
+      });
+      // 8:00:00.000 AM ET = 12:00:00.000 UTC (summer, UTC-4)
+      const exactMatch = new Date("2025-06-15T12:00:00.000Z");
+      const result = await service.processSubscription(sub, exactMatch, null);
+      expect(result).toBe("sent");
+    });
+
     it('returns "completed" when no next step', async () => {
       const sub = makeSub();
       mockGetNextStep.mockReturnValue(null);
