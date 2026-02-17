@@ -145,6 +145,30 @@ export function renderMarkdownToHtml(markdown: string): string {
 }
 
 /**
+ * Parse markdown for web pages (companion pages, etc.).
+ * Returns clean HTML without email-specific inline styles or button transforms.
+ * Intended for use with Tailwind prose classes.
+ */
+export function parsePageMarkdown(markdown: string): ParsedMarkdown {
+  const parsed = matter(markdown);
+  const frontmatter = parsed.data as MarkdownFrontmatter;
+
+  const html = String(
+    remark()
+      .use(remarkGfm)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeStringify, { allowDangerousHtml: true })
+      .processSync(parsed.content)
+  );
+
+  return {
+    frontmatter,
+    content: parsed.content,
+    html,
+  };
+}
+
+/**
  * Extract frontmatter from markdown
  */
 export function extractFrontmatter(markdown: string): MarkdownFrontmatter {

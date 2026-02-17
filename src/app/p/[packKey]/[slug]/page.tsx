@@ -1,11 +1,8 @@
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import "@/content-packs";
 import { getPackByKey } from "@/content-packs/registry";
-import {
-  extractFrontmatter,
-  parseMarkdown,
-} from "@/lib/markdown/renderer";
+import { extractFrontmatter, parsePageMarkdown } from "@/lib/markdown/renderer";
 import { readFileSync } from "fs";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -48,23 +45,39 @@ export async function generateMetadata({
 
   const { markdown, pack } = result;
   const fm = extractFrontmatter(markdown);
-  const title = fm.subject ?? `${pack.name} — ${slug}`;
-  const description = fm.preview ?? pack.description;
+
+  // Separate known frontmatter fields from pass-through metadata overrides.
+  // `title` and `description` have sensible defaults; everything else (keywords,
+  // openGraph, twitter, robots, etc.) is spread directly into the Metadata object
+  // so content authors can override any Next.js metadata field from frontmatter.
+  const {
+    title: fmTitle,
+    description: fmDescription,
+    openGraph: fmOg,
+    twitter: fmTwitter,
+    ...restMeta
+  } = fm as Record<string, unknown>;
+
+  const title = (fmTitle as string) ?? `${pack.name} — ${slug}`;
+  const description = (fmDescription as string) ?? pack.description;
 
   const ogUrl = `/api/og?type=companion&title=${encodeURIComponent(title)}&label=${encodeURIComponent(pack.name)}`;
 
   return {
     title,
     description,
+    ...restMeta,
     openGraph: {
       title,
       description,
       images: [{ url: ogUrl, width: 1200, height: 630 }],
+      ...(fmOg as Record<string, unknown>),
     },
     twitter: {
       title,
       description,
       images: [ogUrl],
+      ...(fmTwitter as Record<string, unknown>),
     },
   };
 }
@@ -81,7 +94,7 @@ export default async function CompanionPage({ params }: CompanionPageProps) {
     "{{assetUrl}}",
     `/api/content-assets/${packKey}`,
   );
-  const { html } = parseMarkdown(processedMarkdown);
+  const { html } = parsePageMarkdown(processedMarkdown);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

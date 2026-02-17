@@ -1,5 +1,6 @@
 ---
-subject: "Lesson 1: Getting started"
+title: "Lesson 1: Getting started"
+description: "Get started with the fundamentals and set up your environment."
 ---
 
 # Lesson 1: Getting started
