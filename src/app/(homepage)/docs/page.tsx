@@ -121,6 +121,7 @@ const NAV = [
       { id: "markdown-format", label: "Markdown & Frontmatter" },
       { id: "placeholders", label: "Placeholder Variables" },
       { id: "multiple-packs", label: "Multiple Packs" },
+      { id: "content-preview", label: "Content Preview" },
     ],
   },
   {
@@ -837,6 +838,36 @@ export function MyEmailShell(props: PackEmailShellProps) {
                 absolute URLs for images (relative paths won&apos;t work in
                 email clients).
               </P>
+              <H3 id="mf-assets">Pack assets</H3>
+              <P>
+                Each content pack can include static assets (images, diagrams,
+                etc.) in an <Code>assets/</Code> directory alongside its emails
+                and pages. Use the <Code>{"{{assetUrl}}"}</Code> placeholder to
+                reference them in your markdown:
+              </P>
+              <CodeBlock label="using assets in markdown">{`![Architecture diagram]({{assetUrl}}/architecture.png)
+
+![Photo]({{assetUrl}}/photos/hero.jpg)`}</CodeBlock>
+              <P>
+                Assets are served from{" "}
+                <Code>/api/content-assets/{"{packKey}"}/{"{path}"}</Code> with
+                immutable cache headers. Supported formats: PNG, JPG, JPEG, GIF,
+                SVG, WebP, AVIF, and ICO. The directory structure inside{" "}
+                <Code>assets/</Code> is preserved in the URL path.
+              </P>
+              <CodeBlock label="pack structure with assets">{`src/content-packs/my-course/
+├── pack.ts
+├── email-shell.tsx
+├── emails/
+│   ├── welcome.md
+│   └── day-1.md
+├── pages/
+│   └── day-1.md
+└── assets/
+    ├── logo.png
+    └── diagrams/
+        └── architecture.svg`}</CodeBlock>
+
               <H3 id="mf-button">Button syntax</H3>
               <P>
                 Append <Code>{`{button}`}</Code> to any markdown link to render
@@ -871,6 +902,7 @@ export function MyEmailShell(props: PackEmailShellProps) {
                   <tbody className="divide-y divide-[#1a1a1a]">
                     {[
                       ["{{companionUrl}}", "Web-readable version of this specific lesson. Points to /p/{packKey}/{stepSlug}."],
+                      ["{{assetUrl}}", "Base URL for serving static assets from your pack's assets/ directory. Use as an image prefix: ![diagram]({{assetUrl}}/diagram.png). Resolves to /api/content-assets/{packKey}."],
                       ["{{confirmUrl}}", "Confirmation link for the subscriber. Used in the confirm email template (emails/confirm.md)."],
                       ["{{manageUrl}}", "Manage subscription preferences page. Uses a signed single-use token for authentication."],
                       ["{{pauseUrl}}", "One-click pause delivery. Hits /api/pause with a signed token. Subscriber can resume later."],
@@ -911,6 +943,68 @@ export function MyEmailShell(props: PackEmailShellProps) {
                 automatically picks up registered packs. Companion pages are
                 namespaced by pack key (<Code>/p/pack-a/day-1</Code> vs{" "}
                 <Code>/p/pack-b/day-1</Code>).
+              </P>
+            </section>
+
+            {/* ── Content Preview ── */}
+            <section className="space-y-4">
+              <H2 id="content-preview">Content Preview</H2>
+              <P>
+                ContentDrip includes a built-in content previewer at{" "}
+                <Code>/content-preview</Code> that lets you browse and preview
+                every email and companion page in your project. It&apos;s
+                available in development and preview environments only — the
+                route returns a 404 in production.
+              </P>
+
+              <H3 id="cp-access">Accessing the previewer</H3>
+              <P>
+                Start your dev server and navigate to{" "}
+                <Code>http://localhost:3000/content-preview</Code>. The
+                previewer discovers all registered packs and their steps
+                automatically.
+              </P>
+
+              <H3 id="cp-features">What you can do</H3>
+              <P>
+                The previewer has a sidebar listing every content pack with its
+                emails and companion pages, plus system templates (confirmation
+                and manage-link emails). Select any item to see a rendered
+                preview:
+              </P>
+              <CodeBlock label="previewer features">{`• Email preview    — renders in a sandboxed iframe using the same
+                    pipeline as production (markdown → React Email → HTML)
+• Page preview     — renders as formatted prose with metadata display
+• Send test email  — sends any email to your inbox with [Preview] subject prefix
+• System emails    — preview confirmation and manage-link templates
+• Mock URLs        — all placeholder variables are replaced with mock URLs
+                    so links render realistically`}</CodeBlock>
+
+              <H3 id="cp-test-email">Sending test emails</H3>
+              <P>
+                Click the <Strong>Send Test</Strong> button on any email
+                preview, enter your email address, and the email is sent through
+                your configured mail adapter (Postmark or Resend). The subject
+                line is prefixed with <Code>[Preview]</Code> so you can
+                distinguish test emails from real deliveries. All placeholder
+                URLs are replaced with mock values.
+              </P>
+
+              <H3 id="cp-mock-urls">Mock URLs</H3>
+              <P>
+                In preview mode, placeholder variables are replaced with
+                realistic mock URLs so you can see how links will appear:
+              </P>
+              <CodeBlock label="mock URL replacements">{`{{confirmUrl}}    → https://preview.example.com/confirm/abc123
+{{companionUrl}}  → https://preview.example.com/p/pack/step
+{{manageUrl}}     → https://preview.example.com/manage/abc123
+{{pauseUrl}}      → https://preview.example.com/api/pause?token=abc&id=123
+{{stopUrl}}       → https://preview.example.com/api/stop?token=abc&id=123
+{{assetUrl}}      → /api/content-assets/{packKey} (real, functional URL)`}</CodeBlock>
+              <P>
+                Note that <Code>{"{{assetUrl}}"}</Code> resolves to a real,
+                functional URL in preview mode, so images from your pack&apos;s{" "}
+                <Code>assets/</Code> directory will render correctly.
               </P>
             </section>
 

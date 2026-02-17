@@ -6,6 +6,7 @@ import {
   CircleCheckBig,
   Clock,
   Code,
+  Eye,
   FileText,
   Globe,
   KeyRound,
@@ -16,6 +17,7 @@ import {
   Play,
   Plug,
   RefreshCcw,
+  Send,
   ShieldCheck,
   UserPlus,
   Users,
@@ -368,9 +370,10 @@ export default function HomePage() {
           </div>
 
           {/* Template variables */}
-          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-2 lg:grid-cols-5">
             {[
               { var: "{{companionUrl}}", desc: "Web version of this lesson" },
+              { var: "{{assetUrl}}", desc: "Base URL for pack assets" },
               { var: "{{manageUrl}}", desc: "Manage subscription page" },
               { var: "{{pauseUrl}}", desc: "Pause delivery one-click" },
               { var: "{{stopUrl}}", desc: "Unsubscribe one-click" },
@@ -1359,6 +1362,188 @@ export default function HomePage() {
               <p className="font-mono text-[14px] leading-relaxed text-[#666]">
                 Test your entire 7-day course in{" "}
                 <span className="text-[#c8ff00]">7 minutes</span>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Content Preview ── */}
+      <section className="border-b border-[#1a1a1a]">
+        <div className="mx-auto max-w-6xl px-6 py-20 md:py-28">
+          <p className="font-mono text-[13px] uppercase tracking-[0.3em] text-[#444]">
+            Content Preview
+          </p>
+          <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight md:text-4xl">
+            Preview every email and page before you ship.
+          </h2>
+          <p className="mt-3 max-w-xl font-mono text-base leading-relaxed text-[#555]">
+            A built-in dev tool that renders your entire course — emails and
+            companion pages — exactly as subscribers will see them. Send test
+            emails to yourself with one click.
+          </p>
+
+          {/* Previewer UI mockup */}
+          <div className="mt-12 border border-[#1a1a1a] bg-[#0a0a0a]">
+            {/* Top bar */}
+            <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
+              <div className="flex gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
+              </div>
+              <span className="font-mono text-xs text-[#444]">
+                localhost:3000/content-preview
+              </span>
+              <span className="ml-auto border border-[#c8ff00]/20 bg-[#c8ff00]/5 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#c8ff00]/60">
+                dev only
+              </span>
+            </div>
+
+            <div className="flex min-h-[280px]">
+              {/* Sidebar */}
+              <div className="w-52 shrink-0 border-r border-[#1a1a1a] p-3">
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-wider text-[#333]">
+                  Content Packs
+                </p>
+                {[
+                  {
+                    name: "my-course",
+                    items: [
+                      { label: "welcome", type: "email", active: false },
+                      { label: "day-1", type: "email", active: true },
+                      { label: "day-2", type: "email", active: false },
+                      { label: "day-1", type: "page", active: false },
+                    ],
+                  },
+                ].map((pack) => (
+                  <div key={pack.name} className="mb-3">
+                    <p className="mb-1 font-mono text-[11px] font-medium text-[#777]">
+                      {pack.name}
+                    </p>
+                    <div className="space-y-0.5">
+                      {pack.items.map((item, i) => (
+                        <div
+                          key={`${pack.name}-${item.label}-${item.type}-${i}`}
+                          className={`flex items-center gap-2 px-2 py-1 font-mono text-[11px] ${
+                            item.active
+                              ? "bg-[#c8ff00]/10 text-[#c8ff00]"
+                              : "text-[#555]"
+                          }`}
+                        >
+                          {item.type === "email" ? (
+                            <Mail className="h-3 w-3" />
+                          ) : (
+                            <FileText className="h-3 w-3" />
+                          )}
+                          {item.label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <div className="mt-3 border-t border-[#1a1a1a] pt-3">
+                  <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-[#333]">
+                    System
+                  </p>
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2 px-2 py-1 font-mono text-[11px] text-[#555]">
+                      <Mail className="h-3 w-3" />
+                      confirm
+                    </div>
+                    <div className="flex items-center gap-2 px-2 py-1 font-mono text-[11px] text-[#555]">
+                      <Mail className="h-3 w-3" />
+                      manage-link
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Preview pane */}
+              <div className="flex-1 p-4">
+                {/* Email header bar */}
+                <div className="mb-3 flex items-center justify-between border-b border-[#1a1a1a] pb-3">
+                  <div>
+                    <p className="font-mono text-[12px] font-medium text-[#888]">
+                      Day 1: Getting Started
+                    </p>
+                    <p className="mt-0.5 font-mono text-[10px] text-[#444]">
+                      Your first lesson awaits
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-7 items-center gap-1.5 border border-[#c8ff00]/30 bg-[#c8ff00]/5 px-3 font-mono text-[11px] text-[#c8ff00]/80">
+                      <Send className="h-3 w-3" />
+                      Send Test
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rendered email preview */}
+                <div className="border border-[#1a1a1a] bg-[#fafafa] p-5">
+                  <div className="space-y-2">
+                    <div className="h-3 w-20 rounded-sm bg-[#e0e0e0]" />
+                    <div className="h-4 w-48 rounded-sm bg-[#d0d0d0]" />
+                  </div>
+                  <div className="my-3 h-px w-full bg-[#e0e0e0]" />
+                  <div className="space-y-2">
+                    <div className="h-2.5 w-full rounded-sm bg-[#e8e8e8]" />
+                    <div className="h-2.5 w-5/6 rounded-sm bg-[#e8e8e8]" />
+                    <div className="h-2.5 w-4/5 rounded-sm bg-[#e8e8e8]" />
+                  </div>
+                  <div className="mt-4">
+                    <div className="inline-block rounded-sm bg-[#c8ff00]/80 px-4 py-1.5">
+                      <div className="h-2 w-20 rounded-sm bg-[#050505]/30" />
+                    </div>
+                  </div>
+                  <div className="mt-4 border-t border-[#e0e0e0] pt-2">
+                    <div className="flex gap-3">
+                      <div className="h-2 w-12 rounded-sm bg-[#e0e0e0]" />
+                      <div className="h-2 w-8 rounded-sm bg-[#e0e0e0]" />
+                      <div className="h-2 w-16 rounded-sm bg-[#e0e0e0]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Feature callouts */}
+          <div className="mt-6 grid gap-px bg-[#1a1a1a] p-px sm:grid-cols-3">
+            <div className="bg-[#050505] p-4">
+              <div className="flex items-center gap-2">
+                <Eye className="h-4 w-4 text-[#c8ff00]/40" />
+                <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                  Live Rendering
+                </p>
+              </div>
+              <p className="mt-1.5 text-[13px] text-[#555]">
+                Emails render in a sandboxed iframe using the same pipeline as
+                production. Pages render as formatted prose.
+              </p>
+            </div>
+            <div className="bg-[#050505] p-4">
+              <div className="flex items-center gap-2">
+                <Send className="h-4 w-4 text-[#c8ff00]/40" />
+                <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                  Send Test Emails
+                </p>
+              </div>
+              <p className="mt-1.5 text-[13px] text-[#555]">
+                Send any email to your inbox with one click. See exactly what
+                your subscribers will receive — subject, preview, and all.
+              </p>
+            </div>
+            <div className="bg-[#050505] p-4">
+              <div className="flex items-center gap-2">
+                <Layers className="h-4 w-4 text-[#c8ff00]/40" />
+                <p className="font-mono text-[13px] font-bold uppercase tracking-wider text-[#c8ff00]">
+                  All Packs &amp; Steps
+                </p>
+              </div>
+              <p className="mt-1.5 text-[13px] text-[#555]">
+                Browse every registered pack, every email, every companion page,
+                and system templates — all in one place.
               </p>
             </div>
           </div>
