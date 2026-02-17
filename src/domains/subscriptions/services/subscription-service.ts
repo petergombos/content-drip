@@ -52,9 +52,15 @@ export class SubscriptionService {
         await this.sendConfirmationEmail(existing.id, data.email, data.packKey, token);
         return { subscriptionId: existing.id, confirmToken: token };
       }
-      // Already has an active/paused/completed subscription — send management link
-      await this.requestManageLink(data.email);
-      return { subscriptionId: existing.id, alreadySubscribed: true };
+      // STOPPED is a true end state — delete old record and let them start fresh
+      if (existing.status === SubscriptionStatus.STOPPED) {
+        await this.repo.delete(existing.id);
+        // Fall through to create a new subscription below
+      } else {
+        // Already has an active/paused/completed subscription — send management link
+        await this.requestManageLink(data.email);
+        return { subscriptionId: existing.id, alreadySubscribed: true };
+      }
     }
 
     // Create subscription
@@ -222,7 +228,7 @@ export class SubscriptionService {
   }
 
   /**
-   * Resume paused or stopped subscription
+   * Resume a paused subscription
    */
   async resumeSubscription(subscriptionId: string): Promise<void> {
     const subscription = await this.repo.findById(subscriptionId);
@@ -230,16 +236,40 @@ export class SubscriptionService {
       throw new Error("Subscription not found");
     }
 
-    if (
-      subscription.status !== SubscriptionStatus.PAUSED &&
-      subscription.status !== SubscriptionStatus.STOPPED
-    ) {
-      throw new Error("Subscription is not paused or stopped");
+    if (subscription.status !== SubscriptionStatus.PAUSED) {
+      throw new Error("Subscription is not paused");
     }
 
     await this.repo.update(subscription.id, {
       status: SubscriptionStatus.ACTIVE,
     });
+  }
+
+  /**
+   * Restart a subscription from the beginning.
+   * Available for ACTIVE, PAUSED, and COMPLETED — not STOPPED.
+   */
+  async restartSubscription(subscriptionId: string): Promise<void> {
+    const subscription = await this.repo.findById(subscriptionId);
+    if (!subscription) {
+      throw new Error("Subscription not found");
+    }
+
+    if (subscription.status === SubscriptionStatus.STOPPED) {
+      throw new Error("Cannot restart an unsubscribed course");
+    }
+
+    if (subscription.status === SubscriptionStatus.PENDING_CONFIRM) {
+      throw new Error("Subscription is not yet confirmed");
+    }
+
+    await this.repo.update(subscription.id, {
+      status: SubscriptionStatus.ACTIVE,
+      currentStepIndex: 0,
+    });
+
+    // Re-send the welcome email
+    await this.sendWelcomeEmail(subscription.id, subscription.email, subscription.packKey);
   }
 
   /**

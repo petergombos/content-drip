@@ -41,8 +41,8 @@ const NOTIFICATIONS: Record<
     icon: "stop",
     title: "You've unsubscribed",
     description:
-      "You won't receive any more emails from this course. If this was a mistake, you can resubscribe below.",
-    undoLabel: "Resubscribe",
+      "You won't receive any more emails from this course. To start over, sign up again.",
+    undoLabel: "",
     borderColor: "border-destructive/30",
     bgColor: "bg-destructive/5",
     iconBg: "bg-destructive/10",
@@ -80,8 +80,7 @@ export function ActionNotification({
   if (!notification) return null;
 
   const canResume =
-    (action === "paused" && subscription.status === "PAUSED") ||
-    (action === "unsubscribed" && subscription.status === "STOPPED");
+    action === "paused" && subscription.status === "PAUSED";
 
   const handleResume = async () => {
     setIsLoading(true);

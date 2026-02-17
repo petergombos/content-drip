@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ManagePreferencesForm } from "@/components/manage-preferences-form";
 import { ActionNotification } from "@/components/action-notification";
-import { ChevronRight } from "lucide-react";
+import { ManagePreferencesForm } from "@/components/manage-preferences-form";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import type { Subscription } from "@/domains/subscriptions/model/types";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  ACTIVE: { label: "Active", color: "bg-primary/10 text-primary" },
-  PAUSED: { label: "Paused", color: "bg-primary/10 text-primary" },
+  ACTIVE: { label: "Active", color: "bg-emerald-500/10 text-emerald-600" },
+  PAUSED: { label: "Paused", color: "bg-amber-500/10 text-amber-600" },
   PENDING_CONFIRM: {
     label: "Pending confirmation",
     color: "bg-muted text-muted-foreground",
@@ -19,7 +19,7 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
     label: "Unsubscribed",
     color: "bg-destructive/10 text-destructive",
   },
-  COMPLETED: { label: "Completed", color: "bg-primary/10 text-primary" },
+  COMPLETED: { label: "Completed", color: "bg-blue-500/10 text-blue-600" },
 };
 
 interface SubscriptionCardProps {
@@ -120,14 +120,6 @@ export function SubscriptionCard({
           <div className="space-y-6 pt-2 animate-fade-in-up">
             {/* Delivery preferences */}
             <div className="space-y-3">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
-                  Delivery Preferences
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Adjust when and how often you receive lessons.
-                </p>
-              </div>
               <ManagePreferencesForm
                 key={subscription.status}
                 subscription={subscription}
@@ -147,7 +139,11 @@ export function SubscriptionCard({
                 <p className="mt-1 text-sm text-muted-foreground">
                   Stop all future emails from this course.
                 </p>
-                <form action={async () => { await onUnsubscribe(subscription.id); }}>
+                <form
+                  action={async () => {
+                    await onUnsubscribe(subscription.id);
+                  }}
+                >
                   <Button
                     type="submit"
                     variant="destructive"

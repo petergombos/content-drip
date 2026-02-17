@@ -140,3 +140,16 @@ export const resumeSubscriptionAction = actionClient
     return { success: true };
   });
 
+const restartSubscriptionSchema = z.object({
+  subscriptionId: z.string(),
+});
+
+export const restartSubscriptionAction = actionClient
+  .schema(restartSubscriptionSchema)
+  .action(async ({ parsedInput }) => {
+    const service = getSubscriptionService();
+    await service.restartSubscription(parsedInput.subscriptionId);
+    revalidatePath("/manage", "layout");
+    return { success: true };
+  });
+

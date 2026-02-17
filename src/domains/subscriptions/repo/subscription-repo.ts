@@ -88,6 +88,10 @@ export class SubscriptionRepo {
     return this.mapToDomain(updated);
   }
 
+  async delete(id: string): Promise<void> {
+    await db.delete(subscriptions).where(eq(subscriptions.id, id));
+  }
+
   async findActiveSubscriptions(): Promise<Subscription[]> {
     const results = await db.query.subscriptions.findMany({
       where: eq(subscriptions.status, StatusEnum.ACTIVE),
