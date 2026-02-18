@@ -1384,15 +1384,15 @@ export default function HomePage() {
           </p>
 
           {/* Previewer UI mockup */}
-          <div className="mt-12 border border-[#1a1a1a] bg-[#0a0a0a]">
+          <div className="mt-12 overflow-hidden border border-[#1a1a1a] bg-[#0a0a0a]">
             {/* Top bar */}
             <div className="flex items-center gap-2 border-b border-[#1a1a1a] px-4 py-2.5">
-              <div className="flex gap-1.5">
+              <div className="hidden gap-1.5 md:flex">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
                 <span className="h-2.5 w-2.5 rounded-full bg-[#1a1a1a]" />
               </div>
-              <span className="font-mono text-xs text-[#444]">
+              <span className="truncate font-mono text-xs text-[#444]">
                 localhost:3000/content-preview
               </span>
               <span className="ml-auto border border-[#c8ff00]/20 bg-[#c8ff00]/5 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#c8ff00]/60">
@@ -1402,7 +1402,7 @@ export default function HomePage() {
 
             <div className="flex min-h-[280px]">
               {/* Sidebar */}
-              <div className="w-52 shrink-0 border-r border-[#1a1a1a] p-3">
+              <div className="hidden w-52 shrink-0 border-r border-[#1a1a1a] p-3 md:block">
                 <p className="mb-2 font-mono text-[10px] uppercase tracking-wider text-[#333]">
                   Content Packs
                 </p>
