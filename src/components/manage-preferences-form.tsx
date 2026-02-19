@@ -21,6 +21,7 @@ import {
 import type { Subscription } from "@/domains/subscriptions/model/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleX, Loader2, Pause, Play, RotateCcw } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -48,7 +49,6 @@ export function ManagePreferencesForm({
   frequency,
 }: ManagePreferencesFormProps) {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showRestartConfirm, setShowRestartConfirm] = useState(false);
 
@@ -72,121 +72,89 @@ export function ManagePreferencesForm({
     },
   });
 
-  const onSubmit = async (data: UpdateSubscriptionFormData) => {
-    setIsSubmitting(true);
-    setError(null);
+  const handleError = (
+    actionError: { serverError?: string },
+    title: string,
+  ) => {
+    const message = actionError.serverError ?? "An error occurred";
+    setError(message);
+    toast.error(title, { description: message });
+  };
 
-    try {
-      const cronExpression = hasFixedFrequency
-        ? mergeHourIntoCron(frequency!, data.sendTime)
-        : mergeHourIntoCron(frequencyToCron(data.frequency), data.sendTime);
-
-      const result = await updateSubscriptionAction({
-        subscriptionId: subscription.id,
-        timezone: data.timezone,
-        cronExpression,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-      } else if (result?.data) {
+  const { execute: executeUpdate, isPending: isUpdating } = useAction(
+    updateSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
         toast.success("Preferences updated", {
           description:
             "Your changes take effect starting with your next delivery.",
         });
         onUpdate?.();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      },
+      onError: ({ error }) =>
+        handleError(error, "Failed to update preferences"),
+    },
+  );
 
-  const handlePause = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await pauseSubscriptionAction({
-        subscriptionId: subscription.id,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-        setIsSubmitting(false);
-      } else {
+  const { execute: executePause, isPending: isPausing } = useAction(
+    pauseSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
+        toast.success("Subscription paused", {
+          description: "You won't receive lessons until you resume.",
+        });
         router.refresh();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setIsSubmitting(false);
-    }
-  };
+      },
+      onError: ({ error }) =>
+        handleError(error, "Failed to pause subscription"),
+    },
+  );
 
-  const handleResume = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await resumeSubscriptionAction({
-        subscriptionId: subscription.id,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-        setIsSubmitting(false);
-      } else {
+  const { execute: executeResume, isPending: isResuming } = useAction(
+    resumeSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
+        toast.success("Subscription resumed", {
+          description:
+            "You'll continue receiving lessons where you left off.",
+        });
         router.refresh();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setIsSubmitting(false);
-    }
-  };
+      },
+      onError: ({ error }) =>
+        handleError(error, "Failed to resume subscription"),
+    },
+  );
 
-  const handleRestart = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await restartSubscriptionAction({
-        subscriptionId: subscription.id,
-      });
-
-      if (result?.serverError) {
-        const message =
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred";
-        setError(message);
-        toast.error("Failed to restart course", { description: message });
-      } else {
+  const { execute: executeRestart, isPending: isRestarting } = useAction(
+    restartSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
         setShowRestartConfirm(false);
         toast.success("Course restarted", {
           description: "You'll start again from lesson 1.",
         });
         router.refresh();
-      }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "An error occurred";
-      setError(message);
-      toast.error("Failed to restart course", { description: message });
-    } finally {
-      setIsSubmitting(false);
-    }
+      },
+      onError: ({ error }) => handleError(error, "Failed to restart course"),
+    },
+  );
+
+  const isSubmitting = isUpdating || isPausing || isResuming || isRestarting;
+
+  const onSubmit = (data: UpdateSubscriptionFormData) => {
+    const cronExpression = hasFixedFrequency
+      ? mergeHourIntoCron(frequency!, data.sendTime)
+      : mergeHourIntoCron(frequencyToCron(data.frequency), data.sendTime);
+
+    executeUpdate({
+      subscriptionId: subscription.id,
+      timezone: data.timezone,
+      cronExpression,
+    });
   };
 
   const canRestart =
@@ -219,7 +187,9 @@ export function ManagePreferencesForm({
                 </p>
               </div>
               <Button
-                onClick={handlePause}
+                onClick={() =>
+                  executePause({ subscriptionId: subscription.id })
+                }
                 disabled={isSubmitting}
                 size="sm"
                 variant="outline"
@@ -255,7 +225,9 @@ export function ManagePreferencesForm({
                 </p>
               </div>
               <Button
-                onClick={handleResume}
+                onClick={() =>
+                  executeResume({ subscriptionId: subscription.id })
+                }
                 disabled={isSubmitting}
                 size="sm"
                 data-testid="manage-resume-button"
@@ -327,13 +299,15 @@ export function ManagePreferencesForm({
                     Cancel
                   </Button>
                   <Button
-                    onClick={handleRestart}
+                    onClick={() =>
+                      executeRestart({ subscriptionId: subscription.id })
+                    }
                     disabled={isSubmitting}
                     size="sm"
                     variant="destructive"
                     data-testid="manage-restart-confirm"
                   >
-                    {isSubmitting ? "Restarting..." : "Yes, restart"}
+                    {isRestarting ? "Restarting..." : "Yes, restart"}
                   </Button>
                 </div>
               )}
@@ -412,7 +386,7 @@ export function ManagePreferencesForm({
               size="lg"
               data-testid="manage-preferences-submit"
             >
-              {isSubmitting ? (
+              {isUpdating ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   Saving…
