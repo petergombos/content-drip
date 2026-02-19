@@ -73,7 +73,7 @@ export function TimezoneSelector({
 
   return (
     <Select value={displayValue} onValueChange={onValueChange}>
-      <SelectTrigger>
+      <SelectTrigger className="w-full">
         <SelectValue placeholder="Select timezone" />
       </SelectTrigger>
       <SelectContent className="max-h-60">
