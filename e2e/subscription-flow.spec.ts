@@ -759,10 +759,11 @@ test.describe("Manage subscription", () => {
     // -----------------------------------------------------------------------
     await page.getByTestId("manage-preferences-submit").click();
 
-    // Should show success
-    await expect(page.getByTestId("manage-preferences-success")).toBeVisible({
+    // Should show success toast and form remains visible
+    await expect(page.getByText("Preferences updated")).toBeVisible({
       timeout: 10_000,
     });
+    await expect(page.getByTestId("manage-preferences-submit")).toBeVisible();
   });
 
   test("manage link can be revisited (not single-use)", async ({

@@ -151,7 +151,7 @@ export function SubscriptionCard({
                     size="sm"
                     data-testid="manage-unsubscribe-button"
                   >
-                    Unsubscribe from {packName}
+                    Unsubscribe
                   </Button>
                 </form>
               </div>

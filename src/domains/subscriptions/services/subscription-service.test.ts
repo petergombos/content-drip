@@ -382,25 +382,23 @@ describe("SubscriptionService", () => {
       );
     });
 
-    it("resumes a stopped subscription", async () => {
+    it("throws when subscription is stopped", async () => {
       (repo.findById as ReturnType<typeof vi.fn>).mockResolvedValue(
         makeSub({ status: SubscriptionStatus.STOPPED })
       );
 
-      await service.resumeSubscription("sub-1");
-
-      expect(repo.update).toHaveBeenCalledWith("sub-1", {
-        status: SubscriptionStatus.ACTIVE,
-      });
+      await expect(service.resumeSubscription("sub-1")).rejects.toThrow(
+        "Subscription is not paused"
+      );
     });
 
-    it("throws when subscription is not paused or stopped", async () => {
+    it("throws when subscription is active", async () => {
       (repo.findById as ReturnType<typeof vi.fn>).mockResolvedValue(
         makeSub({ status: SubscriptionStatus.ACTIVE })
       );
 
       await expect(service.resumeSubscription("sub-1")).rejects.toThrow(
-        "Subscription is not paused or stopped"
+        "Subscription is not paused"
       );
     });
   });

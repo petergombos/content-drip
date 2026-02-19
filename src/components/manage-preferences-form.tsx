@@ -9,7 +9,6 @@ import {
   SendTimeSelector,
   mergeHourIntoCron,
 } from "@/components/send-time-selector";
-import { SuccessState } from "@/components/success-state";
 import { TimezoneSelector } from "@/components/timezone-selector";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -22,9 +21,11 @@ import {
 import type { Subscription } from "@/domains/subscriptions/model/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleX, Loader2, Pause, Play, RotateCcw } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const updateSubscriptionSchema = z.object({
@@ -48,9 +49,7 @@ export function ManagePreferencesForm({
   frequency,
 }: ManagePreferencesFormProps) {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [showRestartConfirm, setShowRestartConfirm] = useState(false);
 
   const hasFixedFrequency = !!frequency;
@@ -73,130 +72,95 @@ export function ManagePreferencesForm({
     },
   });
 
-  const onSubmit = async (data: UpdateSubscriptionFormData) => {
-    setIsSubmitting(true);
-    setError(null);
+  const handleError = (
+    actionError: { serverError?: string },
+    title: string,
+  ) => {
+    const message = actionError.serverError ?? "An error occurred";
+    setError(message);
+    toast.error(title, { description: message });
+  };
 
-    try {
-      const cronExpression = hasFixedFrequency
-        ? mergeHourIntoCron(frequency!, data.sendTime)
-        : mergeHourIntoCron(frequencyToCron(data.frequency), data.sendTime);
-
-      const result = await updateSubscriptionAction({
-        subscriptionId: subscription.id,
-        timezone: data.timezone,
-        cronExpression,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-      } else if (result?.data) {
-        setSuccess(true);
+  const { execute: executeUpdate, isPending: isUpdating } = useAction(
+    updateSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
+        toast.success("Preferences updated", {
+          description:
+            "Your changes take effect starting with your next delivery.",
+        });
         onUpdate?.();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      },
+      onError: ({ error }) =>
+        handleError(error, "Failed to update preferences"),
+    },
+  );
 
-  const handlePause = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await pauseSubscriptionAction({
-        subscriptionId: subscription.id,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-        setIsSubmitting(false);
-      } else {
+  const { execute: executePause, isPending: isPausing } = useAction(
+    pauseSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
+        toast.success("Subscription paused", {
+          description: "You won't receive lessons until you resume.",
+        });
         router.refresh();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setIsSubmitting(false);
-    }
-  };
+      },
+      onError: ({ error }) =>
+        handleError(error, "Failed to pause subscription"),
+    },
+  );
 
-  const handleResume = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await resumeSubscriptionAction({
-        subscriptionId: subscription.id,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-        setIsSubmitting(false);
-      } else {
+  const { execute: executeResume, isPending: isResuming } = useAction(
+    resumeSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
+        toast.success("Subscription resumed", {
+          description:
+            "You'll continue receiving lessons where you left off.",
+        });
         router.refresh();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setIsSubmitting(false);
-    }
-  };
+      },
+      onError: ({ error }) =>
+        handleError(error, "Failed to resume subscription"),
+    },
+  );
 
-  const handleRestart = async () => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await restartSubscriptionAction({
-        subscriptionId: subscription.id,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-        setIsSubmitting(false);
-      } else {
+  const { execute: executeRestart, isPending: isRestarting } = useAction(
+    restartSubscriptionAction,
+    {
+      onExecute: () => setError(null),
+      onSuccess: () => {
         setShowRestartConfirm(false);
+        toast.success("Course restarted", {
+          description: "You'll start again from lesson 1.",
+        });
         router.refresh();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setIsSubmitting(false);
-    }
+      },
+      onError: ({ error }) => handleError(error, "Failed to restart course"),
+    },
+  );
+
+  const isSubmitting = isUpdating || isPausing || isResuming || isRestarting;
+
+  const onSubmit = (data: UpdateSubscriptionFormData) => {
+    const cronExpression = hasFixedFrequency
+      ? mergeHourIntoCron(frequency!, data.sendTime)
+      : mergeHourIntoCron(frequencyToCron(data.frequency), data.sendTime);
+
+    executeUpdate({
+      subscriptionId: subscription.id,
+      timezone: data.timezone,
+      cronExpression,
+    });
   };
 
   const canRestart =
     subscription.status === "ACTIVE" ||
     subscription.status === "PAUSED" ||
     subscription.status === "COMPLETED";
-
-  if (success) {
-    return (
-      <div data-testid="manage-preferences-success">
-        <SuccessState
-          icon="check"
-          title="Preferences updated"
-          description="Your changes take effect starting with your next delivery."
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-5">
@@ -205,7 +169,7 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-4 py-4"
           data-testid="manage-active-banner"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
               <Play
                 className="h-4 w-4 text-emerald-600"
@@ -213,23 +177,27 @@ export function ManagePreferencesForm({
                 strokeWidth={0}
               />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                Your subscription is active
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Pause to temporarily stop receiving lessons.
-              </p>
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Your subscription is active
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Pause to temporarily stop receiving lessons.
+                </p>
+              </div>
+              <Button
+                onClick={() =>
+                  executePause({ subscriptionId: subscription.id })
+                }
+                disabled={isSubmitting}
+                size="sm"
+                variant="outline"
+                data-testid="manage-pause-button"
+              >
+                Pause
+              </Button>
             </div>
-            <Button
-              onClick={handlePause}
-              disabled={isSubmitting}
-              size="sm"
-              variant="outline"
-              data-testid="manage-pause-button"
-            >
-              Pause
-            </Button>
           </div>
         </div>
       )}
@@ -239,7 +207,7 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-4"
           data-testid="manage-paused-banner"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500/10">
               <Pause
                 className="h-4 w-4 text-amber-600"
@@ -247,22 +215,26 @@ export function ManagePreferencesForm({
                 strokeWidth={0}
               />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                Your subscription is paused
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Resume to continue receiving lessons where you left off.
-              </p>
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Your subscription is paused
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Resume to continue receiving lessons where you left off.
+                </p>
+              </div>
+              <Button
+                onClick={() =>
+                  executeResume({ subscriptionId: subscription.id })
+                }
+                disabled={isSubmitting}
+                size="sm"
+                data-testid="manage-resume-button"
+              >
+                Resume
+              </Button>
             </div>
-            <Button
-              onClick={handleResume}
-              disabled={isSubmitting}
-              size="sm"
-              data-testid="manage-resume-button"
-            >
-              Resume
-            </Button>
           </div>
         </div>
       )}
@@ -272,7 +244,7 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-4"
           data-testid="manage-stopped-banner"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/10">
               <CircleX className="h-4 w-4 text-destructive" strokeWidth={2} />
             </div>
@@ -293,49 +265,53 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-border/50 px-4 py-4"
           data-testid="manage-restart-section"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted">
               <RotateCcw className="h-4 w-4 text-muted-foreground" />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                Restart course
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Go back to lesson 1 and start over from the beginning.
-              </p>
-            </div>
-            {!showRestartConfirm ? (
-              <Button
-                onClick={() => setShowRestartConfirm(true)}
-                disabled={isSubmitting}
-                size="sm"
-                variant="outline"
-                data-testid="manage-restart-button"
-              >
-                Restart
-              </Button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => setShowRestartConfirm(false)}
-                  disabled={isSubmitting}
-                  size="sm"
-                  variant="ghost"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleRestart}
-                  disabled={isSubmitting}
-                  size="sm"
-                  variant="destructive"
-                  data-testid="manage-restart-confirm"
-                >
-                  {isSubmitting ? "Restarting..." : "Yes, restart"}
-                </Button>
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Restart course
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Go back to lesson 1 and start over from the beginning.
+                </p>
               </div>
-            )}
+              {!showRestartConfirm ? (
+                <Button
+                  onClick={() => setShowRestartConfirm(true)}
+                  disabled={isSubmitting}
+                  size="sm"
+                  variant="outline"
+                  data-testid="manage-restart-button"
+                >
+                  Restart
+                </Button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => setShowRestartConfirm(false)}
+                    disabled={isSubmitting}
+                    size="sm"
+                    variant="ghost"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      executeRestart({ subscriptionId: subscription.id })
+                    }
+                    disabled={isSubmitting}
+                    size="sm"
+                    variant="destructive"
+                    data-testid="manage-restart-confirm"
+                  >
+                    {isRestarting ? "Restarting..." : "Yes, restart"}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -410,7 +386,7 @@ export function ManagePreferencesForm({
               size="lg"
               data-testid="manage-preferences-submit"
             >
-              {isSubmitting ? (
+              {isUpdating ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   Saving…
