@@ -24,7 +24,7 @@ import { z } from "zod";
 /* ── Schema ── */
 
 const subscribeSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
   sendTime: z.number().min(0).max(23),
   timezone: z.string().min(1, "Missing timezone"),
   frequency: z.string().optional(),

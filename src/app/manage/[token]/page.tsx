@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { EmailService } from "@/domains/mail/services/email-service";
 import { createMailAdapter } from "@/domains/mail/create-adapter";
@@ -124,25 +123,6 @@ export default async function ManageTokenPage({
               action={isTargeted ? action : undefined}
               defaultExpanded={defaultExpanded}
               frequency={pack?.frequency}
-              onUnsubscribe={async (subscriptionId: string) => {
-                "use server";
-                const emailService = new EmailService(
-                  createMailAdapter(),
-                  process.env.APP_BASE_URL || "http://localhost:3000"
-                );
-                const stopToken = emailService.createSignedToken(
-                  subscriptionId,
-                  "STOP"
-                );
-                const { stopFromEmailAction } = await import(
-                  "@/domains/subscriptions/actions/subscription-actions"
-                );
-                await stopFromEmailAction({
-                  subscriptionId,
-                  token: stopToken,
-                });
-                redirect(`/manage/${token}?action=unsubscribed&sid=${subscriptionId}`);
-              }}
             />
           );
         })}

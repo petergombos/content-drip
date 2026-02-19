@@ -49,7 +49,6 @@ export function ManagePreferencesForm({
   frequency,
 }: ManagePreferencesFormProps) {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
   const [showRestartConfirm, setShowRestartConfirm] = useState(false);
 
   const hasFixedFrequency = !!frequency;
@@ -77,14 +76,12 @@ export function ManagePreferencesForm({
     title: string,
   ) => {
     const message = actionError.serverError ?? "An error occurred";
-    setError(message);
     toast.error(title, { description: message });
   };
 
   const { execute: executeUpdate, isPending: isUpdating } = useAction(
     updateSubscriptionAction,
     {
-      onExecute: () => setError(null),
       onSuccess: () => {
         toast.success("Preferences updated", {
           description:
@@ -100,7 +97,6 @@ export function ManagePreferencesForm({
   const { execute: executePause, isPending: isPausing } = useAction(
     pauseSubscriptionAction,
     {
-      onExecute: () => setError(null),
       onSuccess: () => {
         toast.success("Subscription paused", {
           description: "You won't receive lessons until you resume.",
@@ -115,7 +111,6 @@ export function ManagePreferencesForm({
   const { execute: executeResume, isPending: isResuming } = useAction(
     resumeSubscriptionAction,
     {
-      onExecute: () => setError(null),
       onSuccess: () => {
         toast.success("Subscription resumed", {
           description:
@@ -131,7 +126,6 @@ export function ManagePreferencesForm({
   const { execute: executeRestart, isPending: isRestarting } = useAction(
     restartSubscriptionAction,
     {
-      onExecute: () => setError(null),
       onSuccess: () => {
         setShowRestartConfirm(false);
         toast.success("Course restarted", {
@@ -372,12 +366,6 @@ export function ManagePreferencesForm({
                 onValueChange={(value) => setValue("sendTime", value)}
               />
             </div>
-
-            {error && (
-              <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive">
-                {error}
-              </div>
-            )}
 
             <Button
               type="submit"

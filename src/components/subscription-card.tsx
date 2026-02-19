@@ -4,9 +4,13 @@ import { ActionNotification } from "@/components/action-notification";
 import { ManagePreferencesForm } from "@/components/manage-preferences-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { unsubscribeFromManageAction } from "@/domains/subscriptions/actions/subscription-actions";
 import type { Subscription } from "@/domains/subscriptions/model/types";
 import { ChevronRight } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   ACTIVE: { label: "Active", color: "bg-emerald-500/10 text-emerald-600" },
@@ -29,7 +33,6 @@ interface SubscriptionCardProps {
   token: string;
   action?: string;
   defaultExpanded?: boolean;
-  onUnsubscribe: (subscriptionId: string) => Promise<void>;
   frequency?: string;
 }
 
@@ -40,10 +43,23 @@ export function SubscriptionCard({
   token,
   action,
   defaultExpanded = false,
-  onUnsubscribe,
   frequency,
 }: SubscriptionCardProps) {
+  const router = useRouter();
   const [expanded, setExpanded] = useState(defaultExpanded);
+
+  const { execute: executeUnsubscribe, isPending: isUnsubscribing } = useAction(
+    unsubscribeFromManageAction,
+    {
+      onSuccess: () => {
+        router.push(`/manage/${token}?action=unsubscribed&sid=${subscription.id}`);
+      },
+      onError: ({ error }) => {
+        const message = error.serverError ?? "An error occurred";
+        toast.error("Failed to unsubscribe", { description: message });
+      },
+    },
+  );
 
   const currentStep = subscription.currentStepIndex;
   const progressPct = totalSteps > 0 ? (currentStep / totalSteps) * 100 : 0;
@@ -139,21 +155,16 @@ export function SubscriptionCard({
                 <p className="mt-1 text-sm text-muted-foreground">
                   Stop all future emails from this course.
                 </p>
-                <form
-                  action={async () => {
-                    await onUnsubscribe(subscription.id);
-                  }}
+                <Button
+                  variant="destructive"
+                  className="mt-3"
+                  size="sm"
+                  disabled={isUnsubscribing}
+                  onClick={() => executeUnsubscribe({ subscriptionId: subscription.id })}
+                  data-testid="manage-unsubscribe-button"
                 >
-                  <Button
-                    type="submit"
-                    variant="destructive"
-                    className="mt-3"
-                    size="sm"
-                    data-testid="manage-unsubscribe-button"
-                  >
-                    Unsubscribe
-                  </Button>
-                </form>
+                  Unsubscribe
+                </Button>
               </div>
             )}
           </div>

@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
 const requestManageLinkSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
+  email: z.email("Please enter a valid email address"),
 });
 
 type RequestManageLinkFormData = z.infer<typeof requestManageLinkSchema>;

@@ -7,7 +7,7 @@ import { z } from "zod";
 import "@/content-packs";
 
 const bodySchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   packKey: z.string().min(1),
   timezone: z.string().min(1),
   cronExpression: z.string().min(1),

@@ -20,14 +20,14 @@ const getSubscriptionService = () => {
 };
 
 const subscribeSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   packKey: z.string(),
   timezone: z.string(),
   cronExpression: z.string(),
 });
 
 export const subscribeAction = actionClient
-  .schema(subscribeSchema)
+  .inputSchema(subscribeSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     const result = await service.subscribe(parsedInput);
@@ -43,7 +43,7 @@ const confirmSchema = z.object({
 });
 
 export const confirmSubscriptionAction = actionClient
-  .schema(confirmSchema)
+  .inputSchema(confirmSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     const tokenHash = createHash("sha256")
@@ -54,11 +54,11 @@ export const confirmSubscriptionAction = actionClient
   });
 
 const requestManageLinkSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export const requestManageLinkAction = actionClient
-  .schema(requestManageLinkSchema)
+  .inputSchema(requestManageLinkSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.requestManageLink(parsedInput.email);
@@ -72,7 +72,7 @@ const updateSubscriptionSchema = z.object({
 });
 
 export const updateSubscriptionAction = actionClient
-  .schema(updateSubscriptionSchema)
+  .inputSchema(updateSubscriptionSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.updateSubscription(parsedInput.subscriptionId, {
@@ -89,7 +89,7 @@ const pauseFromEmailSchema = z.object({
 });
 
 export const pauseFromEmailAction = actionClient
-  .schema(pauseFromEmailSchema)
+  .inputSchema(pauseFromEmailSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.pauseFromEmail(
@@ -106,7 +106,7 @@ const stopFromEmailSchema = z.object({
 });
 
 export const stopFromEmailAction = actionClient
-  .schema(stopFromEmailSchema)
+  .inputSchema(stopFromEmailSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.stopFromEmail(parsedInput.subscriptionId, parsedInput.token);
@@ -119,7 +119,7 @@ const pauseSubscriptionSchema = z.object({
 });
 
 export const pauseSubscriptionAction = actionClient
-  .schema(pauseSubscriptionSchema)
+  .inputSchema(pauseSubscriptionSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.pauseSubscription(parsedInput.subscriptionId);
@@ -132,7 +132,7 @@ const resumeSubscriptionSchema = z.object({
 });
 
 export const resumeSubscriptionAction = actionClient
-  .schema(resumeSubscriptionSchema)
+  .inputSchema(resumeSubscriptionSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.resumeSubscription(parsedInput.subscriptionId);
@@ -145,10 +145,31 @@ const restartSubscriptionSchema = z.object({
 });
 
 export const restartSubscriptionAction = actionClient
-  .schema(restartSubscriptionSchema)
+  .inputSchema(restartSubscriptionSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
     await service.restartSubscription(parsedInput.subscriptionId);
+    revalidatePath("/manage", "layout");
+    return { success: true };
+  });
+
+const unsubscribeFromManageSchema = z.object({
+  subscriptionId: z.string(),
+});
+
+export const unsubscribeFromManageAction = actionClient
+  .inputSchema(unsubscribeFromManageSchema)
+  .action(async ({ parsedInput }) => {
+    const emailService = new EmailService(
+      createMailAdapter(),
+      process.env.APP_BASE_URL || "http://localhost:3000"
+    );
+    const stopToken = emailService.createSignedToken(
+      parsedInput.subscriptionId,
+      "STOP"
+    );
+    const service = getSubscriptionService();
+    await service.stopFromEmail(parsedInput.subscriptionId, stopToken);
     revalidatePath("/manage", "layout");
     return { success: true };
   });
