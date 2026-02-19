@@ -9,7 +9,6 @@ import {
   SendTimeSelector,
   mergeHourIntoCron,
 } from "@/components/send-time-selector";
-import { SuccessState } from "@/components/success-state";
 import { TimezoneSelector } from "@/components/timezone-selector";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -25,6 +24,7 @@ import { CircleX, Loader2, Pause, Play, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const updateSubscriptionSchema = z.object({
@@ -50,7 +50,6 @@ export function ManagePreferencesForm({
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [showRestartConfirm, setShowRestartConfirm] = useState(false);
 
   const hasFixedFrequency = !!frequency;
@@ -95,7 +94,10 @@ export function ManagePreferencesForm({
             : "An error occurred",
         );
       } else if (result?.data) {
-        setSuccess(true);
+        toast.success("Preferences updated", {
+          description:
+            "Your changes take effect starting with your next delivery.",
+        });
         onUpdate?.();
       }
     } catch (err) {
@@ -185,18 +187,6 @@ export function ManagePreferencesForm({
     subscription.status === "ACTIVE" ||
     subscription.status === "PAUSED" ||
     subscription.status === "COMPLETED";
-
-  if (success) {
-    return (
-      <div data-testid="manage-preferences-success">
-        <SuccessState
-          icon="check"
-          title="Preferences updated"
-          description="Your changes take effect starting with your next delivery."
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-5">
