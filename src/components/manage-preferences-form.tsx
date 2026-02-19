@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  FrequencySelector,
-  cronToFrequency,
-  frequencyToCron,
-} from "@/components/frequency-selector";
-import {
-  SendTimeSelector,
-  mergeHourIntoCron,
-} from "@/components/send-time-selector";
+import { FrequencySelector } from "@/components/frequency-selector";
+import { SendTimeSelector } from "@/components/send-time-selector";
 import { TimezoneSelector } from "@/components/timezone-selector";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,22 +12,22 @@ import {
   updateSubscriptionAction,
 } from "@/domains/subscriptions/actions/subscription-actions";
 import type { Subscription } from "@/domains/subscriptions/model/types";
+import { cronToFrequency } from "@/lib/cron-utils";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleX, Loader2, Pause, Play, RotateCcw } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const updateSubscriptionSchema = z.object({
+  subscriptionId: z.string(),
   timezone: z.string().min(1, "Please select a timezone"),
   frequency: z.string().min(1, "Please select a frequency"),
-  sendTime: z.number().min(0).max(23),
+  sendTime: z.number().int().min(0).max(23),
 });
-
-type UpdateSubscriptionFormData = z.infer<typeof updateSubscriptionSchema>;
 
 interface ManagePreferencesFormProps {
   subscription: Subscription;
@@ -57,42 +50,36 @@ export function ManagePreferencesForm({
   const cronParts = subscription.cronExpression.split(" ");
   const sendTime = parseInt(cronParts[1] || "8", 10);
 
-  const {
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-  } = useForm<UpdateSubscriptionFormData>({
-    resolver: zodResolver(updateSubscriptionSchema),
-    defaultValues: {
-      timezone: subscription.timezone,
-      frequency: cronToFrequency(subscription.cronExpression),
-      sendTime,
-    },
-  });
-
-  const handleError = (
-    actionError: { serverError?: string },
-    title: string,
-  ) => {
-    const message = actionError.serverError ?? "An error occurred";
-    toast.error(title, { description: message });
-  };
-
-  const { execute: executeUpdate, isPending: isUpdating } = useAction(
+  const { form, handleSubmitWithAction } = useHookFormAction(
     updateSubscriptionAction,
+    zodResolver(updateSubscriptionSchema),
     {
-      onSuccess: () => {
-        toast.success("Preferences updated", {
-          description:
-            "Your changes take effect starting with your next delivery.",
-        });
-        onUpdate?.();
+      formProps: {
+        defaultValues: {
+          subscriptionId: subscription.id,
+          timezone: subscription.timezone,
+          frequency: frequency ?? cronToFrequency(subscription.cronExpression),
+          sendTime,
+        },
       },
-      onError: ({ error }) =>
-        handleError(error, "Failed to update preferences"),
+      actionProps: {
+        onSuccess: () => {
+          toast.success("Preferences updated", {
+            description:
+              "Your changes take effect starting with your next delivery.",
+          });
+          onUpdate?.();
+        },
+        onError: ({ error }) => {
+          toast.error("Failed to update preferences", {
+            description: error.serverError ?? "An error occurred",
+          });
+        },
+      },
     },
   );
+
+  const { errors, isSubmitting: isUpdating } = form.formState;
 
   const { execute: executePause, isPending: isPausing } = useAction(
     pauseSubscriptionAction,
@@ -103,8 +90,11 @@ export function ManagePreferencesForm({
         });
         router.refresh();
       },
-      onError: ({ error }) =>
-        handleError(error, "Failed to pause subscription"),
+      onError: ({ error }) => {
+        toast.error("Failed to pause subscription", {
+          description: error.serverError ?? "An error occurred",
+        });
+      },
     },
   );
 
@@ -118,8 +108,11 @@ export function ManagePreferencesForm({
         });
         router.refresh();
       },
-      onError: ({ error }) =>
-        handleError(error, "Failed to resume subscription"),
+      onError: ({ error }) => {
+        toast.error("Failed to resume subscription", {
+          description: error.serverError ?? "An error occurred",
+        });
+      },
     },
   );
 
@@ -133,23 +126,15 @@ export function ManagePreferencesForm({
         });
         router.refresh();
       },
-      onError: ({ error }) => handleError(error, "Failed to restart course"),
+      onError: ({ error }) => {
+        toast.error("Failed to restart course", {
+          description: error.serverError ?? "An error occurred",
+        });
+      },
     },
   );
 
   const isSubmitting = isUpdating || isPausing || isResuming || isRestarting;
-
-  const onSubmit = (data: UpdateSubscriptionFormData) => {
-    const cronExpression = hasFixedFrequency
-      ? mergeHourIntoCron(frequency!, data.sendTime)
-      : mergeHourIntoCron(frequencyToCron(data.frequency), data.sendTime);
-
-    executeUpdate({
-      subscriptionId: subscription.id,
-      timezone: data.timezone,
-      cronExpression,
-    });
-  };
 
   const canRestart =
     subscription.status === "ACTIVE" ||
@@ -321,7 +306,7 @@ export function ManagePreferencesForm({
             </p>
           </div>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmitWithAction}
             className="space-y-4 rounded-lg border border-border/50 p-4"
             data-testid="manage-preferences-form"
           >
@@ -330,8 +315,8 @@ export function ManagePreferencesForm({
                 Timezone
               </Label>
               <TimezoneSelector
-                value={watch("timezone")}
-                onValueChange={(value) => setValue("timezone", value)}
+                value={form.watch("timezone")}
+                onValueChange={(value) => form.setValue("timezone", value)}
               />
               {errors.timezone && (
                 <p className="text-xs text-destructive">
@@ -346,8 +331,8 @@ export function ManagePreferencesForm({
                   Frequency
                 </Label>
                 <FrequencySelector
-                  value={watch("frequency")}
-                  onValueChange={(value) => setValue("frequency", value)}
+                  value={form.watch("frequency")}
+                  onValueChange={(value) => form.setValue("frequency", value)}
                 />
                 {errors.frequency && (
                   <p className="text-xs text-destructive">
@@ -362,8 +347,8 @@ export function ManagePreferencesForm({
                 Delivery time
               </Label>
               <SendTimeSelector
-                value={watch("sendTime")}
-                onValueChange={(value) => setValue("sendTime", value)}
+                value={form.watch("sendTime")}
+                onValueChange={(value) => form.setValue("sendTime", value)}
               />
             </div>
 

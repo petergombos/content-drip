@@ -1,59 +1,32 @@
 "use client";
 
-import { SuccessState } from "@/components/success-state";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SuccessState } from "@/components/success-state";
 import { requestManageLinkAction } from "@/domains/subscriptions/actions/subscription-actions";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 const requestManageLinkSchema = z.object({
   email: z.email("Please enter a valid email address"),
 });
 
-type RequestManageLinkFormData = z.infer<typeof requestManageLinkSchema>;
-
 export function ManageRequestForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RequestManageLinkFormData>({
-    resolver: zodResolver(requestManageLinkSchema),
-  });
-
-  const onSubmit = async (data: RequestManageLinkFormData) => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const result = await requestManageLinkAction({
-        email: data.email,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-      } else if (result?.data) {
-        setSuccess(true);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const { form, handleSubmitWithAction } = useHookFormAction(
+    requestManageLinkAction,
+    zodResolver(requestManageLinkSchema),
+    {
+      actionProps: {
+        onSuccess: () => setSuccess(true),
+      },
+    },
+  );
 
   if (success) {
     return (
@@ -69,7 +42,7 @@ export function ManageRequestForm() {
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmitWithAction}
       className="space-y-4"
       data-testid="manage-request-form"
     >
@@ -80,29 +53,26 @@ export function ManageRequestForm() {
         <Input
           id="email"
           type="email"
-          {...register("email")}
+          {...form.register("email")}
           data-testid="manage-request-email-input"
           placeholder="you@example.com"
+          className="h-10"
         />
-        {errors.email && (
-          <p className="text-xs text-destructive">{errors.email.message}</p>
+        {form.formState.errors.email && (
+          <p className="text-xs text-destructive">
+            {form.formState.errors.email.message}
+          </p>
         )}
       </div>
 
-      {error && (
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive">
-          {error}
-        </div>
-      )}
-
       <Button
         type="submit"
-        disabled={isSubmitting}
+        disabled={form.formState.isSubmitting}
         className="w-full"
         size="lg"
         data-testid="manage-request-submit"
       >
-        {isSubmitting ? (
+        {form.formState.isSubmitting ? (
           <span className="flex items-center gap-2">
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
             Sending…

@@ -8,6 +8,7 @@ import { SubscriptionService } from "@/domains/subscriptions/services/subscripti
 import { SubscriptionRepo } from "@/domains/subscriptions/repo/subscription-repo";
 import { EmailService } from "@/domains/mail/services/email-service";
 import { createMailAdapter } from "@/domains/mail/create-adapter";
+import { buildCronExpression } from "@/lib/cron-utils";
 // Ensure packs are registered
 import "@/content-packs";
 
@@ -23,14 +24,16 @@ const subscribeSchema = z.object({
   email: z.email(),
   packKey: z.string(),
   timezone: z.string(),
-  cronExpression: z.string(),
+  frequency: z.string(),
+  sendTime: z.number().int().min(0).max(23),
 });
 
 export const subscribeAction = actionClient
   .inputSchema(subscribeSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
-    const result = await service.subscribe(parsedInput);
+    const cronExpression = buildCronExpression(parsedInput.frequency, parsedInput.sendTime);
+    const result = await service.subscribe({ ...parsedInput, cronExpression });
     return {
       success: true,
       subscriptionId: result.subscriptionId,
@@ -67,17 +70,19 @@ export const requestManageLinkAction = actionClient
 
 const updateSubscriptionSchema = z.object({
   subscriptionId: z.string(),
-  timezone: z.string().optional(),
-  cronExpression: z.string().optional(),
+  timezone: z.string(),
+  frequency: z.string(),
+  sendTime: z.number().int().min(0).max(23),
 });
 
 export const updateSubscriptionAction = actionClient
   .inputSchema(updateSubscriptionSchema)
   .action(async ({ parsedInput }) => {
     const service = getSubscriptionService();
+    const cronExpression = buildCronExpression(parsedInput.frequency, parsedInput.sendTime);
     await service.updateSubscription(parsedInput.subscriptionId, {
       timezone: parsedInput.timezone,
-      cronExpression: parsedInput.cronExpression,
+      cronExpression,
     });
     revalidatePath("/manage", "layout");
     return { success: true };

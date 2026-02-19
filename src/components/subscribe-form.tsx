@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  FrequencySelector,
-  frequencyToCron,
-} from "@/components/frequency-selector";
-import {
-  SendTimeSelector,
-  mergeHourIntoCron,
-} from "@/components/send-time-selector";
+import { FrequencySelector } from "@/components/frequency-selector";
+import { SendTimeSelector } from "@/components/send-time-selector";
 import { SuccessState } from "@/components/success-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,19 +9,21 @@ import { Label } from "@/components/ui/label";
 import { getAllPacks } from "@/content-packs/registry";
 import { subscribeAction } from "@/domains/subscriptions/actions/subscription-actions";
 import { cn } from "@/lib/utils";
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useForm, type UseFormReturn } from "react-hook-form";
+import { type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
 /* ── Schema ── */
 
 const subscribeSchema = z.object({
   email: z.email("Please enter a valid email address"),
-  sendTime: z.number().min(0).max(23),
+  packKey: z.string(),
   timezone: z.string().min(1, "Missing timezone"),
-  frequency: z.string().optional(),
+  frequency: z.string(),
+  sendTime: z.number().int().min(0).max(23),
 });
 
 type SubscribeFormData = z.infer<typeof subscribeSchema>;
@@ -42,7 +38,6 @@ interface SubscribeFormContextValue {
   frequency: string | undefined;
   timezone: string;
   packKey: string;
-  error: string | null;
 }
 
 const SubscribeFormContext = createContext<SubscribeFormContextValue | null>(
@@ -80,10 +75,8 @@ export function SubscribeForm({
   className,
   ...props
 }: SubscribeFormProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [alreadySubscribed, setAlreadySubscribed] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const packs = getAllPacks();
   const defaultPackKey = useMemo(
@@ -92,14 +85,29 @@ export function SubscribeForm({
   );
   const hasFixedFrequency = !!frequency;
 
-  const form = useForm<SubscribeFormData>({
-    resolver: zodResolver(subscribeSchema),
-    defaultValues: {
-      sendTime: 8,
-      timezone: "",
-      frequency: "Daily",
+  const { form, handleSubmitWithAction } = useHookFormAction(
+    subscribeAction,
+    zodResolver(subscribeSchema),
+    {
+      formProps: {
+        defaultValues: {
+          packKey: defaultPackKey,
+          sendTime: 8,
+          timezone: "",
+          frequency: frequency ?? "Daily",
+        },
+      },
+      actionProps: {
+        onSuccess: ({ data }) => {
+          if (data?.alreadySubscribed) {
+            setAlreadySubscribed(true);
+          } else {
+            setSuccess(true);
+          }
+        },
+      },
     },
-  });
+  );
 
   const timezone = form.watch("timezone");
 
@@ -109,43 +117,6 @@ export function SubscribeForm({
       form.setValue("timezone", tz, { shouldValidate: true });
     }
   }, [form]);
-
-  const onSubmit = async (data: SubscribeFormData) => {
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      const selectedFrequency = data.frequency || "Daily";
-      const cronExpression = hasFixedFrequency
-        ? mergeHourIntoCron(frequency!, data.sendTime)
-        : mergeHourIntoCron(frequencyToCron(selectedFrequency), data.sendTime);
-
-      const result = await subscribeAction({
-        email: data.email,
-        packKey: defaultPackKey,
-        timezone: data.timezone,
-        cronExpression,
-      });
-
-      if (result?.serverError) {
-        setError(
-          typeof result.serverError === "string"
-            ? result.serverError
-            : "An error occurred",
-        );
-      } else if (result?.data) {
-        if (result.data.alreadySubscribed) {
-          setAlreadySubscribed(true);
-        } else {
-          setSuccess(true);
-        }
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   if (alreadySubscribed) {
     return (
@@ -184,31 +155,30 @@ export function SubscribeForm({
 
   const ctx: SubscribeFormContextValue = {
     form,
-    isSubmitting,
+    isSubmitting: form.formState.isSubmitting,
     hasFixedFrequency,
     frequency,
     timezone,
     packKey: defaultPackKey,
-    error,
   };
 
   return (
     <SubscribeFormContext.Provider value={ctx}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={handleSubmitWithAction}
         className={cn("space-y-4", className)}
         data-testid="subscribe-form"
         {...props}
       >
-        {/* timezone is auto-detected; keep it in the form payload */}
+        {/* timezone and packKey are auto-set; keep them in the form payload */}
         <input type="hidden" {...form.register("timezone")} />
+        <input type="hidden" {...form.register("packKey")} />
 
         {children ?? (
           <>
             <SubscribeFormEmailField />
             <SubscribeFormFrequencyField />
             <SubscribeFormDeliveryTimeField />
-            <SubscribeFormError />
             <SubscribeFormSubmit />
           </>
         )}
@@ -221,6 +191,7 @@ export function SubscribeForm({
 
 const FIELD_IDS: Record<FieldName, string> = {
   email: "email",
+  packKey: "packKey",
   sendTime: "sendTime",
   timezone: "timezone",
   frequency: "frequency",
@@ -285,35 +256,12 @@ export function SubscribeFormFieldError({
   );
 }
 
-/* ── Form-level error (server/submit errors) ── */
-
-export function SubscribeFormError({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<"div">) {
-  const { error } = useSubscribeForm();
-
-  if (!error) return null;
-
-  return (
-    <div
-      className={cn(
-        "rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-sm text-destructive",
-        className,
-      )}
-      {...props}
-    >
-      {children ?? error}
-    </div>
-  );
-}
-
 /* ── Email input ── */
 
-export function SubscribeFormEmailInput(
-  props: React.ComponentProps<typeof Input>,
-) {
+export function SubscribeFormEmailInput({
+  className,
+  ...props
+}: React.ComponentProps<typeof Input>) {
   const { form } = useSubscribeForm();
 
   return (
@@ -324,6 +272,7 @@ export function SubscribeFormEmailInput(
       autoComplete="email"
       {...form.register("email")}
       data-testid="subscribe-email-input"
+      className={cn("h-10", className)}
       {...props}
     />
   );

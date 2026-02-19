@@ -7,29 +7,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-export interface FrequencyOption {
-  label: string;
-  cronExpression: string; // hour field is a placeholder; always merged with user-selected hour
-}
-
-export const FREQUENCY_OPTIONS: FrequencyOption[] = [
-  { label: "Daily", cronExpression: "0 8 * * *" },
-  { label: "Weekdays", cronExpression: "0 8 * * 1-5" },
-  { label: "Weekends", cronExpression: "0 8 * * 0,6" },
-];
-
-export function frequencyToCron(frequency: string): string {
-  const option = FREQUENCY_OPTIONS.find((opt) => opt.label === frequency);
-  return option?.cronExpression || FREQUENCY_OPTIONS[0].cronExpression;
-}
-
-export function cronToFrequency(cronExpression: string): string {
-  const option = FREQUENCY_OPTIONS.find(
-    (opt) => opt.cronExpression === cronExpression,
-  );
-  return option?.label || FREQUENCY_OPTIONS[0].label;
-}
+export {
+  FREQUENCY_OPTIONS,
+  cronToFrequency,
+  frequencyToCron,
+} from "@/lib/cron-utils";
+export type { FrequencyOption } from "@/lib/cron-utils";
+import { FREQUENCY_OPTIONS } from "@/lib/cron-utils";
 
 interface FrequencySelectorProps {
   value?: string;

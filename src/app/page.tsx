@@ -5,7 +5,6 @@ import {
   SubscribeFormDeliveryTimeField,
   SubscribeFormDescription,
   SubscribeFormEmailInput,
-  SubscribeFormError,
   SubscribeFormField,
   SubscribeFormFieldError,
   SubscribeFormFrequencyField,
@@ -81,7 +80,6 @@ export default function HomePage() {
                 </SubscribeFormField>
                 <SubscribeFormFrequencyField />
                 <SubscribeFormDeliveryTimeField />
-                <SubscribeFormError />
                 <SubscribeFormSubmit>Start My Free Course</SubscribeFormSubmit>
               </SubscribeForm>
             </Card>
