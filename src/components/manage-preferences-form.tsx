@@ -195,7 +195,7 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-4 py-4"
           data-testid="manage-active-banner"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
               <Play
                 className="h-4 w-4 text-emerald-600"
@@ -203,23 +203,25 @@ export function ManagePreferencesForm({
                 strokeWidth={0}
               />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                Your subscription is active
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Pause to temporarily stop receiving lessons.
-              </p>
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Your subscription is active
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Pause to temporarily stop receiving lessons.
+                </p>
+              </div>
+              <Button
+                onClick={handlePause}
+                disabled={isSubmitting}
+                size="sm"
+                variant="outline"
+                data-testid="manage-pause-button"
+              >
+                Pause
+              </Button>
             </div>
-            <Button
-              onClick={handlePause}
-              disabled={isSubmitting}
-              size="sm"
-              variant="outline"
-              data-testid="manage-pause-button"
-            >
-              Pause
-            </Button>
           </div>
         </div>
       )}
@@ -229,7 +231,7 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-4"
           data-testid="manage-paused-banner"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500/10">
               <Pause
                 className="h-4 w-4 text-amber-600"
@@ -237,22 +239,24 @@ export function ManagePreferencesForm({
                 strokeWidth={0}
               />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                Your subscription is paused
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Resume to continue receiving lessons where you left off.
-              </p>
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Your subscription is paused
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Resume to continue receiving lessons where you left off.
+                </p>
+              </div>
+              <Button
+                onClick={handleResume}
+                disabled={isSubmitting}
+                size="sm"
+                data-testid="manage-resume-button"
+              >
+                Resume
+              </Button>
             </div>
-            <Button
-              onClick={handleResume}
-              disabled={isSubmitting}
-              size="sm"
-              data-testid="manage-resume-button"
-            >
-              Resume
-            </Button>
           </div>
         </div>
       )}
@@ -262,7 +266,7 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-4"
           data-testid="manage-stopped-banner"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-destructive/10">
               <CircleX className="h-4 w-4 text-destructive" strokeWidth={2} />
             </div>
@@ -283,49 +287,51 @@ export function ManagePreferencesForm({
           className="rounded-lg border border-border/50 px-4 py-4"
           data-testid="manage-restart-section"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted">
               <RotateCcw className="h-4 w-4 text-muted-foreground" />
             </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-foreground">
-                Restart course
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Go back to lesson 1 and start over from the beginning.
-              </p>
-            </div>
-            {!showRestartConfirm ? (
-              <Button
-                onClick={() => setShowRestartConfirm(true)}
-                disabled={isSubmitting}
-                size="sm"
-                variant="outline"
-                data-testid="manage-restart-button"
-              >
-                Restart
-              </Button>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => setShowRestartConfirm(false)}
-                  disabled={isSubmitting}
-                  size="sm"
-                  variant="ghost"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleRestart}
-                  disabled={isSubmitting}
-                  size="sm"
-                  variant="destructive"
-                  data-testid="manage-restart-confirm"
-                >
-                  {isSubmitting ? "Restarting..." : "Yes, restart"}
-                </Button>
+            <div className="flex-1 space-y-3">
+              <div>
+                <p className="text-sm font-medium text-foreground">
+                  Restart course
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Go back to lesson 1 and start over from the beginning.
+                </p>
               </div>
-            )}
+              {!showRestartConfirm ? (
+                <Button
+                  onClick={() => setShowRestartConfirm(true)}
+                  disabled={isSubmitting}
+                  size="sm"
+                  variant="outline"
+                  data-testid="manage-restart-button"
+                >
+                  Restart
+                </Button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => setShowRestartConfirm(false)}
+                    disabled={isSubmitting}
+                    size="sm"
+                    variant="ghost"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleRestart}
+                    disabled={isSubmitting}
+                    size="sm"
+                    variant="destructive"
+                    data-testid="manage-restart-confirm"
+                  >
+                    {isSubmitting ? "Restarting..." : "Yes, restart"}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
