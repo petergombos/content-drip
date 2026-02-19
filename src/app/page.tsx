@@ -34,6 +34,8 @@ export const metadata: Metadata = {
   },
 };
 
+// ✏️ Change PACK_KEY to match the `key` field in your content pack
+// (defined in src/content-packs/your-pack/pack.ts).
 const PACK_KEY = "my-course";
 
 export default function HomePage() {
@@ -44,14 +46,16 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* Hero */}
+        {/* ✏️ Update the headline and description below to match your course */}
         <section className="border-b">
           <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
-            <h1 className="font-serif text-4xl font-semibold tracking-tight text-foreground md:text-5xl animate-fade-in-up">
-              Your course headline goes here
+            <h1 className="font-serif text-4xl font-semibold tracking-tight text-foreground md:text-5xl animate-fade-in-up text-balance">
+              Build your first email course in 3 days
             </h1>
             <p className="mt-4 max-w-prose text-lg text-muted-foreground animate-fade-in-up delay-1">
-              A brief description of what subscribers will learn. Keep it
-              specific — what transformation or outcome can they expect?
+              A free email course on writing email courses — the format with the
+              highest completion rate in online education. Pick your topic,
+              write your lessons, and launch to your first subscribers.
             </p>
           </div>
         </section>

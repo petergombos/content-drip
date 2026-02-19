@@ -1,40 +1,46 @@
 ---
-subject: "Day 2: The Guilt-Free Nap"
-preview: "Scientists agree: napping is basically a superpower."
+subject: "Day 2: Write emails people actually open (and finish)"
+preview: "The anatomy of a great course email — and the one mistake that kills engagement."
 ---
 
-Good morning. Or afternoon. Or whenever you're reading this — time is a construct and we don't judge.
+![Writing your first email]({{assetUrl}}/images/stephen-phillips-hostreviews-co-uk-3Mhgvrk4tjM-unsplash%20Large.jpeg)
 
-![The science of napping]({{assetUrl}}/images/sample3.jpeg)
+You have your topic. You have your curriculum. Now let's write the first email.
 
-## Let's talk about naps
+## The subject line is everything
 
-The nap is nature's Ctrl+Z. Feeling overwhelmed? Nap. Made a bad decision? Nap. Can't figure out what to have for dinner? Nap first, decide later.
+Your subject line is the only thing standing between your email and the archive folder. The formula that works best for courses:
 
-Yet somehow, napping has a reputation problem. People treat it like it's *giving up* when it's actually a tactical retreat.
+**[Day X]: [Specific promise]**
 
-## The nap spectrum
+- "Day 1: The three-sentence pitch that gets replies"
+- "Day 2: Why your landing page isn't converting (and the fix)"
+- "Welcome: You're 4 emails away from your first sale"
 
-Here's a handy guide to the different nap varieties:
+Specific beats clever. Curiosity beats clever. Both beat generic.
 
-| Nap Type | Duration | Side Effects |
-|----------|----------|-------------|
-| The Power Nap | 15–20 min | Mild smugness, renewed energy |
-| The Accidental | 45 min | Confusion about what year it is |
-| The Sunday Special | 2+ hours | Existential clarity, possible time travel |
-| The "Just Resting My Eyes" | Unknown | Denial, drool marks on pillow |
+## The anatomy of a great course email
 
-> "I love sleep. My life has the tendency to fall apart when I'm awake, you know?"
-> — Ernest Hemingway (probably napping when he wrote this)
+**1. The hook (first 2 lines)**
+Start with a problem, a surprising fact, or a direct statement — not a greeting. "Hey there, hope you're doing well!" loses people before they start. "Most welcome emails have a 40% open rate and a 4% click rate. Let's talk about that gap" keeps them reading.
 
-## The guilt problem
+**2. The lesson (100–250 words)**
+One idea. One email. The temptation is to pack everything in — resist it. If you find yourself writing a second concept, save it for the next lesson.
 
-Here's the thing about nap guilt: it's entirely made up. Nobody on their deathbed has ever said, "I wish I'd napped less." Your body literally *wants* to nap — it's not a bug, it's a feature.
+**3. The action (1 clear next step)**
+Every email should end with something to do: write one sentence, fill in one template, try one thing. Small actions compound. They also make subscribers feel like they're making progress.
 
-## Today's exercise
+**4. The tease**
+End with what's coming tomorrow. "Tomorrow: the distribution strategy that got me my first 500 subscribers" is a reason to look forward to the next email.
 
-Take a nap today. Set a timer for 20 minutes if you want to be responsible about it. Or don't set a timer and see what happens. We believe in you either way.
+## Write your welcome email today
 
-[Read the extended nap research (companion page) →]({{companionUrl}})
+Use this structure:
+- Hook: What problem does your course solve, right now, in 2 sentences?
+- What they'll get: 3–4 specific outcomes
+- First action: Small, doable today
+- Tease: What's coming in Day 1?
 
-Tomorrow: the grand finale. Bring your blankest stare.
+[Read the full Day 2 guide with email templates →]({{companionUrl}})
+
+Tomorrow: how to launch, find subscribers, and grow from zero.

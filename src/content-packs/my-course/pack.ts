@@ -2,11 +2,21 @@ import { StarterEmailShell } from "@/content-packs/my-course/email-shell";
 import type { ContentPack } from "@/content-packs/registry";
 import { registerPack } from "@/content-packs/registry";
 
+// ✏️ Change `key` to a unique slug for your course.
+//    It appears in subscriber management URLs and is stored in the database,
+//    so pick something stable — avoid changing it after launch.
+// ✏️ Change `name` to your course title (shown in the email header and pages).
+// ✏️ Change `description` to a one-line summary of what subscribers get.
+// ✏️ Add, remove, or reorder entries in `steps` to match your curriculum.
+//    Each step needs a unique `slug` and a corresponding markdown file in emails/.
+//    Companion pages in pages/ are optional — omit `pageFile` to reuse `emailFile`.
+// ✏️ Uncomment and set `frequency` to lock delivery to a fixed schedule (cron syntax).
+//    When set, subscribers cannot choose their own delivery frequency.
 const pack: ContentPack = {
   key: "my-course",
-  name: "The Art of Doing Absolutely Nothing",
+  name: "How to Write an Email Course",
   description:
-    "A 4-day email course on the lost art of rest, delivered straight to your inbox.",
+    "A free 3-day course on planning, writing, and launching your first email course — delivered straight to your inbox.",
   steps: [
     { slug: "welcome", emailFile: "welcome.md" },
     { slug: "day-1", emailFile: "day-1.md" },

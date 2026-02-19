@@ -1,49 +1,48 @@
 ---
-subject: "Day 3: Mastering the Blank Stare"
-preview: "The final lesson. You've trained for this your whole life."
+subject: "Day 3: Launch your course and get your first subscribers"
+preview: "Your course is written. Here's the honest guide to filling it."
 ---
 
-This is it. The final lesson. The summit of Mount Do-Nothing.
+You've done the hard part. You have a topic, a curriculum, and at least a draft of your emails. Today we ship it.
 
-![Mastering the blank stare]({{assetUrl}}/images/sample4.jpeg)
+![Your course is live]({{assetUrl}}/images/le-vu-vSlCNmZdjHQ-unsplash%20Large.jpeg)
 
-## The ancient art of staring at nothing
+## Your landing page: the one-sentence promise
 
-You know that moment when someone catches you staring into space and asks, "What are you thinking about?" and you say "Nothing" and *you actually mean it*?
+Your landing page doesn't need to be fancy. It needs to answer one question: _What will I be able to do after taking this course?_
 
-That's not a failure of thought. That's a **achievement**.
+Your headline should be the answer to that question. Not "Welcome to my email course." Not the name of the course. The outcome.
 
-Most people's brains run like a browser with 47 tabs open. The blank stare is the equivalent of closing all of them — yes, even the one playing music.
+- "Write a cold email you'd actually reply to — in 3 lessons"
+- "Survive your first month with a rescue dog. One email a day for 5 days."
+- "Go from zero to your first freelance client — free, via email"
 
-## The technique
+ContentDrip's built-in subscribe form handles signup, email confirmation, and delivery scheduling. You just need to write the headline.
 
-Here's how to achieve a proper blank stare:
+## Where to find your first subscribers
 
-1. **Find a spot** — a wall, a window, a patch of ceiling. Nothing too interesting.
-2. **Let your eyes relax** — you're not *looking* at something, you're looking at *nothing*.
-3. **When a thought appears**, don't chase it. Let it walk through your brain like a stranger passing on the street.
-4. **Maintain** — the goal is at least 60 seconds of pure, uninterrupted blankness.
+**Existing audience first.** Post about it once — Twitter/X, LinkedIn, a newsletter, a Slack community you're part of. Don't over-explain. Share the landing page with your one-sentence promise. That's it.
 
-If you feel your phone calling to you, remember: your phone doesn't have feelings. It will be fine.
+**Niche communities second.** Find 2–3 online communities (subreddits, Discord servers, Facebook groups) where your specific audience hangs out. Add genuine value first, then mention the course once when it's relevant.
 
-## You did it
+**Referrals third.** Add a line to your final email: "If this helped you, forward it to someone who'd find it useful." One sentence. No pressure. It works.
 
-You've completed the entire course. You are now a certified practitioner of Doing Absolutely Nothing.
+## The honest truth about growth
 
-![Your graduation moment]({{assetUrl}}/images/sample5.jpeg)
+Your first version will not be perfect. That's fine. The best email courses get better through iteration — better subject lines, tightened lessons, more useful actions. The only way to improve is to launch and learn.
 
-Here's what you've learned:
+Start with 10 subscribers. Then 50. Then 100. Each iteration makes the course better for the next person who finds it.
 
-- **Day 1:** Sitting is a skill, and you're gifted at it
-- **Day 2:** Naps aren't lazy — they're strategic
-- **Day 3:** The blank stare is the final boss, and you beat it
+## You're done
 
-## What's next?
+You built something real. A course that delivers itself, on a schedule your subscribers choose, to their inbox — forever.
 
-Nothing. That's the whole point.
+Here's your recap:
 
-But if you want to revisit any lesson, your companion pages will always be there.
+- **Day 1** — Topic validated, curriculum mapped
+- **Day 2** — Emails written with hooks, lessons, and actions
+- **Day 3** — Landing page live, first subscribers incoming
 
-[Read the full graduation page →]({{companionUrl}})
+[Read the full Day 3 guide with a launch checklist →]({{companionUrl}})
 
-Thanks for doing nothing with us. It's been a pleasure.
+Go launch it. Then come back and make it better.

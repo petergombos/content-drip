@@ -1,99 +1,102 @@
 ---
-title: "Day 1: The Couch Curriculum"
-description: "A deep dive into the art of sitting down. Featuring the three levels of sitting and a field guide to couch selection."
+title: "Day 1: Pick Your Topic and Map Your Curriculum"
+description: "A worked example of the one-sentence test and the curriculum skeleton — including what to do when you can't choose between ideas."
 ---
 
-# Day 1: The Couch Curriculum
+# Day 1: Pick Your Topic and Map Your Curriculum
 
-Welcome back. If you're reading this while sitting down, you're already ahead of the curve. If you're standing, please — have a seat. This isn't that kind of course.
+The email covered the one-sentence test and the curriculum skeleton. This page goes deeper — including what to do when you're stuck between ideas, and a worked example of a full curriculum plan.
 
-![Advanced couch technique]({{assetUrl}}/images/sample2.jpeg)
+![Planning your curriculum]({{assetUrl}}/images/chuttersnap-SgrHcBpexys-unsplash%20Large.jpeg)
 
-## Why sitting matters
+## The one-sentence test: worked examples
 
-In a world obsessed with standing desks, walking meetings, and "getting your steps in," sitting has become almost rebellious. There's something deeply satisfying about choosing to sit when the world tells you to stand.
+Here's the template again:
 
-But here's the thing most people don't realize: **sitting is a skill**. And like any skill, it can be developed, refined, and eventually mastered.
+> "This course helps **[specific person]** do **[specific thing]** in **[timeframe or format]**."
 
-## The three levels of sitting (expanded)
+Let's see it in action across different domains:
 
-In the email, we introduced the three levels. Let's go deeper.
+| Domain | Too broad | Passes the test |
+|--------|-----------|-----------------|
+| Writing | "How to write better" | "How to write a weekly newsletter in 90 minutes — in 4 emails" |
+| Fitness | "Get in shape" | "How to build a consistent 20-minute morning workout habit — in one week" |
+| Business | "Start a business" | "How to validate your first product idea before building it — in 3 days" |
+| Cooking | "Learn to cook" | "5 pantry meals you can make in 20 minutes — one recipe a day" |
+| Tech | "Learn to code" | "Build your first Python script to automate a boring task — in 5 lessons" |
 
-### Level 1: Active Sitting
+Notice that the right column is useful even without context. You could share any of those sentences with a stranger and they'd immediately know if it's for them.
 
-This is the kind of sitting you do at work. You're upright. Your core is engaged (allegedly). There might be an ergonomic assessment involved. You're sitting, but you're also *doing something*, which makes this the least pure form of sitting.
+## How to choose between multiple ideas
 
-**Characteristics:**
-- Posture is "good" (according to your chiropractor)
-- You're probably at a desk
-- Your brain is running at full speed
-- This is sitting with an agenda, which is barely sitting at all
+If you wrote down 3 ideas yesterday and can't decide, run them through this filter:
 
-**Score: 3/10** — Points for being seated, docked for productivity.
+**1. Which one do people already ask you about?**
+If you've answered the same question more than three times, that's a course. You're already teaching it informally.
 
-### Level 2: Passive Sitting
+**2. Which one has the clearest "before and after"?**
+The best courses create a visible transformation. "Before: confused about X. After: able to do Y." The clearer that arc, the easier everything else gets — the landing page, the emails, the subject lines.
 
-Now we're talking. Passive sitting is what happens when you sit down with no particular purpose. You're on the couch. Maybe there's a blanket. You might be watching something on TV or you might just be looking at the TV while it's off, and honestly both are valid.
+**3. Which one could you write tomorrow?**
+Don't optimize for "biggest opportunity." Optimize for "can actually launch." A narrow course that ships beats a comprehensive course that doesn't.
 
-**Characteristics:**
-- Posture is "creative" (your chiropractor would cry)
-- Blanket presence: likely
-- Phone location: nearby but face-down
-- Brain activity: minimal and drifting
-- Time awareness: vague
+## The curriculum skeleton: a deeper look
 
-**Score: 7/10** — This is solid recreational sitting.
+In the email, we outlined a 4-lesson structure. Here's how to think about each slot:
 
-### Level 3: Transcendent Sitting
+### Welcome email
+**Job:** Get subscribers excited and take one small action.
+- Why this topic matters to *them specifically*
+- What they'll be able to do after the course
+- One tiny first step (5 minutes max)
+- Preview of what's coming
 
-The holy grail. This is the level most people hit maybe twice a year, usually on a lazy Sunday or during a particularly uneventful holiday. You've been sitting for so long that you've merged with the furniture. The couch has accepted you. You have no plans, no obligations, and if someone asked you to do something right now, you'd say "maybe later" and mean it.
+Avoid: biography, extensive credentials, long backstory. They signed up. They're already interested. Start with the value.
 
-**Characteristics:**
-- You and the couch are one entity
-- Time has stopped or is moving in a direction you can't identify
-- If your phone rings, you genuinely consider not answering
-- Your brain is running a screensaver
-- You might be technically meditating but you're not sure and you don't care
+### Day 1: The foundation
+**Job:** Give subscribers the framework everything else builds on.
+This is the "mental model" email. Before they can do anything useful, they need to understand *how you think about this topic*. What's the one lens that makes everything else make sense?
 
-**Score: 10/10** — Peak sitting. The summit.
+### Day 2: The first skill
+**Job:** Give them something they can apply today.
+This is the most action-oriented email. A technique, a template, a process — something concrete that produces a result they can see.
 
-## A field guide to sitting surfaces
+### Day 3 (if you have it): The advanced move or launch
+**Job:** Take them from "I understand it" to "I'm doing it."
+This is where you send them off confident. Either an advanced technique that builds on Days 1 and 2, or a specific plan for applying everything they've learned.
 
-Not all sitting surfaces are created equal. Here's a quick guide:
+### Final email (optional)
+**Job:** Celebrate completion and give them a next step.
+What should they do now that they've finished? Link to a resource, a community, your newsletter, a paid product — whatever's the most natural next thing.
 
-| Surface | Comfort | Nap Potential | Judgment from Others |
-|---------|---------|---------------|---------------------|
-| Office Chair | Medium | Low | "They're working" |
-| Couch | High | Very High | "They're relaxing" |
-| Beanbag | Very High | High | "Are they 12?" |
-| Floor | Low | Surprisingly High | "Are they okay?" |
-| Hammock | Maximum | Maximum | Pure envy |
+## Your curriculum planning template
 
-## The "I should be doing something" problem
+Copy this into a doc and fill it in:
 
-At some point during today's exercise, your brain will pipe up with helpful suggestions like:
+```
+Course: [One-sentence description]
 
-- "You should check your email"
-- "The dishes aren't going to wash themselves"
-- "This is a waste of time"
+Welcome
+  Subject:
+  Lesson: Why this matters + what's coming
+  Action:
 
-These thoughts are normal. They're the mental equivalent of pop-up ads. Here's how to deal with them:
+Day 1
+  Subject:
+  Lesson: [The foundational concept]
+  Action:
 
-1. **Acknowledge the thought.** "Ah yes, the dishes. I see you."
-2. **Thank it for its service.** "Thank you, brain. Very responsible of you."
-3. **Let it go.** The dishes will still be there later. They're not going anywhere. They're dishes.
+Day 2
+  Subject:
+  Lesson: [The first skill]
+  Action:
 
-## Today's exercise (extended)
+Day 3
+  Subject:
+  Lesson: [The advanced move or launch step]
+  Action:
+```
 
-Find your spot. Sit down. Set a timer for 10 minutes if you want structure, or don't if you want chaos. The point is to sit without purpose, without a phone, without a plan.
+Don't write the emails yet. Just the subject lines, the lesson title, and the action. That's your map.
 
-Some things you might experience:
-- **Minutes 1–3:** Restlessness. Your body might want to fidget. Let it.
-- **Minutes 4–6:** A weird calm. Your brain starts to slow down. Thoughts get spacier.
-- **Minutes 7–10:** Something close to peace. Or boredom. They're more similar than you think.
-
-If you accidentally sit for longer than 10 minutes, that's not a problem. That's talent.
-
-## Homework
-
-Just kidding. There's no homework. See you tomorrow for Day 2: The Guilt-Free Nap.
+Tomorrow we write the emails.

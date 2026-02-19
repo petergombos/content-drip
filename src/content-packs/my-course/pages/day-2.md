@@ -1,99 +1,138 @@
 ---
-title: "Day 2: The Guilt-Free Nap"
-description: "Everything you need to know about napping without shame. Includes the nap spectrum, historical nappers, and a step-by-step nap protocol."
+title: "Day 2: Write Emails People Actually Open (and Finish)"
+description: "Templates, formulas, and worked examples for every part of a great course email — including subject lines, hooks, lessons, and CTAs."
 ---
 
-# Day 2: The Guilt-Free Nap
+# Day 2: Write Emails People Actually Open (and Finish)
 
-Today we tackle humanity's most underrated activity: the nap. If yesterday was about sitting, today is about taking sitting to its logical conclusion — lying down and closing your eyes.
+Today's email gave you the structure. This page gives you the templates.
 
-![The science of napping]({{assetUrl}}/images/sample3.jpeg)
+![Writing great course emails]({{assetUrl}}/images/stephen-phillips-hostreviews-co-uk-3Mhgvrk4tjM-unsplash%20Large.jpeg)
 
-## The case for napping
+## Subject line formulas that work
 
-Let's start with the facts. Napping is not a sign of weakness. It's practiced by:
+Your subject line is the most important sentence in your email — it determines whether anything else gets read. Here are the formulas that consistently perform well for courses:
 
-- **Cats** — The most successful predators in any household. They nap 12–16 hours a day and show zero remorse.
-- **Babies** — They nap constantly and everyone thinks they're adorable for it.
-- **Winston Churchill** — Ran a country during a world war. Napped every afternoon. His exact words: "Nature has not intended mankind to work from eight in the morning until midnight without that refreshment of blessed oblivion which, even if it only lasts twenty minutes, is sufficient to renew all the vital forces."
-- **Salvador Dalí** — Napped holding a key over a plate. When the key dropped and clanged, he'd wake up with surrealist ideas. Weird? Yes. Effective? Also yes.
+### The day + promise formula
+```
+Day 1: [Specific outcome]
+```
+- "Day 1: The subject line formula that gets a 40% open rate"
+- "Day 2: Write your landing page headline in 10 minutes"
+- "Welcome: You're 4 emails away from your first sale"
 
-If it's good enough for a cat, a baby, a prime minister, and a surrealist, it's good enough for you.
+### The question formula
+```
+[Question your subscriber is already asking themselves]
+```
+- "Are your subject lines hurting your open rates?"
+- "What do the best email courses have in common?"
+- "Why do most online courses have a 5% completion rate?"
 
-## The nap spectrum (expanded)
+### The number formula
+```
+[Number] [things] that [outcome]
+```
+- "3 subject line mistakes killing your open rates"
+- "The 5-part email structure that gets replies"
+- "1 change that doubled my course completion rate"
 
-In the email, we gave you the overview. Here's the full breakdown.
+**What to avoid:** Clickbait, vague teasers, "RE:" tricks, and anything that overpromises. Course subscribers are choosing to receive your emails — they don't need manipulation, they need clarity.
 
-### The Power Nap (15–20 minutes)
+## Writing the hook
 
-The espresso shot of naps. You close your eyes, drift lightly, and wake up feeling like a phone that just went from 15% to 60% battery. It won't get you to 100%, but it'll keep you running until bedtime.
+The first two sentences determine whether anyone reads the rest. Here are three hook styles that work:
 
-**Best for:** Afternoon slumps, pre-meeting recovery, pretending you're "just resting your eyes" during a long video call.
+### The problem hook
+Open with the problem your lesson solves. Don't warm up.
 
-**Risks:** Feeling slightly smug afterward. May develop a superiority complex over non-nappers.
+> Most welcome emails get a 40% open rate but a 4% click rate. The gap is in the first paragraph — and it's almost always the same mistake.
 
-### The Accidental Nap (30–45 minutes)
+### The surprising fact hook
+Open with something that challenges an assumption.
 
-You didn't plan this. You sat down, maybe put on a documentary about penguins, and the next thing you know it's 45 minutes later and the penguins have migrated. This nap finds *you*.
+> The average online course has a 97% abandonment rate. Email courses consistently hit 40–60% completion. The format is the reason.
 
-**Best for:** Weekends, sick days, any situation involving a couch and a nature documentary.
+### The direct statement hook
+Just tell them what they're getting. Works especially well for action-heavy lessons.
 
-**Risks:** Waking up confused about the time of day. Possible drool. The documentary has moved on without you and you'll never know if the penguins made it.
+> Today you're writing your first email. Here's exactly how to structure it.
 
-### The Sunday Special (1–2 hours)
+What doesn't work: "Hey [first name], hope you're having a great week!" They know you don't know how their week is going. Start with value.
 
-The full-length feature film of naps. This is a commitment. You get under a blanket, you close the blinds, and you enter a different dimension. When you wake up, the light outside has changed and you're not entirely sure what day it is.
+## Writing the lesson body
 
-**Best for:** Recovery from a busy week. Rainy afternoons. Sundays (obviously).
+**The single-idea rule:** Each email should teach exactly one thing. If you find yourself writing a second concept, save it for the next email. This is the hardest discipline in email course writing, and it's also why email courses work — subscribers can actually absorb and apply one idea between emails.
 
-**Risks:** Mild existential confusion upon waking. Time feels like a suggestion rather than a fact. You might wake up with sheet marks on your face that you'll wear to dinner.
+**Length:** Aim for 150–300 words for the lesson section. Long enough to be useful, short enough to read in under 3 minutes.
 
-### The "Just Resting My Eyes" (Duration: Unknown)
+**Structure within the lesson:**
+1. State the concept plainly
+2. Explain why it matters
+3. Show how it works (example, template, or short walkthrough)
+4. Connect back to their specific situation
 
-The stealth nap. You are not sleeping. You are absolutely not sleeping. You are merely closing your eyes for a moment to think more clearly. The fact that your breathing has become rhythmic and there's a small whistling sound is coincidental.
+**Tone:** Write like you're explaining something to a smart friend — not like you're publishing an article. Contractions are good. Short paragraphs are good. First person is good.
 
-**Best for:** Plausible deniability in any situation.
+## Writing the action (CTA)
 
-**Risks:** Everyone knows you were sleeping. You know everyone knows. There's an unspoken agreement to never mention it.
+Every email needs one clear next step. The action should be:
 
-## How to nap without guilt: a step-by-step protocol
+- **Specific:** "Write your one-sentence course description" not "Think about your topic"
+- **Small:** Completable in 5–15 minutes
+- **Connected:** Directly applies the lesson they just read
+- **Visible:** They should be able to see the result when they're done
 
-### Step 1: Reframe the nap
+Good actions:
+- "Open a doc and write your welcome email using the template above"
+- "Send your course landing page URL to one person and ask if they'd sign up"
+- "Set a 20-minute timer and write your Day 1 subject line and hook"
 
-You are not "being lazy." You are engaging in **active recovery**. Athletes do it. CEOs do it. NASA studied it and found that a 26-minute nap improved pilot performance by 34%. You're basically a pilot now.
+Bad actions:
+- "Start thinking about your course"
+- "Explore some options"
+- "Let me know how it goes!" (this isn't an action)
 
-### Step 2: Choose your nap environment
+## Writing the tease
 
-The ideal nap environment has:
-- **Darkness** — or at least dimness. An eye mask works if you want to feel fancy.
-- **A horizontal surface** — couch, bed, floor, or hammock. No judgment.
-- **Quiet** — or consistent background noise. A fan is great. Construction outside your window is not.
-- **A blanket** — this is non-negotiable. Even if it's warm. The blanket is psychological.
+End each email (except the last) with a one-sentence preview of what's coming next. This reduces unsubscribes and builds anticipation.
 
-### Step 3: Set boundaries
+> Tomorrow: how to write a landing page headline in 10 minutes — even if you hate writing copy.
 
-Tell your brain (and anyone who might interrupt you) that this nap has a beginning and an end. A timer helps. So does a closed door. So does the blank, unyielding stare of someone who will not be disturbed.
+> Next: the distribution strategy that got the first 200 subscribers on my list.
 
-### Step 4: Let go
+> Day 3 is the launch. See you tomorrow.
 
-Don't try to fall asleep. That's like trying to be funny — the harder you try, the worse it gets. Just lie there. Close your eyes. If sleep comes, great. If it doesn't and you just rest for 20 minutes, that's also great. The bar is on the floor, and that's exactly where it should be.
+Keep it specific enough to be interesting, vague enough to create curiosity.
 
-## Famous naps throughout history
+## A full worked example
 
-- **Albert Einstein** reportedly napped in his armchair holding a pencil. When the pencil dropped, it woke him up. He'd then jot down whatever was in his head. The man literally dreamed up physics.
-- **Leonardo da Vinci** practiced polyphasic sleep — napping for 20 minutes every 4 hours instead of sleeping at night. He also painted the Mona Lisa, so maybe he was onto something. (Do not try this at home.)
-- **John F. Kennedy** napped after lunch every single day while president. If the leader of the free world can take a 1pm nap, so can you.
+Here's an email from a hypothetical "How to Write Better Cold Emails" course, annotated:
 
-## Today's exercise
+---
 
-Take a nap. Any variety from the spectrum above. Here's how:
+**Subject:** Day 2: The cold email structure that gets replies
 
-1. Find a comfortable spot
-2. Set a timer if you want (20 minutes is a great starting point)
-3. Lie down and close your eyes
-4. Don't check your phone. Your phone is fine. It doesn't miss you.
-5. When the timer goes off (or when you wake up naturally), take 60 seconds to just lie there before getting up
+**[Hook — problem]**
+Most cold emails fail in the first sentence. Not because they're too long or too short, but because they start with the wrong thing: the sender.
 
-That's it. No journaling. No reflection questions. Just a nap.
+**[Lesson — concept]**
+Here's the rule: the first sentence should be about them. Not you, not your company, not "I came across your profile." Something specific to their world that shows you've actually paid attention.
 
-Tomorrow is our final lesson: **Mastering the Blank Stare**. It's the boss fight of doing nothing, and you're ready.
+**[Lesson — how]**
+The structure that works:
+1. Open with something specific to them (a recent post, a project, a shared context)
+2. Make the connection to why you're reaching out (one sentence)
+3. Ask for the smallest possible thing (a 15-minute call, not a demo)
+
+**[Action]**
+Rewrite the first sentence of your last cold email so it starts with something specific to the recipient. One sentence. That's it.
+
+**[Tease]**
+Tomorrow: how to write the follow-up that actually gets a response.
+
+---
+
+That's 175 words. It delivers the concept, shows how it works, gives a clear action, and sets up the next email. That's the template.
+
+Tomorrow we talk about getting your course in front of people.

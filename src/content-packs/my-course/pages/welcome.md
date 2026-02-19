@@ -1,59 +1,56 @@
 ---
-title: "Welcome to The Art of Doing Absolutely Nothing"
-description: "You just enrolled in the world's laziest course. Here's what you're getting into."
+title: "Welcome to How to Write an Email Course"
+description: "Why email courses outperform every other format — and what you'll build over the next 3 days."
 ---
 
-# Welcome to The Art of Doing Absolutely Nothing
+# Welcome to How to Write an Email Course
 
-You're here. You subscribed. And in doing so, you've already demonstrated the most important skill this course will teach you: the ability to commit to something without overthinking it.
+You signed up for an email course about writing email courses. That might sound circular, but it's actually the fastest way to understand why the format works so well: you're going to experience it firsthand while learning how to build it yourself.
 
-![A person doing absolutely nothing]({{assetUrl}}/images/sample1.jpeg)
+![Email courses in the wild]({{assetUrl}}/images/brett-jordan-LPZy4da9aRo-unsplash%20Large.jpeg)
 
-## Why this course exists
+## Why email courses outperform every other format
 
-The world is full of courses that teach you to do *more*. More productivity. More hustle. More 5am cold plunges followed by gratitude journaling followed by inbox zero followed by a spiritual collapse at 2pm.
+Online education has a completion problem. The average MOOC (Massive Open Online Course) has a completion rate of around 3–15%. Udemy courses average around 10%. But email courses consistently see 40–60% completion rates. Sometimes higher.
 
-This is not one of those courses.
+The reasons aren't complicated:
 
-This is a course about the radical, countercultural act of **doing less**. On purpose. Without guilt. While possibly horizontal.
+**Delivery over destination.** Most online courses require the learner to remember to log in, find their place, and choose to engage. Email courses do the opposite — the lesson shows up in the place where people already spend time and attention. You don't have to compete with "I'll watch this later." You're already there.
 
-## The curriculum
+**One thing at a time.** A video course can have 47 lectures. An email course has 4 emails. That constraint forces you to be ruthless about what's actually essential — which makes the content better and easier to finish.
 
-Here's what we'll cover over the next three days:
+**Paced learning works.** Spreading lessons across multiple days means subscribers have time to try things between emails. That application is what turns information into skill.
 
-### Day 1: The Couch Curriculum
+**No platform dependency.** Email works everywhere, forever. No app to download, no account to create, no subscription to maintain.
 
-We'll explore why sitting down is one of humanity's greatest inventions and how to elevate your sitting practice from casual to transcendent. You'll learn the three levels of sitting and discover which level you naturally gravitate toward (spoiler: you're probably better at this than you think).
+## How ContentDrip works
 
-### Day 2: The Guilt-Free Nap
+ContentDrip is the open-source platform running this course. Here's how it works:
 
-Napping gets a bad rap. We'll look at why that's ridiculous, review the four major nap varieties, and tackle the guilt problem head-on. By the end, you'll be napping with the confidence of a cat in a sunbeam.
+1. **You write your course** as a series of markdown files — one file per lesson
+2. **Subscribers sign up** through a landing page and choose their delivery schedule (daily, every other day, weekly, etc.)
+3. **ContentDrip handles the rest** — email confirmation, scheduled delivery, companion pages, unsubscribe links, and progress tracking
 
-### Day 3: Mastering the Blank Stare
+The entire system runs on your own infrastructure. No monthly fees per subscriber. No platform lock-in. Your list is yours.
 
-The final frontier. Staring at nothing is the black belt of doing nothing, and we'll walk you through (slowly, obviously) how to achieve it. This is where everything comes together.
+## What you'll have by Day 3
 
-## How this works
+By the end of this course, you'll have:
 
-- You'll get **one short email per day** for the next 3 days
-- Each email has a **companion page** (like this one) with extended content for when you feel like going deeper — which, given the theme, you might not, and that's fine
-- There are no quizzes, no deadlines, and absolutely no certificates (unless you print one yourself, in which case, that sounds like a lot of effort)
+- A course topic that's specific, validated, and compelling
+- A 3–5 lesson curriculum with each lesson doing a clear job
+- At least one email written using the structure that gets results
+- A plan for launching and growing your subscriber list
 
-## A brief history of doing nothing
+## Before tomorrow
 
-Doing nothing has a long and distinguished history:
+Write down 3 things you know well enough to teach someone in 3–5 emails. They don't have to be major expertise — they just need to be things where you're further along than your audience.
 
-- **Ancient Greece:** Philosophers spent entire days just *thinking* in the agora. Socrates was basically a professional loiterer.
-- **The Renaissance:** Leonardo da Vinci was famously slow to finish things. The Mona Lisa took 16 years. The man understood pacing.
-- **The Industrial Revolution:** Everything went wrong. People started measuring value by output, and we've been exhausted ever since.
-- **Now:** You're here, reclaiming what the ancients knew — that sometimes the best thing to do is nothing at all.
+Good examples:
+- How to set up a home studio for under $500
+- The exact process I use to write a weekly newsletter in under 2 hours
+- What I learned from 6 months of growing a sourdough starter
 
-## Your pre-course prep
+The best email courses are narrow and specific. "Everything about marketing" is a book. "How to write a cold email that gets a reply" is an email course.
 
-Before tomorrow's first lesson, we have one small request:
-
-**Identify your favorite doing-nothing spot.** It could be a couch, a hammock, a specific patch of floor, or that one chair in your house that nobody else is allowed to sit in. This will be your base of operations for the next three days.
-
-That's it. No workbooks. No supplies. You already have everything you need: a body, a surface to put it on, and the willingness to not do anything with either of them.
-
-See you tomorrow.
+We'll narrow yours down tomorrow.
