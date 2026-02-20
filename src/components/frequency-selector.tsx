@@ -7,13 +7,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { FREQUENCY_OPTIONS } from "@/lib/cron-utils";
 export {
-  FREQUENCY_OPTIONS,
   cronToFrequency,
+  FREQUENCY_OPTIONS,
   frequencyToCron,
 } from "@/lib/cron-utils";
 export type { FrequencyOption } from "@/lib/cron-utils";
-import { FREQUENCY_OPTIONS } from "@/lib/cron-utils";
 
 interface FrequencySelectorProps {
   value?: string;
@@ -29,7 +29,7 @@ export function FrequencySelector({
       value={value || FREQUENCY_OPTIONS[0].label}
       onValueChange={onValueChange}
     >
-      <SelectTrigger className="w-full">
+      <SelectTrigger className="w-full sm:w-fit">
         <SelectValue placeholder="Select frequency" />
       </SelectTrigger>
       <SelectContent>
