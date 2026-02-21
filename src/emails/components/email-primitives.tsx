@@ -101,7 +101,13 @@ export const CONTENT_ELEMENT_STYLES: Record<string, Record<string, string>> = {
     margin: "20px 0",
     padding: "8px 12px",
   },
-  img: { "max-width": "100%", height: "auto", margin: "24px 0" },
+  img: {
+    width: "calc(100% + 64px)",
+    "max-width": "none",
+    height: "auto",
+    margin: "24px -32px",
+    display: "block",
+  },
   table: {
     width: "100%",
     "table-layout": "auto",
