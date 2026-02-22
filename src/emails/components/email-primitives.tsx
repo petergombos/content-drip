@@ -102,10 +102,9 @@ export const CONTENT_ELEMENT_STYLES: Record<string, Record<string, string>> = {
     padding: "8px 12px",
   },
   img: {
-    width: "calc(100% + 64px)",
-    "max-width": "none",
+    width: "100%",
     height: "auto",
-    margin: "24px -32px",
+    margin: "24px 0",
     display: "block",
   },
   table: {
@@ -169,6 +168,12 @@ function buildEmailCss(): string {
     "  .eb hr:last-child { margin-bottom: 0; }",
     "  .eb pre code { color: inherit; background: none; padding: 0; border-radius: 0; font-size: inherit; font-weight: inherit; line-height: inherit; }",
     "  .eb tbody tr { border-bottom: 1px solid #e5e5e5; }",
+    // Full-bleed images on desktop (clients that support <style>).
+    // Inline styles use safe width:100% for Gmail mobile fallback.
+    "  .eb img { width: calc(100% + 64px); max-width: none; margin: 24px -32px; }",
+    "  @media only screen and (max-width: 620px) {",
+    "    .eb img { width: 100% !important; max-width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }",
+    "  }",
   );
 
   return "\n" + lines.join("\n") + "\n";
